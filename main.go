@@ -15,6 +15,7 @@ import (
 type program struct{}
 //Init variable
 var log_file="dialing.log"
+var file File
 var logger service.Logger
 //database config
 
