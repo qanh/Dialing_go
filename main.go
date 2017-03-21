@@ -8,7 +8,7 @@ import (
 	"github.com/ivahaev/amigo"
 	"github.com/kardianos/service"
 	//_ "github.com/go-sql-driver/mysql"
-	"github.com/ziutek/mymysql/mysql"
+	"github.com/ziutek/mymysql/autorc"
 	_ "github.com/ziutek/mymysql/native"
 	//"github.com/bradfitz/gomemcache/memcache"
 )
@@ -23,7 +23,7 @@ var db_host="127.0.0.1:3306"
 var db_user="dialing"
 var db_pass="Dl@fj1ra"
 var db_name="dialingdb"
-var db =mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
+var db =autorc.New("tcp", "", db_host, db_user, db_pass, db_name)
 //Asterisk variable
 var settings = &amigo.Settings{Username: "trumpen", Password: "foobar", Host: "dev.dialingozone.com",Port:"1234"}
 //memcache
@@ -93,7 +93,7 @@ func (p *program) run() {
 }
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
-	db.Close()
+	//db.Close()
 	file.Close()
 	return nil
 }
