@@ -16,7 +16,7 @@ type program struct{}
 var log_file="dialing.log"
 var logger service.Logger
 //database config
-var db_string="user:password@/dbname"
+
 var db_host="127.0.0.0:3306"
 var db_user="dialing"
 var db_pass="Dl@fj1ra"
@@ -71,7 +71,7 @@ func (p *program) Start(s service.Service) error {
 	a.SetEventChannel(c)
 	//listen http request
 	http.HandleFunc("/user_state", state_check) // set router
-	err := http.ListenAndServe(":8001", nil) // set listen port
+	err := http.ListenAndServe(":8002", nil) // set listen port
 	if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
 	}
