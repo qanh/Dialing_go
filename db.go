@@ -39,7 +39,8 @@ func db_log(status string, agent string, ext string, campaignid string){
 	query, err :=db.Prepare("INSERT INTO log set state = ?, agentid = ?,extension = ?,kampanj = ?, tid = NOW()");
 	checkErr(err)
 	//defer query.Close()
-	_, err=query.Run(status,agent,ext,campaignid)
+	query.Raw.Bind(status,agent,ext,campaignid)
+	_, _, err=query.Exec()
 	checkErr(err)
 	plog( "db_log "+status+", "+agent+", "+ext+", "+campaignid)
 }
