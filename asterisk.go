@@ -8,7 +8,7 @@ func DefaultHandler(m map[string]string) {
 	fmt.Printf("Event received: %v\n", m)
 }
 //Join Agent to room 8800+ext
-func ast_login(agent string, ext string , campaignid string){
+func ast_login(agent string, ext string , campaignid string)string {
 	conf_num:="8800"+ext
 	if(len(ext)>0){
 		if(agents[agent]["ownchannel"]!=""){
@@ -35,6 +35,10 @@ func ast_login(agent string, ext string , campaignid string){
 		plog( "Agent "+agent+" miss extension")
 	}
 	set_default_ratio(campaignid)
+	if(result["Message"]=="Error"){
+		return result["Message"]
+	}
+	return "OK"
 }
 /*
 //Call to agent mobile phone and join to room 8800+ext

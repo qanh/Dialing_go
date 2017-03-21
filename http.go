@@ -19,9 +19,9 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			} else {
 				w.WriteHeader(http.StatusOK)
 				plog ("HTTP login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
-				fmt.Fprintf(w, "OK")
-				ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
-				//fmt.Fprintf(w, "OK")
+
+				message:=ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
+				fmt.Fprintf(w, message)
 			}
 		/*//change campaign
 		case "chcamp":
