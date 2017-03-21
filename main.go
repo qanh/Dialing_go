@@ -71,7 +71,7 @@ func (p *program) Start(s service.Service) error {
 	a.SetEventChannel(c)
 	//listen http request
 	http.HandleFunc("/user_state", state_check) // set router
-	err := http.ListenAndServe(":8000", nil) // set listen port
+	err := http.ListenAndServe(":8001", nil) // set listen port
 	if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
 	}
