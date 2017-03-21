@@ -15,6 +15,9 @@ func ast_login(agent string, ext string , campaignid string){
 			result, err := a.Action(map[string]string{"Action":"Hangup","Channel":agents[agent]["ownchannel"]})
 			fmt.Println(result, err)
 		}
+		if(agents[agent]== nil) {
+			agents[agent] = make(map[string]string)
+		}
 		agents[agent]["id"]=agent
 		agents[agent]["ext"]=ext
 		agents[agent]["campaignid"]=campaignid
