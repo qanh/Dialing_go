@@ -30,12 +30,12 @@ func db_getstate(campaignid string){
 		db_ratio[campaignid]=float64(res.Map("ratio"))
 		plog("Set ratio = "+strconv.Itoa(res.Map("ratio"))+" for campaign "+campaignid)
 	}
+
 	trunk_list[campaignid]=strconv.Itoa(res.Map("campNumber"))
 	plog("Set trunk = "+strconv.Itoa(res.Map("campNumber"))+" for campaign "+campaignid)
 
 }
 func db_log(status string, agent string, ext string, campaignid string){
-	if(db==nil){fmt.Println("fail")}
 	query, err :=db.Prepare("INSERT INTO log set state = ?, agentid = ?,extension = ?,kampanj = ?, tid = NOW()");
 	checkErr(err)
 	//defer query.Close()

@@ -31,26 +31,26 @@ var settings = &amigo.Settings{Username: "trumpen", Password: "foobar", Host: "d
 var a=amigo.New(settings)
 var dial_timeout=25000
 var agents=make(map[string]map[string]string)
-var db_ratio map[string]float64
-var ratio_up map[string]float64
-var ratio_down map[string]float64
-var trunk_list map[string]string
-var cur_ratio map[string]float64
-var agent_cnt map[string]int
-var uniqueid_list map[string]string
-var mute_arr map[string]string
-var incall_cnarr map[string]string
-var dial_cntarr map [string]int
-var callarr map [string]string
-var camparr map [string]string
-var mdialarr map [string]string
-var idial_cnarr map [string]int
-var ans_cntarr map [string]int
-var callarr2  map [string]string
-var idarr map [string]string
-var tapp_cntarr  map [string]int
+var db_ratio =make(map[string]float64)
+var ratio_up =make(map[string]float64)
+var ratio_down =make(map[string]float64)
+var trunk_list =make(map[string]string)
+var cur_ratio =make(map[string]float64)
+var agent_cnt =make(map[string]int)
+var uniqueid_list =make(map[string]string)
+var mute_arr =make(map[string]string)
+var incall_cnarr =make(map[string]string)
+var dial_cntarr =make(map [string]int)
+var callarr =make(map [string]string)
+var camparr =make(map [string]string)
+var mdialarr =make(map [string]string)
+var idial_cnarr =make(map [string]int)
+var ans_cntarr =make(map [string]int)
+var callarr2  =make(map [string]string)
+var idarr =make(map [string]string)
+var tapp_cntarr  =make(map [string]int)
 //unknown what it is
-var num_queue map[string]int
+var num_queue =make(map[string]int)
 var default_ratio=1.5
 var default_ratio_up=0.1
 var default_ratio_down=0.2
