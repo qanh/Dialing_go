@@ -81,6 +81,7 @@ func (p *program) Start(s service.Service) error {
 	//db, err = sql.Open("mysql", db_string)
 	db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
 	err = db.Connect()
+	fmt.Println(err)
 	checkErr(err)
 	go p.run()
 	return nil
