@@ -101,7 +101,7 @@ func init(){
 	if err != nil {
 		log.Fatalln("Failed to open log file",  ":", err)
 	}
-	//defer file.Close()
+	defer file.Close()
 
 	// assign it to the standard logger
 	log.SetOutput(file)
@@ -118,6 +118,7 @@ func main() {
 		Description: "Dialing Asterisk app.",
 	}
 	fmt.Println("Init Amigo")
+	plog("Start")
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
 	checkErr(err)
