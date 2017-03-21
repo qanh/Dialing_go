@@ -105,6 +105,7 @@ func init(){
 
 	// assign it to the standard logger
 	log.SetOutput(file)
+	log.Println("This is a test log entry")
 }
 func checkErr(err error) {
 	if err != nil {
