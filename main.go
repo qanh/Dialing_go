@@ -62,7 +62,7 @@ func (p *program) Start(s service.Service) error {
 	//listen asterisk event and request
 	a.Connect()
 	//register asterisk event listener
-	a.RegisterDefaultHandler(DefaultHandler)
+	//a.RegisterDefaultHandler(DefaultHandler)
 	//a.RegisterHandler("Hangup",ast_hangup_event)
 	//a.RegisterHandler("MeetmeJoin",ast_join)
 	//a.RegisterHandler("MeetmeLeave",ast_leave)
@@ -89,6 +89,7 @@ func (p *program) run() {
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
 	db.Close()
+
 	return nil
 }
 func plog(str string){
@@ -119,13 +120,13 @@ func main() {
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
 	checkErr(err)
-	if len(os.Args) > 1 {
+	/*if len(os.Args) > 1 {
 		err = service.Control(s, os.Args[1])
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
-	}
+	}*/
 	logger, err = s.Logger(nil)
 	checkErr(err)
 	err = s.Run()
