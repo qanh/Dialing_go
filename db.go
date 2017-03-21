@@ -34,6 +34,7 @@ func db_getstate(campaignid string){
 
 }
 func db_log(status string, agent string, ext string, campaignid string){
+	if(db==nil){fmt.Println("fail")}
 	query, err :=db.Prepare("INSERT INTO log set state = ?, agentid = ?,extension = ?,kampanj = ?, tid = NOW()");
 	checkErr(err)
 	//defer query.Close()
