@@ -3,6 +3,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"fmt"
 	//"database/sql"
 	"github.com/ivahaev/amigo"
 	"github.com/kardianos/service"
