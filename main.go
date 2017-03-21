@@ -120,7 +120,10 @@ func main() {
 		Description: "Dialing Asterisk app.",
 	}
 	fmt.Println("Init Amigo")
-	plog("Start")
+	if(db== nil){
+		plog("Start")
+	}
+
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
 	checkErr(err)
