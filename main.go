@@ -116,7 +116,7 @@ func main() {
 		DisplayName: "Dialing Service",
 		Description: "Dialing Asterisk app.",
 	}
-	fmt.Println("Init Amigo")
+	logger.Infof("I'm running")
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
 	checkErr(err)
