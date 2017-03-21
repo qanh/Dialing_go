@@ -1,8 +1,8 @@
 package main
 import (
 	"fmt"
-	"os/exec"
-	"time"
+//	"os/exec"
+//	"time"
 )
 func DefaultHandler(m map[string]string) {
 	fmt.Printf("Event received: %v\n", m)
@@ -24,14 +24,14 @@ func ast_login(agent string, ext string , campaignid string){
 		agents[agent]["callee"]=""
 		agents[agent]["channel"]=""
 		plog( "Login "+agent+", "+ext+", "+conf_num)
-		result, err := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+ext,"Context":"default","Exten":conf_num,"Priority":1})
+		result, err := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+ext,"Context":"default","Exten":conf_num,"Priority":"1"})
 		fmt.Println(result, err)
 		db_log("standby",agent,ext,campaignid)
 		db_getstate(campaignid)
 	}else {
 		plog( "Agent "+agent+" miss extension")
 	}
-	default_ratio(campaignid)
+	set_default_ratio(campaignid)
 }
 /*
 //Call to agent mobile phone and join to room 8800+ext
@@ -684,8 +684,19 @@ func ast_eon(campaignid string){
 	}
 	plog( "decrease num_queue for campaign "+campaignid);
 }
+
+func flashdata(campaignid string){
+	os.Mkdir("/var/www/flash/"+campaignid)
+	file, err := os.Create("/var/www/flash/"+campaignid+"/variables.txt")
+	if err != nil {
+		log.Fatalln("Failed to open file data",  ":", err)
+	}
+	defer file.Close()
+	file.WriteString(Sprintln("ratio=%0.1f&waiting=%d&tapp=%d&totaltparingda=%d&totaltanswers=%d&slask=1\n",cur_ratio[campaignid],agent_cnt[campaignid],tapp_cntarr[campaignid],dial_cntarr[campaignid],ans_cntarr[campaignid]))
+}
+*/
 // Set default ratio
-func default_ratio(campaignid string){
+func set_default_ratio(campaignid string){
 	if(db_ratio[campaignid]==0){
 		db_ratio[campaignid]=default_ratio
 	}
@@ -699,13 +710,3 @@ func default_ratio(campaignid string){
 		ratio_down[campaignid]=default_ratio_down
 	}
 }
-func flashdata(campaignid string){
-	os.Mkdir("/var/www/flash/"+campaignid)
-	file, err := os.Create("/var/www/flash/"+campaignid+"/variables.txt")
-	if err != nil {
-		log.Fatalln("Failed to open file data",  ":", err)
-	}
-	defer file.Close()
-	file.WriteString(Sprintln("ratio=%0.1f&waiting=%d&tapp=%d&totaltparingda=%d&totaltanswers=%d&slask=1\n",cur_ratio[campaignid],agent_cnt[campaignid],tapp_cntarr[campaignid],dial_cntarr[campaignid],ans_cntarr[campaignid]))
-}
-*/

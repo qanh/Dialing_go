@@ -3,13 +3,13 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"database/sql"
+	//"database/sql"
 	"github.com/ivahaev/amigo"
 	"github.com/kardianos/service"
 	//_ "github.com/go-sql-driver/mysql"
 	"github.com/ziutek/mymysql/mysql"
 	_ "github.com/ziutek/mymysql/native"
-	"github.com/bradfitz/gomemcache/memcache"
+	//"github.com/bradfitz/gomemcache/memcache"
 )
 type program struct{}
 //Init variable
@@ -17,7 +17,11 @@ var log_file="dialing.log"
 var logger service.Logger
 //database config
 var db_string="user:password@/dbname"
-var db *DB
+var db_host="127.0.0.0:3306"
+var db_user="dialing"
+var db_pass="Dl@fj1ra"
+var db_name="dialingdb"
+var db mysql.Conn
 //Asterisk variable
 var settings = &amigo.Settings{Username: "trumpen", Password: "foobar", Host: "dev.dialingozone.com",Port:"1234"}
 //memcache
@@ -25,11 +29,11 @@ var settings = &amigo.Settings{Username: "trumpen", Password: "foobar", Host: "d
 var a=amigo.New(settings)
 var dial_timeout=25000
 var agents=make(map[string]map[string]string)
-var db_ratio map[string]float
-var ratio_up map[string]int
-var ratio_down map[string]int
+var db_ratio map[string]float64
+var ratio_up map[string]float64
+var ratio_down map[string]float64
 var trunk_list map[string]string
-var cur_ratio map[string]float
+var cur_ratio map[string]float64
 var agent_cnt map[string]int
 var uniqueid_list map[string]string
 var mute_arr map[string]string
@@ -59,10 +63,10 @@ func (p *program) Start(s service.Service) error {
 	a.Connect()
 	//register asterisk event listener
 	a.RegisterDefaultHandler(DefaultHandler)
-	a.RegisterHandler("Hangup",ast_hangup_event)
-	a.RegisterHandler("MeetmeJoin",ast_join)
-	a.RegisterHandler("MeetmeLeave",ast_leave)
-	a.RegisterHandler("OriginateResponse",ast_originate_response)
+	//a.RegisterHandler("Hangup",ast_hangup_event)
+	//a.RegisterHandler("MeetmeJoin",ast_join)
+	//a.RegisterHandler("MeetmeLeave",ast_leave)
+	//a.RegisterHandler("OriginateResponse",ast_originate_response)
 	c := make(chan map[string]string, 100)
 	a.SetEventChannel(c)
 	//listen http request
@@ -72,7 +76,9 @@ func (p *program) Start(s service.Service) error {
 		log.Fatalln("ListenAndServe: ", err)
 	}
 	//Database mysql
-	db, err = sql.Open("mysql", db_string)
+	//db, err = sql.Open("mysql", db_string)
+	db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
+	err = db.Connect()
 	checkErr(err)
 	go p.run()
 	return nil
@@ -100,7 +106,7 @@ func init(){
 }
 func checkErr(err error) {
 	if err != nil {
-		plog(err)
+		plog(err.Error())
 	}
 }
 func main() {

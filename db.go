@@ -1,44 +1,41 @@
 package main
 import(
-	"database/sql"
+	//"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"strconv"
 )
 func db_getstate(campaignid string){
-	var (
-		ratio int
-		wait_time int
-		ratioup int
-		ratiodown int
-		campNumber int
-	)
-	rows, err := db.Query("SELECT ratio,wait_time, ratio_up, ratio_down ,campNumber from tCampaign where campaignID= ?", campaignid).Scan(&ratio,&wait_time,&ratioup,&ratiodown,&campNumber)
+
+	_,res, err := db.Query("SELECT ratio,wait_time, ratio_up, ratio_down ,campNumber from tCampaign where campaignID= "+campaignid)
 	checkErr(err)
-	defer rows.Close()
-	if(ratioup > -2 && ratioup < 2){
-		ratio_up[campaignid]=ratioup
-		plog("Set ration up ="+ratioup+" for campaign "+campaignid)
+	//rows, _ = stmt.Run(campaignid)
+	//rows.Next().Scan(&ratio,&wait_time,&ratioup,&ratiodown,&campNumber)
+
+	if(res.Map("ratio_up") > -2 && res.Map("ratio_up") < 2){
+		ratio_up[campaignid]=float64(res.Map("ratio_up"))
+		plog("Set ration up ="+strconv.Itoa(res.Map("ratio_up"))+" for campaign "+campaignid)
 	}
-	if(ratiodown > -2 && ratiodown < 2){
-		ratio_down[campaignid]=ratiodown
-		plog("Set ration down = "+ratiodown+" for campaign "+campaignid)
+	if(res.Map("ratio_down") > -2 && res.Map("ratio_down") < 2){
+		ratio_down[campaignid]=float64(res.Map("ratio_down"))
+		plog("Set ration down = "+strconv.Itoa(res.Map("ratio_down"))+" for campaign "+campaignid)
 	}
-	if(wait_time > 10000 && wait_time < 90000){
-		dial_timeout=wait_time
-		plog("Set dial timeout = "+wait_time+" for campaign "+campaignid)
+	if(res.Map("wait_time") > 10000 && res.Map("wait_time") < 90000){
+		dial_timeout=res.Map("wait_time")
+		plog("Set dial timeout = "+strconv.Itoa(res.Map("wait_time"))+" for campaign "+campaignid)
 	}
-	if(ratio > 10000 && ratio < 90000){
-		db_ratio[campaignid]=ratio
-		plog("Set ratio = "+ratio+" for campaign "+campaignid)
+	if(res.Map("ratio") > 10000 && res.Map("ratio") < 90000){
+		db_ratio[campaignid]=float64(res.Map("ratio"))
+		plog("Set ratio = "+strconv.Itoa(res.Map("ratio"))+" for campaign "+campaignid)
 	}
-	trunk_list[campaignid]=campNumber
-	plog("Set trunk = "+campNumber+" for campaign "+campaignid)
+	trunk_list[campaignid]=strconv.Itoa(res.Map("campNumber"))
+	plog("Set trunk = "+strconv.Itoa(res.Map("campNumber"))+" for campaign "+campaignid)
 
 }
 func db_log(status string, agent string, ext string, campaignid string){
 	query, err :=db.Prepare("INSERT INTO log set state = ?, agentid = ?,extension = ?,kampanj = ?, tid = NOW()");
 	checkErr(err)
-	defer query.Close()
-	_, err=query.Exec(status,agent,ext,campaignid)
+	//defer query.Close()
+	_, err=query.Run(status,agent,ext,campaignid)
 	checkErr(err)
 	plog( "db_log "+status+", "+agent+", "+ext+", "+campaignid)
 }
