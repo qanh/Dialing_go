@@ -19,7 +19,7 @@ var file os.File
 var logger service.Logger
 //database config
 
-var db_host="127.0.0.0:3306"
+var db_host="127.0.0.1:3306"
 var db_user="dialing"
 var db_pass="Dl@fj1ra"
 var db_name="dialingdb"
