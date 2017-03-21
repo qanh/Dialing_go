@@ -15,7 +15,7 @@ import (
 type program struct{}
 //Init variable
 var log_file="dialing.log"
-var file File
+var file os.File
 var logger service.Logger
 //database config
 
@@ -91,7 +91,7 @@ func (p *program) run() {
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
 	db.Close()
-
+	file.Close()
 	return nil
 }
 func plog(str string){
