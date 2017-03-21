@@ -5,6 +5,7 @@ import(
 	//"github.com/ziutek/mymysql/mysql"
 	_ "github.com/ziutek/mymysql/native"
 	"strconv"
+	"fmt"
 )
 func db_getstate(campaignid string){
 
