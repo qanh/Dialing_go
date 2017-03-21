@@ -23,7 +23,7 @@ var db_host="127.0.0.1:3306"
 var db_user="dialing"
 var db_pass="Dl@fj1ra"
 var db_name="dialingdb"
-var db mysql.Conn
+var db =mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
 //Asterisk variable
 var settings = &amigo.Settings{Username: "trumpen", Password: "foobar", Host: "dev.dialingozone.com",Port:"1234"}
 //memcache
@@ -79,7 +79,7 @@ func (p *program) Start(s service.Service) error {
 	}
 	//Database mysql
 	//db, err = sql.Open("mysql", db_string)
-	db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
+	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
 	err = db.Connect()
 	if(db== nil){
 		plog("Login Error")
