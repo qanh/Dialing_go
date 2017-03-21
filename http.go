@@ -14,12 +14,14 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			//http://dialern.televinken.se/user_state?agent=4711&ext=021&campaignID=5&action=login
 			if ((r.FormValue("agent")=="") || (r.FormValue("ext")== "") || (r.FormValue("campaignid")== "")) {
 				w.WriteHeader(http.StatusBadRequest)
-				fmt.Fprintf(w, "Missing argument to chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
-				plog ("Missing argument to chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
+				fmt.Fprintf(w, "Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
+				plog ("Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				go ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
+				plog ("HTTP login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
 				fmt.Fprintf(w, "OK")
+				go ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
+				//fmt.Fprintf(w, "OK")
 			}
 		/*//change campaign
 		case "chcamp":
