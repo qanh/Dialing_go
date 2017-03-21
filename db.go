@@ -1,7 +1,9 @@
 package main
 import(
 	//"database/sql"
-	_ "github.com/go-sql-driver/mysql"
+	//_ "github.com/go-sql-driver/mysql"
+	//"github.com/ziutek/mymysql/mysql"
+	_ "github.com/ziutek/mymysql/native"
 	"strconv"
 )
 func db_getstate(campaignid string){
