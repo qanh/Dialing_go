@@ -101,7 +101,7 @@ func init(){
 	if err != nil {
 		log.Fatalln("Failed to open log file",  ":", err)
 	}
-	defer file.Close()
+	//defer file.Close()
 
 	// assign it to the standard logger
 	log.SetOutput(file)
