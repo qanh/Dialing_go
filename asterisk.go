@@ -27,8 +27,8 @@ func ast_login(agent string, ext string , campaignid string){
 		agents[agent]["callee"]=""
 		agents[agent]["channel"]=""
 		plog( "Login "+agent+", "+ext+", "+conf_num)
-		result, err := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+ext,"Context":"default","Exten":conf_num,"Priority":"1"})
-		fmt.Println(result, err)
+		result, _ := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+ext,"Context":"default","Exten":conf_num,"Priority":"1"})
+		fmt.Println(result)
 		db_log("standby",agent,ext,campaignid)
 		db_getstate(campaignid)
 	}else {
