@@ -18,7 +18,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
+				go ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
 				fmt.Fprintf(w, "OK")
 			}
 		/*//change campaign
