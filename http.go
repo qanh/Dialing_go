@@ -19,6 +19,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			} else {
 				w.WriteHeader(http.StatusOK)
 				ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
+				fmt.Fprintf(w, "OK")
 			}
 		/*//change campaign
 		case "chcamp":
