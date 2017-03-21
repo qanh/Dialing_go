@@ -6,7 +6,10 @@ import (
 	"database/sql"
 	"github.com/ivahaev/amigo"
 	"github.com/kardianos/service"
-	_ "github.com/go-sql-driver/mysql"
+	//_ "github.com/go-sql-driver/mysql"
+	"github.com/ziutek/mymysql/mysql"
+	_ "github.com/ziutek/mymysql/native"
+	"github.com/bradfitz/gomemcache/memcache"
 )
 type program struct{}
 //Init variable
@@ -17,6 +20,8 @@ var db_string="user:password@/dbname"
 var db *DB
 //Asterisk variable
 var settings = &amigo.Settings{Username: "trumpen", Password: "foobar", Host: "dev.dialingozone.com",Port:"1234"}
+//memcache
+//var mc := memcache.New("127.0.0.1:11211")
 var a=amigo.New(settings)
 var dial_timeout=25000
 var agents=make(map[string]map[string]string)
@@ -29,6 +34,15 @@ var agent_cnt map[string]int
 var uniqueid_list map[string]string
 var mute_arr map[string]string
 var incall_cnarr map[string]string
+var dial_cntarr map [string]int
+var callarr map [string]string
+var camparr map [string]string
+var mdialarr map [string]string
+var idial_cnarr map [string]int
+var ans_cntarr map [string]int
+var callarr2  map [string]string
+var idarr map [string]string
+var tapp_cntarr  map [string]int
 //unknown what it is
 var num_queue map[string]int
 var default_ratio=1.5
@@ -43,12 +57,17 @@ func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
 	//listen asterisk event and request
 	a.Connect()
+	//register asterisk event listener
 	a.RegisterDefaultHandler(DefaultHandler)
+	a.RegisterHandler("Hangup",ast_hangup_event)
+	a.RegisterHandler("MeetmeJoin",ast_join)
+	a.RegisterHandler("MeetmeLeave",ast_leave)
+	a.RegisterHandler("OriginateResponse",ast_originate_response)
 	c := make(chan map[string]string, 100)
 	a.SetEventChannel(c)
 	//listen http request
 	http.HandleFunc("/user_state", state_check) // set router
-	err := http.ListenAndServe(":9090", nil) // set listen port
+	err := http.ListenAndServe(":8000", nil) // set listen port
 	if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
 	}

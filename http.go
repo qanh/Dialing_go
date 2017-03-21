@@ -9,7 +9,18 @@ func state_check(w http.ResponseWriter, r *http.Request){
 //fmt.Println("http request")
 	r.ParseForm()
 	switch action:=r.FormValue("action"); action{
-		//change campaign
+		//call to agent ext then join it to room
+		case "login":
+			//http://dialern.televinken.se/user_state?agent=4711&ext=021&campaignID=5&action=login
+			if ((r.FormValue("agent")=="") || (r.FormValue("ext")== "") || (r.FormValue("campaignid")== "")) {
+				w.WriteHeader(http.StatusBadRequest)
+				fmt.Fprintf(w, "Missing argument to chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
+				plog ("Missing argument to chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
+			} else {
+				w.WriteHeader(http.StatusOK)
+				ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
+			}
+		/*//change campaign
 		case "chcamp":
 			//http://dialern.televinken.se/user_state?agent=4711&ext=021&campaignid=5&action=chcamp
 			if ((r.FormValue("agent")=="") || (r.FormValue("ext")== "") || (r.FormValue("campaignid")== "")) {
@@ -22,20 +33,10 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				ast_chcamp(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
 				//$poe_kernel->post( 'monitor', 'ast_chcamp', $agent, $anknytning, $kampanjid);
 			}
-		//call to agent ext then join it to room
-		case "login":
-		//http://dialern.televinken.se/user_state?agent=4711&ext=021&campaignID=5&action=login
-			if ((r.FormValue("agent")=="") || (r.FormValue("ext")== "") || (r.FormValue("campaignid")== "")) {
-				w.WriteHeader(http.StatusBadRequest)
-				fmt.Fprintf(w, "Missing argument to chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
-				plog ("Missing argument to chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
-			} else {
-				w.WriteHeader(http.StatusOK)
-				ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
-			}
+
 		//call agent mobile phone number then join it to room
 		case "loginremote":
-			//http://dialern.televinken.se/user_state?agent=4711&ext=021&campaignID=5&action=login
+			//http://dialern.televinken.se/user_state?agent=4711&ext=021&campaignID=5&action=loginremote
 			if ((r.FormValue("agent")=="") || (r.FormValue("ext")== "") || (r.FormValue("campaignid")== "")|| (r.FormValue("dest")== "")) {
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
@@ -53,7 +54,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			} else {
 				w.WriteHeader(http.StatusOK)
 				ast_mdial(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("ringcardid"),r.FormValue("dest"))
-			}*/
+			}
 		case "tdial":
 			//http://dialern.televinken.se/user_state?agent=4711&ext=021&ringcardid=5&action=tdial
 			if ((r.FormValue("agent")=="") || (r.FormValue("ext")== "") || (r.FormValue("ringcardid")== "")|| (r.FormValue("dest")== "")) {
@@ -111,33 +112,6 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				ast_rec_stop(r.FormValue("agent"),r.FormValue("recname"))
 			}
 			delete(listfile,r.FormValue("agent"))
-		case "rec_accept_start":
-			//http://dialern.televinken.se/user_state?agent=4711&clientid&recname=fghdfg&action=rec_accept_start
-			if ((r.FormValue("agent")=="") || Len(r.FormValue("recname"))<2) {
-				w.WriteHeader(http.StatusBadRequest)
-				fmt.Fprintf(w, "Missing argument to start record file sound accept Agent:"+ r.FormValue("agent")+" Record file name:"+r.FormValue("recname"))
-				plog ("Missing argument to start record file sound accept Agent:"+ r.FormValue("agent")+" Record file name:"+r.FormValue("recname"))
-			} else {
-				w.WriteHeader(http.StatusOK)
-				listfile[r.FormValue("agent")]=recname
-				ast_rec_accept_start(r.FormValue("agent"),r.FormValue("recname"),r.FormValue("clientid"))
-			}
-		case "rec_accept_stop":
-			//http://dialern.televinken.se/user_state?agent=4711&recname=fghdfg&action=rec_accept_stop
-			var recname string
-			if(Len(r.FormValue("agent"))<2) {
-				recname = listfile[r.FormValue("agent")]
-			}
-			if ((r.FormValue("agent")=="") || Len(recname)<2) {
-				w.WriteHeader(http.StatusBadRequest)
-				fmt.Fprintf(w, "Missing argument to stop record file sound accept Agent:"+ r.FormValue("agent")+" Record file name:"+recname)
-				plog ("Missing argument to stop record file sound accept Agent:"+ r.FormValue("agent"))
-			} else {
-				w.WriteHeader(http.StatusOK)
-				listfile[r.FormValue("agent")]=recname
-				ast_rec_accept_stop(r.FormValue("agent"),r.FormValue("recname"),r.FormValue("clientid"))
-			}
-			delete(listfile,r.FormValue("agent"))
 		case "logout":
 			//http://dialern.televinken.se/user_state?agent=4711&action=logout
 			if ((r.FormValue("agent")=="") ) {
@@ -188,7 +162,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			} else {
 				w.WriteHeader(http.StatusOK)
 				ast_idial(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("dest"),r.FormValue("ringcardid"),r.FormValue("channel"))
-			}
+			}*/
 		default:
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, r.FormValue("action")+ " is not an allowed action" )

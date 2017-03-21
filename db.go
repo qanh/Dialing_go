@@ -34,3 +34,26 @@ func db_getstate(campaignid string){
 	plog("Set trunk = "+campNumber+" for campaign "+campaignid)
 
 }
+func db_log(status string, agent string, ext string, campaignid string){
+	query, err :=db.Prepare("INSERT INTO log set state = ?, agentid = ?,extension = ?,kampanj = ?, tid = NOW()");
+	checkErr(err)
+	defer query.Close()
+	_, err=query.Exec(status,agent,ext,campaignid)
+	checkErr(err)
+	plog( "db_log "+status+", "+agent+", "+ext+", "+campaignid)
+}
+/*func ast_setstate(ringcardid string){
+	stmt, err := db.Prepare("UPDATE tCampRingCards SET tapp = tapp + 1 where rID=?")
+	checkErr(err)
+
+	_, err = stmt.Exec( ringcardid)
+	checkErr(err)
+}
+
+func set_num_status(campaignid string , ringcardid string,reason string, number string){
+	select_query := "SELECT * from tCampRingCards WHERE rID ="+ringcardid
+	rows, err := db.Query(select_query)
+	checkErr(err)
+	defer rows.Close()
+	//chua xong
+}*/
