@@ -32,7 +32,7 @@ func ast_login(agent string, ext string , campaignid string)string {
 		fmt.Println("sdaf")
 		db_log("standby",agent,ext,campaignid)
 		db_getstate(campaignid)
-		if(result["Message"]=="Error"){
+		if(result["Response"]=="Error"){
 			return result["Message"]
 		}
 		return "OK"
@@ -707,6 +707,7 @@ func flashdata(campaignid string){
 */
 // Set default ratio
 func set_default_ratio(campaignid string){
+	plog("set default")
 	if(db_ratio[campaignid]==0){
 		db_ratio[campaignid]=default_ratio
 	}
