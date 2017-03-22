@@ -29,12 +29,13 @@ func ast_login(agent string, ext string , campaignid string)string {
 		plog( "Login "+agent+", "+ext+", "+conf_num)
 		result, err := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+ext,"Context":"default","Exten":conf_num,"Priority":"1"})
 		fmt.Println(result,err)
+		fmt.Println("sdaf")
 		db_log("standby",agent,ext,campaignid)
 		db_getstate(campaignid)
 	}else {
 		plog( "Agent "+agent+" miss extension")
 	}
-	set_default_ratio(campaignid)
+	//set_default_ratio(campaignid)
 	if(result["Message"]=="Error"){
 		return result["Message"]
 	}
