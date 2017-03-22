@@ -17,10 +17,11 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
 				plog ("Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
 			} else {
-				w.WriteHeader(http.StatusOK)
+
 				plog ("HTTP login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
 
-				message:=ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
+				code,message:=ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
+				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
 			}
 		/*//change campaign

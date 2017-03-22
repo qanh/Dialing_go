@@ -4,26 +4,26 @@ import (
 	"net/http"
 	"os"
 	"fmt"
-	//"database/sql"
+	"database/sql"
 	"github.com/ivahaev/amigo"
 	"github.com/kardianos/service"
-	//_ "github.com/go-sql-driver/mysql"
-	"github.com/ziutek/mymysql/autorc"
-	_ "github.com/ziutek/mymysql/native"
+	_ "github.com/go-sql-driver/mysql"
 	//"github.com/bradfitz/gomemcache/memcache"
 )
 type program struct{}
 //Init variable
 var log_file="dialing.log"
 var file os.File
-var logger service.Logger
+//var logger service.Logger
 //database config
 
-var db_host="127.0.0.1:3306"
-var db_user="dialing"
-var db_pass="Dl@fj1ra"
-var db_name="dialingdb"
-var db =autorc.New("tcp", "", db_host, db_user, db_pass, db_name)
+//var db_host="127.0.0.1:3306"
+//var db_user="dialing"
+//var db_pass="Dl@fj1ra"
+//var db_name="dialingdb"
+//var db =autorc.New("tcp", "", db_host, db_user, db_pass, db_name)
+var db *sql.DB
+var db_string="dialing:Dl@fj1ra@127.0.0.1/dialingdb"
 //Asterisk variable
 var settings = &amigo.Settings{Username: "trumpen", Password: "foobar", Host: "dev.dialingozone.com",Port:"1234"}
 //memcache
@@ -78,7 +78,7 @@ func (p *program) Start(s service.Service) error {
 		log.Fatalln("ListenAndServe: ", err)
 	}
 	//Database mysql
-	//db, err = sql.Open("mysql", db_string)
+	db, err = sql.Open("mysql", db_string)
 	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
 
 	go p.run()
@@ -89,7 +89,7 @@ func (p *program) run() {
 }
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
-	db.Raw.Close()
+	db.Close()
 	file.Close()
 	return nil
 }
@@ -133,8 +133,8 @@ func main() {
 		}
 		return
 	}*/
-	logger, err = s.Logger(nil)
-	checkErr(err)
+	//logger, err = s.Logger(nil)
+	//checkErr(err)
 	err = s.Run()
 	checkErr(err)
 }

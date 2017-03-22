@@ -8,7 +8,7 @@ func DefaultHandler(m map[string]string) {
 	fmt.Printf("Event received: %v\n", m)
 }
 //Join Agent to room 8800+ext
-func ast_login(agent string, ext string , campaignid string)string {
+func ast_login(agent string, ext string , campaignid string)(int , string) {
 	conf_num:="8800"+ext
 	if(len(ext)>0){
 		if(agents[agent]["ownchannel"]!=""){
@@ -33,12 +33,12 @@ func ast_login(agent string, ext string , campaignid string)string {
 		db_log("standby",agent,ext,campaignid)
 		db_getstate(campaignid)
 		if(result["Response"]=="Error"){
-			return result["Message"]
+			return 406,result["Message"]
 		}
-		return "OK"
+		return 200,"OK"
 	}else {
 		plog( "Agent "+agent+" miss extension")
-		return "Agent "+agent+" miss extension"
+		return 400,"Agent "+agent+" miss extension"
 	}
 	//set_default_ratio(campaignid)
 

@@ -8,42 +8,46 @@ import(
 )
 func db_getstate(campaignid string){
 
-	rows,res, err := db.Query("SELECT ratio,wait_time, ratio_up, ratio_down ,campNumber from tCampaign where campaignID= "+campaignid)
+	var t_ratio,t_ratio_up,t_ratio_down float64
+	var t_wait_time int
+	var t_campNumber string
+	rows, err := db.Query("SELECT ratio,wait_time, ratio_up, ratio_down ,campNumber from tCampaign where campaignID= "+campaignid)//.Scan(&t_ratio,&t_wait_time,&t_ratio_up,&t_ratio_down,&t_campNumber)
 	checkErr(err)
+	//defer rows.Close()
 	//rows, _ = stmt.Run(campaignid)
-	//rows.Next().Scan(&ratio,&wait_time,&ratioup,&ratiodown,&campNumber)
-	if(len(rows)==0){
-		set_default_ratio(campaignid)
-	}else{
-		if(float64(res.Map("ratio_up")) > -2 && float64(res.Map("ratio_up")) < 2){
-			ratio_up[campaignid]=float64(res.Map("ratio_up"))
-			plog("Set ration up ="+strconv.Itoa(res.Map("ratio_up"))+" for campaign "+campaignid)
+	rows.Scan(&t_ratio,&t_wait_time,&t_ratio_up,&t_ratio_down,&t_campNumber)
+	//if(t_ratio==nil){
+	//	set_default_ratio(campaignid)
+	//}else{
+		if(t_ratio_up > -2 && t_ratio_up < 2){
+			ratio_up[campaignid]=t_ratio_up
+			plog("Set ration up ="+strconv.FormatFloat(t_ratio_up, 'E', -1, 64)+" for campaign "+campaignid)
 		}
-		if(res.Map("ratio_down") > -2 && res.Map("ratio_down") < 2){
-			ratio_down[campaignid]=float64(res.Map("ratio_down"))
-			plog("Set ration down = "+strconv.Itoa(res.Map("ratio_down"))+" for campaign "+campaignid)
+		if(t_ratio_down > -2 && t_ratio_down < 2){
+			ratio_down[campaignid]=t_ratio_down
+			plog("Set ration down = "+strconv.FormatFloat(t_ratio_down, 'E', -1, 64)+" for campaign "+campaignid)
 		}
-		if(res.Map("wait_time") > 10000 && res.Map("wait_time") < 90000){
-			dial_timeout=res.Map("wait_time")
-			plog("Set dial timeout = "+strconv.Itoa(res.Map("wait_time"))+" for campaign "+campaignid)
+		if(t_wait_time> 10000 && t_wait_time < 90000){
+			dial_timeout=t_wait_time
+			plog("Set dial timeout = "+strconv.Itoa(t_wait_time)+" for campaign "+campaignid)
 		}
-		if(res.Map("ratio") > 10000 && res.Map("ratio") < 90000){
-			db_ratio[campaignid]=float64(res.Map("ratio"))
-			plog("Set ratio = "+strconv.Itoa(res.Map("ratio"))+" for campaign "+campaignid)
+		if(t_ratio > 10000 && t_ratio < 90000){
+			db_ratio[campaignid]=t_ratio
+			plog("Set ratio = "+strconv.FormatFloat(t_ratio, 'E', -1, 64)+" for campaign "+campaignid)
 		}
 
-		trunk_list[campaignid]=res.Map("campNumber")
-		plog("Set trunk = "+res.Map("campNumber")+" for campaign "+campaignid)
-	}
+		trunk_list[campaignid]=t_campNumber
+		plog("Set trunk = "+t_campNumber+" for campaign "+campaignid)
+	//}
 
 
 }
 func db_log(status string, agent string, ext string, campaignid string){
 	query, err :=db.Prepare("INSERT INTO log set state = ?, agentid = ?,extension = ?,kampanj = ?, tid = NOW()");
 	checkErr(err)
-	//defer query.Close()
-	query.Raw.Bind(status,agent,ext,campaignid)
-	_, _, err=query.Exec()
+	defer query.Close()
+	//query.Raw.Bind(status,agent,ext,campaignid)
+	_, err=query.Exec(status,agent,ext,campaignid)
 	checkErr(err)
 	plog( "db_log "+status+", "+agent+", "+ext+", "+campaignid)
 }
