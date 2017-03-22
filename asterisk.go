@@ -32,14 +32,16 @@ func ast_login(agent string, ext string , campaignid string)string {
 		fmt.Println("sdaf")
 		db_log("standby",agent,ext,campaignid)
 		db_getstate(campaignid)
+		if(result["Message"]=="Error"){
+			return result["Message"]
+		}
+		return "OK"
 	}else {
 		plog( "Agent "+agent+" miss extension")
+		return "Agent "+agent+" miss extension"
 	}
 	//set_default_ratio(campaignid)
-	if(result["Message"]=="Error"){
-		return result["Message"]
-	}
-	return "OK"
+
 }
 /*
 //Call to agent mobile phone and join to room 8800+ext
