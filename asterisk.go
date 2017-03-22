@@ -707,7 +707,6 @@ func flashdata(campaignid string){
 */
 // Set default ratio
 func set_default_ratio(campaignid string){
-	plog("set default")
 	if(db_ratio[campaignid]==0){
 		db_ratio[campaignid]=default_ratio
 	}

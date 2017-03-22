@@ -15,7 +15,7 @@ func db_getstate(campaignid string){
 	if(len(rows)==0){
 		set_default_ratio(campaignid)
 	}else{
-		if(res.Map("ratio_up") > -2 && res.Map("ratio_up") < 2){
+		if(float64(res.Map("ratio_up")) > -2 && float64(res.Map("ratio_up")) < 2){
 			ratio_up[campaignid]=float64(res.Map("ratio_up"))
 			plog("Set ration up ="+strconv.Itoa(res.Map("ratio_up"))+" for campaign "+campaignid)
 		}
@@ -32,8 +32,8 @@ func db_getstate(campaignid string){
 			plog("Set ratio = "+strconv.Itoa(res.Map("ratio"))+" for campaign "+campaignid)
 		}
 
-		trunk_list[campaignid]=strconv.Itoa(res.Map("campNumber"))
-		plog("Set trunk = "+strconv.Itoa(res.Map("campNumber"))+" for campaign "+campaignid)
+		trunk_list[campaignid]=res.Map("campNumber")
+		plog("Set trunk = "+res.Map("campNumber")+" for campaign "+campaignid)
 	}
 
 
