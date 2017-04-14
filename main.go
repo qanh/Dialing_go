@@ -132,6 +132,7 @@ func main() {
 	}
 
 	//Database mysql
+	var err error
 	db, err = sql.Open("mysql", db_string)
 	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
 	if err != nil {
