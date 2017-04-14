@@ -11,38 +11,41 @@ func db_getstate(campaignid string){
 	var t_ratio,t_ratio_up,t_ratio_down,t_wait_time,t_campNumber string
 	err := db.QueryRow("SELECT ratio,wait_time, ratio_up, ratio_down ,campNumber from tCampaign where campaignID= ?",campaignid).Scan(&t_ratio,&t_wait_time,&t_ratio_up,&t_ratio_down,&t_campNumber)
 	checkErr(err)
-	strconv.ParseFloat("3.1415", 64)
-	//defer rows.Close()
-	//rows, _ = stmt.Run(campaignid)
-	//rows.Scan(&t_ratio,&t_wait_time,&t_ratio_up,&t_ratio_down,&t_campNumber)
-	//if(t_ratio==nil){
-	//	set_default_ratio(campaignid)
-	//}else{
-		ratioup,_:=strconv.ParseFloat(t_ratio_up, 64)
-		ratiodown,_:=strconv.ParseFloat(t_ratio_down, 64)
-		ratio,_:=strconv.ParseFloat(t_ratio, 64)
-		wait_time,_:=strconv.Atoi(t_wait_time)
-		if(ratioup > -2 && ratioup < 2){
-			ratio_up[campaignid]=ratioup
-			plog("Set ration up ="+t_ratio_up+" for campaign "+campaignid)
+	if(err != nil){
+		strconv.ParseFloat("3.1415", 64)
+		//defer rows.Close()
+		//rows, _ = stmt.Run(campaignid)
+		//rows.Scan(&t_ratio,&t_wait_time,&t_ratio_up,&t_ratio_down,&t_campNumber)
+		//if(t_ratio==nil){
+		//	set_default_ratio(campaignid)
+		//}else{
+		ratioup, _ := strconv.ParseFloat(t_ratio_up, 64)
+		ratiodown, _ := strconv.ParseFloat(t_ratio_down, 64)
+		ratio, _ := strconv.ParseFloat(t_ratio, 64)
+		wait_time, _ := strconv.Atoi(t_wait_time)
+		if (ratioup > -2 && ratioup < 2) {
+			ratio_up[campaignid] = ratioup
+			plog("Set ration up =" + t_ratio_up + " for campaign " + campaignid)
 		}
-		if(ratiodown > -2 && ratiodown < 2){
-			ratio_down[campaignid]=ratiodown
-			plog("Set ration down = "+t_ratio_down+" for campaign "+campaignid)
+		if (ratiodown > -2 && ratiodown < 2) {
+			ratio_down[campaignid] = ratiodown
+			plog("Set ration down = " + t_ratio_down + " for campaign " + campaignid)
 		}
-		if(wait_time> 10000 && wait_time < 90000){
-			dial_timeout=wait_time
-			plog("Set dial timeout = "+t_wait_time+" for campaign "+campaignid)
+		if (wait_time > 10000 && wait_time < 90000) {
+			dial_timeout = wait_time
+			plog("Set dial timeout = " + t_wait_time + " for campaign " + campaignid)
 		}
-		if(ratio > 10000 && ratio < 90000){
-			db_ratio[campaignid]=ratio
-			plog("Set ratio = "+t_ratio+" for campaign "+campaignid)
+		if (ratio > 10000 && ratio < 90000) {
+			db_ratio[campaignid] = ratio
+			plog("Set ratio = " + t_ratio + " for campaign " + campaignid)
 		}
 
-		trunk_list[campaignid]=t_campNumber
-		plog("Set trunk = "+t_campNumber+" for campaign "+campaignid)
-	//}
-
+		trunk_list[campaignid] = t_campNumber
+		plog("Set trunk = " + t_campNumber + " for campaign " + campaignid)
+		//}
+	}else{
+		set_default_ratio(campaignid)
+	}
 
 }
 func db_log(status string, agent string, ext string, campaignid string){

@@ -10,42 +10,30 @@ func DefaultHandler(m map[string]string) {
 //Join Agent to room 8800+ext
 func ast_login(agent string, ext string , campaignid string)(int , string) {
 	conf_num:="8800"+ext
-	if(len(ext)>0){
-		if(agents[agent]["ownchannel"]!=""){
-			result, err := a.Action(map[string]string{"Action":"Hangup","Channel":agents[agent]["ownchannel"]})
-			fmt.Println(result, err)
-		}
-		if(agents[agent]== nil) {
-			agents[agent] = make(map[string]string)
-		}
-		agents[agent]["id"]=agent
-		agents[agent]["ext"]=ext
-		agents[agent]["campaignid"]=campaignid
-		agents[agent]["conf_num"]=conf_num
-		agents[agent]["status"]="standby"
-		//Callee number
-		agents[agent]["callee"]=""
-		agents[agent]["channel"]=""
-		plog( "Login "+agent+", "+ext+", "+conf_num)
-		result, err := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+ext,"Context":"default","Exten":conf_num,"Priority":"1"})
-		fmt.Println(result,err)
-		fmt.Println("1")
-
-		db_log("standby",agent,ext,campaignid)
-
-		fmt.Println("2")
-		db_getstate(campaignid)
-		fmt.Println("3")
-		if(result["Response"]=="Error"){
-			return 406,result["Message"]
-		}
-		return 200,"OK"
-	}else {
-		plog( "Agent "+agent+" miss extension")
-		return 400,"Agent "+agent+" miss extension"
+	if(agents[agent]["ownchannel"]!=""){
+		result, err := a.Action(map[string]string{"Action":"Hangup","Channel":agents[agent]["ownchannel"]})
+		fmt.Println(result, err)
 	}
-	//set_default_ratio(campaignid)
+	if(agents[agent]== nil) {
+		agents[agent] = make(map[string]string)
+	}
+	agents[agent]["id"]=agent
+	agents[agent]["ext"]=ext
+	agents[agent]["campaignid"]=campaignid
+	agents[agent]["conf_num"]=conf_num
+	agents[agent]["status"]="standby"
+	//Callee number
+	agents[agent]["callee"]=""
+	agents[agent]["channel"]=""
+	plog( "Login "+agent+", "+ext+", "+conf_num)
+	result, _ := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+ext,"Context":"default","Exten":conf_num,"Priority":"1"})
 
+	if(result["Response"]=="Error"){
+		return 406,result["Message"]
+	}
+	go db_log("standby",agent,ext,campaignid)
+	go db_getstate(campaignid)
+	return 200,"OK"
 }
 /*
 //Call to agent mobile phone and join to room 8800+ext
