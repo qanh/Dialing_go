@@ -25,7 +25,7 @@ var port="8001"
 //var db_name="dialingdb"
 //var db =autorc.New("tcp", "", db_host, db_user, db_pass, db_name)
 var db *sql.DB
-var db_string="dialing:Dl@fj1ra@localhost/dialingdb"
+var db_string="dialing:Dl@fj1ra@/dialingdb"
 //Asterisk variable
 var settings = &amigo.Settings{Username: "trumpen", Password: "foobar", Host: "dev.dialingozone.com",Port:"1234"}
 //memcache
