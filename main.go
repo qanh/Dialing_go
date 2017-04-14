@@ -77,9 +77,10 @@ func (p *program) Start(s service.Service) error {
 
 	http.HandleFunc("/user_state", state_check) // set router
 	err := http.ListenAndServe(":"+port, nil) // set listen port
-	log.SetOutput(os.Stdout)
+
 	if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
+		fmt.Println("ListenAndServe")
 	}else{
 		fmt.Println("ListenAndServe on port "+port)
 	}
@@ -89,6 +90,7 @@ func (p *program) Start(s service.Service) error {
 	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
 	if err != nil {
 		log.Fatalln("Db connect: ", err)
+		fmt.Println("DB error")
 	}else{
 		fmt.Println("DB connected")
 	}
