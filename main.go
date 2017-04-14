@@ -80,7 +80,9 @@ func (p *program) Start(s service.Service) error {
 	//Database mysql
 	db, err = sql.Open("mysql", db_string)
 	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
-
+	if err != nil {
+		log.Fatalln("Db connect: ", err)
+	}
 	go p.run()
 	return nil
 }
