@@ -84,15 +84,7 @@ func (p *program) Start(s service.Service) error {
 	}else{
 		fmt.Println("ListenAndServe on port "+port)
 	}
-	//Database mysql
-	db, err = sql.Open("mysql", db_string)
-	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
-	if err != nil {
-		log.Fatalln("Db connect: ", err)
-		fmt.Println("DB error")
-	}else{
-		fmt.Println("DB connected")
-	}
+
 
 	go p.run()
 	return nil
@@ -139,8 +131,14 @@ func main() {
 		Description: "Dialing Asterisk app.",
 	}
 
-	if(db== nil){
-		plog("Start")
+	//Database mysql
+	db, err = sql.Open("mysql", db_string)
+	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
+	if err != nil {
+		log.Fatalln("Db connect: ", err)
+		fmt.Println("DB error")
+	}else{
+		fmt.Println("DB connected")
 	}
 
 	prg := &program{}
