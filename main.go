@@ -85,15 +85,7 @@ func (p *program) Start(s service.Service) error {
 		fmt.Println("ListenAndServe on port "+port)
 	}
 
-	//Database mysql
-	db, err = sql.Open("mysql", db_string)
-	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
-	if err != nil {
-		log.Fatalln("Db connect: ", err)
-		fmt.Println("DB error")
-	}else{
-		fmt.Println("DB connected")
-	}
+
 	go p.run()
 	return nil
 }
@@ -124,7 +116,16 @@ func init(){
 
 	// assign it to the standard logger
 	log.SetOutput(file)
-	log.Println("This is a test log entry")
+	//log.Println("This is a test log entry")
+	//Database mysql
+	db, err = sql.Open("mysql", db_string)
+	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
+	if err != nil {
+		log.Fatalln("Db connect: ", err)
+		fmt.Println("DB error")
+	}else{
+		fmt.Println("DB connected")
+	}
 }
 func checkErr(err error) {
 	if err != nil {
