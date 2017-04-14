@@ -102,7 +102,7 @@ func (p *program) run() {
 }
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
-	db.Close()
+	//db.Close()
 	file.Close()
 	return nil
 }
