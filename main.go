@@ -74,13 +74,13 @@ func (p *program) Start(s service.Service) error {
 	c := make(chan map[string]string, 100)
 	a.SetEventChannel(c)
 	//listen http request
-	fmt.Println("Init Amigo")
+
 	http.HandleFunc("/user_state", state_check) // set router
 	err := http.ListenAndServe(":"+port, nil) // set listen port
 	if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
 	}else{
-		plog("ListenAndServe on port "+port)
+		fmt.Println("ListenAndServe on port "+port)
 	}
 
 	//Database mysql
@@ -89,7 +89,7 @@ func (p *program) Start(s service.Service) error {
 	if err != nil {
 		log.Fatalln("Db connect: ", err)
 	}else{
-		plog("DB connected")
+		fmt.Println("DB connected")
 	}
 	go p.run()
 	return nil
