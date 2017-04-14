@@ -31,7 +31,7 @@ func ast_login(agent string, ext string , campaignid string)(int , string) {
 	if(result["Response"]=="Error"){
 		return 406,result["Message"]
 	}
-	go db_log("standby",agent,ext,campaignid)
+	db_log("standby",agent,ext,campaignid)
 	go db_getstate(campaignid)
 	return 200,"OK"
 }
