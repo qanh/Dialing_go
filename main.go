@@ -5,6 +5,7 @@ import (
 	"os"
 	"fmt"
 	"database/sql"
+	"path"
 	"github.com/ivahaev/amigo"
 	"github.com/kardianos/service"
 	_ "github.com/go-sql-driver/mysql"
