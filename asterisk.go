@@ -29,9 +29,11 @@ func ast_login(agent string, ext string , campaignid string)(int , string) {
 		plog( "Login "+agent+", "+ext+", "+conf_num)
 		result, err := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+ext,"Context":"default","Exten":conf_num,"Priority":"1"})
 		fmt.Println(result,err)
-		fmt.Println("sdaf")
+		fmt.Println("1")
 		db_log("standby",agent,ext,campaignid)
+		fmt.Println("2")
 		db_getstate(campaignid)
+		fmt.Println("3")
 		if(result["Response"]=="Error"){
 			return 406,result["Message"]
 		}
