@@ -133,13 +133,13 @@ func main() {
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
 	checkErr(err)
-	/*if len(os.Args) > 1 {
+	if len(os.Args) > 1 {
 		err = service.Control(s, os.Args[1])
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
-	}*/
+	}
 	//logger, err = s.Logger(nil)
 	//checkErr(err)
 	err = s.Run()
