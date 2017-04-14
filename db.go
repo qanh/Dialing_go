@@ -11,7 +11,7 @@ func db_getstate(campaignid string){
 	var t_ratio,t_ratio_up,t_ratio_down,t_wait_time,t_campNumber string
 	err := db.QueryRow("SELECT ratio,wait_time, ratio_up, ratio_down ,campNumber from tCampaign where campaignID= ?",campaignid).Scan(&t_ratio,&t_wait_time,&t_ratio_up,&t_ratio_down,&t_campNumber)
 	checkErr(err)
-	if(err != nil){
+	if(err == nil){
 		plog("db_getstate")
 		//defer rows.Close()
 		//rows, _ = stmt.Run(campaignid)
