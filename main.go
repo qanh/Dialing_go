@@ -15,6 +15,7 @@ type program struct{}
 //Init variable
 var log_file="dialing.log"
 var file os.File
+var port="8801"
 //var logger service.Logger
 //database config
 
@@ -73,12 +74,13 @@ func (p *program) Start(s service.Service) error {
 	c := make(chan map[string]string, 100)
 	a.SetEventChannel(c)
 	//listen http request
+	fmt.Println("Init Amigo")
 	http.HandleFunc("/user_state", state_check) // set router
-	err := http.ListenAndServe(":8001", nil) // set listen port
+	err := http.ListenAndServe(":"+port, nil) // set listen port
 	if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
 	}else{
-		plog("ListenAndServe on port 8001")
+		plog("ListenAndServe on port "+port)
 	}
 
 	//Database mysql
@@ -132,7 +134,7 @@ func main() {
 		DisplayName: "Dialing Service",
 		Description: "Dialing Asterisk app.",
 	}
-	fmt.Println("Init Amigo")
+
 	if(db== nil){
 		plog("Start")
 	}
