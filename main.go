@@ -78,7 +78,7 @@ func (p *program) Start(s service.Service) error {
 	http.HandleFunc("/user_state", state_check) // set router
 	err := http.ListenAndServe(":"+port, nil) // set listen port
 	if err != nil {
-		log.Fatalln("ListenAndServe: ", err)
+		fmt.Println("ListenAndServe: ", err)
 	}else{
 		fmt.Println("ListenAndServe on port "+port)
 	}
@@ -87,7 +87,7 @@ func (p *program) Start(s service.Service) error {
 	db, err = sql.Open("mysql", db_string)
 	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
 	if err != nil {
-		log.Fatalln("Db connect: ", err)
+		fmt.Println("Db connect: ", err)
 	}else{
 		fmt.Println("DB connected")
 	}
@@ -112,7 +112,7 @@ func init(){
 		panic(err)
 	}
 	exPath := path.Dir(ex)
-	fmt.Println(exPath)
+
 	file, err := os.OpenFile(exPath+"/"+log_file, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalln("Failed to open log file",  ":", err)
