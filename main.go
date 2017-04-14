@@ -64,26 +64,7 @@ var fail_cnt=0
 func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
 	//listen asterisk event and request
-	a.Connect()
-	//register asterisk event listener
-	//a.RegisterDefaultHandler(DefaultHandler)
-	//a.RegisterHandler("Hangup",ast_hangup_event)
-	//a.RegisterHandler("MeetmeJoin",ast_join)
-	//a.RegisterHandler("MeetmeLeave",ast_leave)
-	//a.RegisterHandler("OriginateResponse",ast_originate_response)
-	c := make(chan map[string]string, 100)
-	a.SetEventChannel(c)
-	//listen http request
 
-	http.HandleFunc("/user_state", state_check) // set router
-	err := http.ListenAndServe(":"+port, nil) // set listen port
-
-	if err != nil {
-		log.Fatalln("ListenAndServe: ", err)
-		fmt.Println("ListenAndServe")
-	}else{
-		fmt.Println("ListenAndServe on port "+port)
-	}
 
 
 	go p.run()
@@ -117,6 +98,35 @@ func init(){
 	// assign it to the standard logger
 	log.SetOutput(file)
 	//log.Println("This is a test log entry")
+	a.Connect()
+	//register asterisk event listener
+	//a.RegisterDefaultHandler(DefaultHandler)
+	//a.RegisterHandler("Hangup",ast_hangup_event)
+	//a.RegisterHandler("MeetmeJoin",ast_join)
+	//a.RegisterHandler("MeetmeLeave",ast_leave)
+	//a.RegisterHandler("OriginateResponse",ast_originate_response)
+	c := make(chan map[string]string, 100)
+	a.SetEventChannel(c)
+	//listen http request
+
+	http.HandleFunc("/user_state", state_check) // set router
+	err = http.ListenAndServe(":"+port, nil) // set listen port
+
+	if err != nil {
+		log.Fatalln("ListenAndServe: ", err)
+		fmt.Println("ListenAndServe")
+	}else{
+		fmt.Println("ListenAndServe on port "+port)
+	}
+	//Database mysql
+	db, err = sql.Open("mysql", db_string)
+	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
+	if err != nil {
+		log.Fatalln("Db connect: ", err)
+		fmt.Println("DB error")
+	}else{
+		fmt.Println("DB connected")
+	}
 
 }
 func checkErr(err error) {
@@ -131,16 +141,8 @@ func main() {
 		Description: "Dialing Asterisk app.",
 	}
 
-	//Database mysql
-	var err error
-	db, err = sql.Open("mysql", db_string)
-	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
-	if err != nil {
-		log.Fatalln("Db connect: ", err)
-		fmt.Println("DB error")
-	}else{
-		fmt.Println("DB connected")
-	}
+
+
 
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
