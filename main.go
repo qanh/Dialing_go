@@ -76,12 +76,17 @@ func (p *program) Start(s service.Service) error {
 	err := http.ListenAndServe(":8001", nil) // set listen port
 	if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
+	}else{
+		plog("ListenAndServe on port 8001")
 	}
+
 	//Database mysql
 	db, err = sql.Open("mysql", db_string)
 	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
 	if err != nil {
 		log.Fatalln("Db connect: ", err)
+	}else{
+		plog("DB connected")
 	}
 	go p.run()
 	return nil
