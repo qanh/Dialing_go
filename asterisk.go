@@ -406,7 +406,7 @@ func ast_dial(dest string,ringcardid string,campaignid string )(int , string){
 			trunkname="tr"+val
 			callerid=val
 		}
-		plog("Trunk: "+ trunkname)
+		plog("Trunk: "+ trunkname,1)
 	}
 	dial_cnt++;
 	dial_cntarr[campaignid]++;

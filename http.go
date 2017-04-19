@@ -83,7 +83,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			if ((r.FormValue("agent")=="") ) {
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "Missing argument to standby Agent:"+ r.FormValue("agent"))
-				plog ("Missing argument to standby Agent:"+ r.FormValue("agent"))
+				plog ("Missing argument to standby Agent:"+ r.FormValue("agent"),1)
 			} else {
 				w.WriteHeader(http.StatusOK)
 				code,message:=ast_standby(r.FormValue("agent"))
@@ -95,7 +95,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			if ((r.FormValue("agent")=="") ) {
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "Missing argument to ready Agent:"+ r.FormValue("agent"))
-				plog ("Missing argument to ready Agent:"+ r.FormValue("agent"))
+				plog ("Missing argument to ready Agent:"+ r.FormValue("agent"),1)
 			} else {
 				w.WriteHeader(http.StatusOK)
 				code,message:=ast_ready(r.FormValue("agent"))
@@ -149,7 +149,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			if ((r.FormValue("agent")=="") ) {
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "Missing argument to hangup Agent:"+ r.FormValue("agent"))
-				plog ("Missing argument to hangup Agent:"+ r.FormValue("agent"))
+				plog ("Missing argument to hangup Agent:"+ r.FormValue("agent"),1)
 			} else {
 				w.WriteHeader(http.StatusOK)
 				code,message:=ast_hangup(r.FormValue("agent"))
