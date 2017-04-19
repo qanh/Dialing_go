@@ -103,7 +103,7 @@ func init(){
 		plog("DB connected",1)
 	}
 	//listen asterisk event and request
-	a.Connect()
+	go a.Connect()
 	//register asterisk event listener
 	//a.RegisterDefaultHandler(DefaultHandler)
 	a.RegisterHandler("Hangup",ast_hangup_event)
