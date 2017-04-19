@@ -38,7 +38,7 @@ func db_getstate(campaignid string){
 			dial_timeout = wait_time
 			plog("Set dial timeout = " + t_wait_time + " for campaign " + campaignid,1)
 		}
-		if (ratio > 10000 && ratio < 90000) {
+		if (ratio > 1000 && ratio < 90000) {
 			db_ratio[campaignid] = ratio
 			plog("Set ratio = " + t_ratio + " for campaign " + campaignid,1)
 		}
