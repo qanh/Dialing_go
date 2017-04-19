@@ -2,6 +2,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 var listfile map[string]string
@@ -15,16 +16,16 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			if ((r.FormValue("agent")=="") || (r.FormValue("ext")== "") || (r.FormValue("campaignid")== "")) {
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
-				plog ("Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
+				plog ("Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"),1)
 			} else {
 
-				plog ("HTTP login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
+				plog ("HTTP login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"),1)
 
 				code,message:=ast_login(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
 			}
-		/*//change campaign
+		//change campaign
 		case "chcamp":
 			//http://dialern.televinken.se/user_state?agent=4711&ext=021&campaignid=5&action=chcamp
 			if ((r.FormValue("agent")=="") || (r.FormValue("ext")== "") || (r.FormValue("campaignid")== "")) {
@@ -34,7 +35,9 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			} else {
 				w.WriteHeader(http.StatusOK)
 				plog ("http chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"));
-				ast_chcamp(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"))
+				code,message:=ast_chcamp(r.FormValue("agent"),r.FormValue("campaignid"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 				//$poe_kernel->post( 'monitor', 'ast_chcamp', $agent, $anknytning, $kampanjid);
 			}
 
@@ -47,7 +50,9 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" CampaignID:"+r.FormValue("campaignid"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				ast_login_remote(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"),r.FormValue("dest"))
+				code,message:=ast_login_remote(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("campaignid"),r.FormValue("dest"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 			}
 		/*case "dial":
 			//http://dialern.televinken.se/user_state?agent=4711&ext=021&ringcardid=5&action=dial
@@ -57,8 +62,10 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to manual dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" RingcardID:"+r.FormValue("ringcardid"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				ast_mdial(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("ringcardid"),r.FormValue("dest"))
-			}
+				code,message:=ast_dial(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("ringcardid"),r.FormValue("dest"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
+			}*/
 		case "tdial":
 			//http://dialern.televinken.se/user_state?agent=4711&ext=021&ringcardid=5&action=tdial
 			if ((r.FormValue("agent")=="") || (r.FormValue("ext")== "") || (r.FormValue("ringcardid")== "")|| (r.FormValue("dest")== "")) {
@@ -67,7 +74,9 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to manual trunk dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" RingcardID:"+r.FormValue("ringcardid"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				ast_mdial_trunk(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("ringcardid"),r.FormValue("dest"))
+				code,message:=ast_mdial_trunk(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("ringcardid"),r.FormValue("dest"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 			}
 		case "standby":
 			//http://dialern.televinken.se/user_state?agent=4711&action=standby
@@ -77,7 +86,9 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to standby Agent:"+ r.FormValue("agent"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				ast_standby(r.FormValue("agent"))
+				code,message:=ast_standby(r.FormValue("agent"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 			}
 		case "ready":
 			//http://dialern.televinken.se/user_state?agent=4711&action=ready
@@ -87,33 +98,39 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to ready Agent:"+ r.FormValue("agent"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				ast_ready(r.FormValue("agent"))
+				code,message:=ast_ready(r.FormValue("agent"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 			}
 		case "rec_start":
 			//http://dialern.televinken.se/user_state?agent=4711&clientid&recname=fghdfg&action=rec_start
-			if ((r.FormValue("agent")=="") || Len(r.FormValue("recname"))<2) {
+			if ((r.FormValue("agent")=="") || len(r.FormValue("recname"))<2) {
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "Missing argument to start record file sound Agent:"+ r.FormValue("agent")+" Record file name:"+r.FormValue("recname"))
 				plog ("Missing argument to start record file sound Agent:"+ r.FormValue("agent")+" Record file name:"+r.FormValue("recname"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				listfile[r.FormValue("agent")]=recname
-				ast_rec_start(r.FormValue("agent"),r.FormValue("recname"),r.FormValue("clientid"))
+				listfile[r.FormValue("agent")]=r.FormValue("recname")
+				code,message:=ast_rec_start(r.FormValue("agent"),r.FormValue("recname"),r.FormValue("clientid"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 			}
 		case "rec_stop":
 			//http://dialern.televinken.se/user_state?agent=4711&recname=fghdfg&action=rec_stop
 			var recname string
-			if(Len(r.FormValue("agent"))<2) {
+			if(len(r.FormValue("agent"))<2) {
 				recname = listfile[r.FormValue("agent")]
 			}
-			if ((r.FormValue("agent")=="") || Len(recname)<2) {
+			if ((r.FormValue("agent")=="") || len(recname)<2) {
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "Missing argument to stop record file  Agent:"+ r.FormValue("agent")+" Record file name:"+recname)
 				plog ("Missing argument to stop record file sound Agent:"+ r.FormValue("agent")+" Record file name:"+recname)
 			} else {
 				w.WriteHeader(http.StatusOK)
 				listfile[r.FormValue("agent")]=recname
-				ast_rec_stop(r.FormValue("agent"),r.FormValue("recname"))
+				code,message:=ast_rec_stop(r.FormValue("agent"),r.FormValue("recname"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 			}
 			delete(listfile,r.FormValue("agent"))
 		case "logout":
@@ -123,8 +140,9 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to logout Agent:"+ r.FormValue("agent"))
 				plog ("Missing argument to logout Agent:"+ r.FormValue("agent"))
 			} else {
-				w.WriteHeader(http.StatusOK)
-				ast_logout(r.FormValue("agent"))
+				code,message:=ast_logout(r.FormValue("agent"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 			}
 		case "hangup":
 			//http://dialern.televinken.se/user_state?agent=4711&action=hangup
@@ -134,7 +152,9 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to hangup Agent:"+ r.FormValue("agent"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				ast_hangup(r.FormValue("agent"))
+				code,message:=ast_hangup(r.FormValue("agent"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 			}
 		case "setratio":
 			//http://dialern.televinken.se/user_state?agent=4711&ratio=1&campaignid=234&timeout=12300&action=setratio
@@ -144,7 +164,11 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to set ratio Agent:"+ r.FormValue("agent"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				ast_ratio(r.FormValue("ratio"),r.FormValue("campaignid"),r.FormValue("timeout"))
+				http_ratio,_:=strconv.Atoi(r.FormValue("ratio"))
+				http_timout,_:=strconv.Atoi(r.FormValue("timeout"))
+				code,message:=ast_ratio(http_ratio,r.FormValue("campaignid"),http_timout)
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 			}
 		case "ratiostep":
 			//http://dialern.televinken.se/user_state?agent=4711&ratioup=1&rationdown&campaignid=234&timeout=12300&action=ratiostep
@@ -154,10 +178,14 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("MMissing argument to set step ratio Ratio Up:"+ r.FormValue("ratioup")+"Ratio Down:"+ r.FormValue("ratiodown")+"Campaign ID:"+ r.FormValue("campaignid"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				ast_ratio(r.FormValue("ratio"),r.FormValue("campaignid"),r.FormValue("timeout"))
+				http_ratio,_:=strconv.Atoi(r.FormValue("ratio"))
+				http_timout,_:=strconv.Atoi(r.FormValue("timeout"))
+				code,message:=ast_ratio(http_ratio,r.FormValue("campaignid"),http_timout)
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 			}
 		//listen specified call
-		case "idial":
+		/*case "idial":
 			//http://dialern.televinken.se/user_state?agent=4711&ext=021&ringcardid=5&channel=SIP/123&action=idial
 			if ((r.FormValue("agent")=="") || (r.FormValue("ext")== "") || (r.FormValue("ringcardid")== "")|| (r.FormValue("dest")== "")|| (r.FormValue("channel")== "")) {
 				w.WriteHeader(http.StatusBadRequest)
@@ -165,7 +193,9 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to monitor dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("ext")+" RingcardID:"+r.FormValue("ringcardid")+" Channel:"+r.FormValue("channel"))
 			} else {
 				w.WriteHeader(http.StatusOK)
-				ast_idial(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("dest"),r.FormValue("ringcardid"),r.FormValue("channel"))
+				code,message:=ast_idial(r.FormValue("agent"),r.FormValue("ext"),r.FormValue("dest"),r.FormValue("ringcardid"),r.FormValue("channel"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
 			}*/
 		default:
 			w.WriteHeader(http.StatusBadRequest)

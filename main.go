@@ -39,17 +39,16 @@ var ratio_down =make(map[string]float64)
 var trunk_list =make(map[string]string)
 var cur_ratio =make(map[string]float64)
 var agent_cnt =make(map[string]int)
-var uniqueid_list =make(map[string]string)
-var mute_arr =make(map[string]string)
-var incall_cnarr =make(map[string]string)
+var list_ringcard=make(map[string]int)
+//var mute_arr =make(map[string]string)
+//var incall_cnarr =make(map[string]string)
 var dial_cntarr =make(map [string]int)
-var callarr =make(map [string]string)
-var camparr =make(map [string]string)
-var mdialarr =make(map [string]string)
-var idial_cnarr =make(map [string]int)
+//var callarr =make(map [string]string)
+//var mdialarr =make(map [string]string)
+var inbound_arr =make(map [string]int)
 var ans_cntarr =make(map [string]int)
-var callarr2  =make(map [string]string)
-var idarr =make(map [string]string)
+var call_arr  =make(map [string]map[string]string)
+//var idarr =make(map [string]string)
 var tapp_cntarr  =make(map [string]int)
 //unknown what it is
 var num_queue =make(map[string]int)
@@ -60,13 +59,10 @@ var dial_cnt=0
 var ans_cnt=0
 var tapp_cnt=0
 var fail_cnt=0
+var fail_cntarr=make(map [string]int)
 
 func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
-	//listen asterisk event and request
-
-
-
 	go p.run()
 	return nil
 }
@@ -79,8 +75,11 @@ func (p *program) Stop(s service.Service) error {
 	file.Close()
 	return nil
 }
-func plog(str string){
-	log.Println("LOG: ",str)
+func plog(str string,level ...int){
+	debug:=4
+	if(level[0]<=debug) {
+		log.Println("LOG: ", str)
+	}
 }
 func init(){
 	ex, err := os.Executable()
@@ -94,10 +93,10 @@ func init(){
 		log.Fatalln("Failed to open log file",  ":", err)
 	}
 	//defer file.Close()
-
 	// assign it to the standard logger
 	log.SetOutput(file)
-	//log.Println("This is a test log entry")
+
+	//listen asterisk event and request
 	a.Connect()
 	//register asterisk event listener
 	//a.RegisterDefaultHandler(DefaultHandler)
@@ -118,20 +117,11 @@ func init(){
 	}else{
 		fmt.Println("ListenAndServe on port "+port)
 	}
-	//Database mysql
-	db, err = sql.Open("mysql", db_string)
-	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
-	if err != nil {
-		log.Fatalln("Db connect: ", err)
-		fmt.Println("DB error")
-	}else{
-		fmt.Println("DB connected")
-	}
 
 }
 func checkErr(err error) {
 	if err != nil {
-		plog(err.Error())
+		plog(err.Error(),1)
 	}
 }
 func main() {
@@ -141,8 +131,16 @@ func main() {
 		Description: "Dialing Asterisk app.",
 	}
 
-
-
+	//Database mysql
+	var err error
+	db, err = sql.Open("mysql", db_string)
+	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
+	if err != nil {
+		log.Fatalln("Db connect: ", err)
+		fmt.Println("DB error")
+	}else{
+		fmt.Println("DB connected")
+	}
 
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
