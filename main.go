@@ -15,7 +15,7 @@ type program struct{}
 //Init variable
 var log_file="dialing.log"
 var file os.File
-var port="8001"
+var port="8000"
 //var logger service.Logger
 //database config
 
