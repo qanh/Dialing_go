@@ -444,7 +444,7 @@ func ast_mdial_trunk(agent string,ext string,dest string,ringcardid string)(int 
 			trunkname="tr"+val
 			//callerid=val
 		}
-		plog("Mdial Trunk: "+ trunkname )
+		plog("Mdial Trunk: "+ trunkname ,1)
 	}
 	dial_cnt++;
 	dial_cntarr[campaignid]++;
@@ -479,7 +479,7 @@ func ast_hangup(agent string)(int , string){
 			channel := val["channel"]
 			campaignid := val["campaignid"]
 			plog("Do hangup: "+agent+" ,"+channel+" ,"+conf ,1)
-			plog("Do hangup: Agent "+agent+" is standby")
+			plog("Do hangup: Agent "+agent+" is standby",1)
 			agents[agent]["status"]="standby"
 			agents[agent]["ringcardid"]=""
 			usernum:=agents[agent]["usernum"]
