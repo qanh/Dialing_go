@@ -502,7 +502,7 @@ func ast_hangup(agent string)(int , string){
 	return 200,"OK"
 }
 
-func ast_leave(m map[string]string)(int , string){
+func ast_leave(m map[string]string){
 	channel:=m["Channel"]
 	//usernum:=m["Usernum"]
 	ext:=channel[4:7]
@@ -525,7 +525,6 @@ func ast_leave(m map[string]string)(int , string){
 		}
 	}
 
-	return 200,"OK"
 }
 
 func mute(conf_num string ,user string,agent string){
