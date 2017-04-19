@@ -33,7 +33,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"))
 				plog ("Missing argument to chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				plog ("http chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1);
 				code,message:=ast_chcamp(r.FormValue("agent"),r.FormValue("campaignID"))
 				w.WriteHeader(code)
@@ -49,7 +49,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"))
 				plog ("Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				code,message:=ast_login_remote(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"),r.FormValue("dest"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
@@ -61,7 +61,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to manual dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" RingcardID:"+r.FormValue("ringkort"))
 				plog ("Missing argument to manual dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" RingcardID:"+r.FormValue("ringkort"))
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				code,message:=ast_dial(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("ringkort"),r.FormValue("dest"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
@@ -73,7 +73,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to manual trunk dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" RingcardID:"+r.FormValue("ringkort"))
 				plog ("Missing argument to manual trunk dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" RingcardID:"+r.FormValue("ringkort"),1)
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				code,message:=ast_mdial_trunk(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("ringkort"),r.FormValue("dest"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
@@ -85,7 +85,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to standby Agent:"+ r.FormValue("agent"))
 				plog ("Missing argument to standby Agent:"+ r.FormValue("agent"),1)
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				code,message:=ast_standby(r.FormValue("agent"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
@@ -97,7 +97,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to ready Agent:"+ r.FormValue("agent"))
 				plog ("Missing argument to ready Agent:"+ r.FormValue("agent"),1)
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				code,message:=ast_ready(r.FormValue("agent"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
@@ -109,7 +109,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to start record file sound Agent:"+ r.FormValue("agent")+" Record file name:"+r.FormValue("recname"))
 				plog ("Missing argument to start record file sound Agent:"+ r.FormValue("agent")+" Record file name:"+r.FormValue("recname"),1)
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				listfile[r.FormValue("agent")]=r.FormValue("recname")
 				code,message:=ast_rec_start(r.FormValue("agent"),r.FormValue("recname"),r.FormValue("clientid"))
 				w.WriteHeader(code)
@@ -126,7 +126,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to stop record file  Agent:"+ r.FormValue("agent")+" Record file name:"+recname)
 				plog ("Missing argument to stop record file sound Agent:"+ r.FormValue("agent")+" Record file name:"+recname,1)
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				listfile[r.FormValue("agent")]=recname
 				code,message:=ast_rec_stop(r.FormValue("agent"),r.FormValue("recname"))
 				w.WriteHeader(code)
@@ -151,7 +151,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to hangup Agent:"+ r.FormValue("agent"))
 				plog ("Missing argument to hangup Agent:"+ r.FormValue("agent"),1)
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				code,message:=ast_hangup(r.FormValue("agent"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
@@ -163,7 +163,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to set ratio Ratio:"+ r.FormValue("ratio")+"Campaign ID:"+ r.FormValue("campaignID"))
 				plog ("Missing argument to set ratio Agent:"+ r.FormValue("agent"),1)
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				http_ratio,_:=strconv.Atoi(r.FormValue("ratio"))
 				http_timout,_:=strconv.Atoi(r.FormValue("timeout"))
 				code,message:=ast_ratio(http_ratio,r.FormValue("campaignID"),http_timout)
@@ -177,7 +177,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to set step ratio Ratio Up:"+ r.FormValue("rup")+"Ratio Down:"+ r.FormValue("rner")+"Campaign ID:"+ r.FormValue("campaignID"))
 				plog ("MMissing argument to set step ratio Ratio Up:"+ r.FormValue("rup")+"Ratio Down:"+ r.FormValue("rner")+"Campaign ID:"+ r.FormValue("campaignID"),1)
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				http_ratio,_:=strconv.Atoi(r.FormValue("ratio"))
 				http_timout,_:=strconv.Atoi(r.FormValue("timeout"))
 				code,message:=ast_ratio(http_ratio,r.FormValue("campaignID"),http_timout)
@@ -192,7 +192,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to monitor dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" RingcardID:"+r.FormValue("ringkort")+" Channel:"+r.FormValue("channel"))
 				plog ("Missing argument to monitor dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" RingcardID:"+r.FormValue("ringkort")+" Channel:"+r.FormValue("channel"))
 			} else {
-				w.WriteHeader(http.StatusOK)
+				
 				code,message:=ast_idial(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("dest"),r.FormValue("ringkort"),r.FormValue("channel"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
