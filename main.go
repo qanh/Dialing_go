@@ -100,10 +100,10 @@ func init(){
 	a.Connect()
 	//register asterisk event listener
 	//a.RegisterDefaultHandler(DefaultHandler)
-	//a.RegisterHandler("Hangup",ast_hangup_event)
-	//a.RegisterHandler("MeetmeJoin",ast_join)
-	//a.RegisterHandler("MeetmeLeave",ast_leave)
-	//a.RegisterHandler("OriginateResponse",ast_originate_response)
+	a.RegisterHandler("Hangup",ast_hangup_event)
+	a.RegisterHandler("MeetmeJoin",ast_join)
+	a.RegisterHandler("MeetmeLeave",ast_leave)
+	a.RegisterHandler("OriginateResponse",ast_originate_response)
 	c := make(chan map[string]string, 100)
 	a.SetEventChannel(c)
 	//listen http request
@@ -136,10 +136,9 @@ func main() {
 	db, err = sql.Open("mysql", db_string)
 	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
 	if err != nil {
-		log.Fatalln("Db connect: ", err)
-		fmt.Println("DB error")
+		plog("DB error",1)
 	}else{
-		fmt.Println("DB connected")
+		plog("DB connected",1)
 	}
 
 	prg := &program{}
