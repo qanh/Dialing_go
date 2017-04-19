@@ -77,7 +77,7 @@ func (p *program) Stop(s service.Service) error {
 }
 func plog(str string,level int){
 	debug:=4
-	if(level[0]<=debug) {
+	if(level<=debug) {
 		log.Println("LOG: ", str)
 	}
 }
