@@ -119,9 +119,9 @@ func init(){
 
 	if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
-		fmt.Println("ListenAndServe")
+		plog("ListenAndServe Error",1)
 	}else{
-		fmt.Println("ListenAndServe on port "+port)
+		fmt.Println("ListenAndServe on port "+port,1)
 	}
 
 }
