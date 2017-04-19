@@ -35,6 +35,10 @@ func ast_login(agent string, ext string , campaignid string)(int , string) {
 	}
 	go db_log("standby",agent,ext,campaignid)
 	go db_getstate(campaignid)
+	_,check:=cur_ratio[campaignid]
+	if(!check){
+		cur_ratio[campaignid]=1.0
+	}
 	return 200,"OK"
 }
 
@@ -61,6 +65,10 @@ func ast_login_remote(agent string, ext string , campaignid string,dest string)(
 	}
 	db_log("standby",agent,ext,campaignid)
 	db_getstate(campaignid)
+	_,check:=cur_ratio[campaignid]
+	if(!check){
+		cur_ratio[campaignid]=1.0
+	}
 	return 200,"OK"
 
 }
@@ -92,6 +100,10 @@ func ast_chcamp(agent string,  campaignid string)(int , string){
 	}else{
 		plog("ast_chcamp "+agent+" is not logged in",1)
 		return 400,"Agent is not logged in"
+	}
+	_,check=cur_ratio[campaignid]
+	if(!check){
+		cur_ratio[campaignid]=1.0
 	}
 	return 200,"OK"
 }

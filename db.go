@@ -26,6 +26,7 @@ func db_getstate(campaignid string){
 		ratiodown, _ := strconv.ParseFloat(t_ratio_down, 64)
 		ratio, _ := strconv.ParseFloat(t_ratio, 64)
 		wait_time, _ := strconv.Atoi(t_wait_time)
+		plog("t_ratio:"+t_ratio,1)
 		if (ratioup > -2 && ratioup < 2) {
 			ratio_up[campaignid] = ratioup
 			plog("Set ration up =" + t_ratio_up + " for campaign " + campaignid,1)
@@ -34,11 +35,11 @@ func db_getstate(campaignid string){
 			ratio_down[campaignid] = ratiodown
 			plog("Set ration down = " + t_ratio_down + " for campaign " + campaignid,1)
 		}
-		if (wait_time > 1000 && wait_time < 90000) {
+		if (wait_time > 10000 && wait_time < 90000) {
 			dial_timeout = wait_time
 			plog("Set dial timeout = " + t_wait_time + " for campaign " + campaignid,1)
 		}
-		if (ratio > 1000 && ratio < 90000) {
+		if (ratio > 1 && ratio < 10) {
 			db_ratio[campaignid] = ratio
 			plog("Set ratio = " + t_ratio + " for campaign " + campaignid,1)
 		}
