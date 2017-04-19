@@ -130,7 +130,7 @@ func main() {
 		DisplayName: "Dialing Service",
 		Description: "Dialing Asterisk app.",
 	}
-	fmt.Println("Start")
+	log.Fatalln("Start")
 	//Database mysql
 	var err error
 	db, err = sql.Open("mysql", db_string)
