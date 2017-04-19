@@ -95,7 +95,13 @@ func init(){
 	//defer file.Close()
 	// assign it to the standard logger
 	log.SetOutput(file)
-
+	db, err = sql.Open("mysql", db_string)
+	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
+	if err != nil {
+		plog("DB error",1)
+	}else{
+		plog("DB connected",1)
+	}
 	//listen asterisk event and request
 	a.Connect()
 	//register asterisk event listener
@@ -130,16 +136,9 @@ func main() {
 		DisplayName: "Dialing Service",
 		Description: "Dialing Asterisk app.",
 	}
-	log.Fatalln("Start")
+	fmt.Println("Start")
 	//Database mysql
-	var err error
-	db, err = sql.Open("mysql", db_string)
-	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
-	if err != nil {
-		plog("DB error",1)
-	}else{
-		plog("DB connected",1)
-	}
+
 
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
