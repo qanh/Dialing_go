@@ -75,7 +75,7 @@ func (p *program) Stop(s service.Service) error {
 	file.Close()
 	return nil
 }
-func plog(str string,level ...int){
+func plog(str string,level int){
 	debug:=4
 	if(level[0]<=debug) {
 		log.Println("LOG: ", str)
@@ -103,7 +103,7 @@ func init(){
 		plog("DB connected",1)
 	}
 	//listen asterisk event and request
-	go a.Connect()
+	a.Connect()
 	//register asterisk event listener
 	//a.RegisterDefaultHandler(DefaultHandler)
 	a.RegisterHandler("Hangup",ast_hangup_event)

@@ -28,23 +28,23 @@ func db_getstate(campaignid string){
 		wait_time, _ := strconv.Atoi(t_wait_time)
 		if (ratioup > -2 && ratioup < 2) {
 			ratio_up[campaignid] = ratioup
-			plog("Set ration up =" + t_ratio_up + " for campaign " + campaignid)
+			plog("Set ration up =" + t_ratio_up + " for campaign " + campaignid,1)
 		}
 		if (ratiodown > -2 && ratiodown < 2) {
 			ratio_down[campaignid] = ratiodown
-			plog("Set ration down = " + t_ratio_down + " for campaign " + campaignid)
+			plog("Set ration down = " + t_ratio_down + " for campaign " + campaignid,1)
 		}
 		if (wait_time > 10000 && wait_time < 90000) {
 			dial_timeout = wait_time
-			plog("Set dial timeout = " + t_wait_time + " for campaign " + campaignid)
+			plog("Set dial timeout = " + t_wait_time + " for campaign " + campaignid,1)
 		}
 		if (ratio > 10000 && ratio < 90000) {
 			db_ratio[campaignid] = ratio
-			plog("Set ratio = " + t_ratio + " for campaign " + campaignid)
+			plog("Set ratio = " + t_ratio + " for campaign " + campaignid,1)
 		}
 
 		trunk_list[campaignid] = t_campNumber
-		plog("Set trunk = " + t_campNumber + " for campaign " + campaignid)
+		plog("Set trunk = " + t_campNumber + " for campaign " + campaignid,1)
 		//}
 	}else{
 		set_default_ratio(campaignid)
@@ -58,7 +58,7 @@ func db_log(status string, agent string, ext string, campaignid string){
 	//query.Raw.Bind(status,agent,ext,campaignid)
 	_, err=query.Exec(status,agent,ext,campaignid)
 	checkErr(err)
-	plog( "db_log "+status+", "+agent+", "+ext+", "+campaignid)
+	plog( "db_log "+status+", "+agent+", "+ext+", "+campaignid,1)
 }
 func db_setstate(ringcardid string){
 	stmt, err := db.Prepare("UPDATE tCampRingCards SET tapp = tapp + 1 where rID=?")
@@ -138,7 +138,7 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 		}
 	}
 	if(fail==1){
-		plog ("set_num_status: all number fail, update database for ringcard "+ringcardid);
+		plog ("set_num_status: all number fail, update database for ringcard "+ringcardid,1);
 		update_query="UPDATE tCampRingCards Set fail_try=fail_try+1 WHERE rID="+ringcardid
 	}else if(called==1){
 		i:=1
