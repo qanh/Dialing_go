@@ -105,7 +105,7 @@ func init(){
 	//listen asterisk event and request
 	a.Connect()
 	//register asterisk event listener
-	//a.RegisterDefaultHandler(DefaultHandler)
+	a.RegisterDefaultHandler(DefaultHandler)
 	a.RegisterHandler("Hangup",ast_hangup_event)
 	a.RegisterHandler("MeetmeJoin",ast_join)
 	a.RegisterHandler("MeetmeLeave",ast_leave)
