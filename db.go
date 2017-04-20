@@ -325,9 +325,9 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 			checkErr(err)
 			delete(list_ringcard,ringcardid)
 
-			//if(number_check!=0){
-			//	go db_dial(1,campaignid)
-			//}
+			if(number_check!=0){
+				go db_dial(1,campaignid)
+			}
 		}
 		plog(strconv.Itoa(number_index)+" "+strconv.Itoa(number_check),1)
 		if(number_index!=0 || number_check==0){
