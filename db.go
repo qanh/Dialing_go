@@ -204,7 +204,7 @@ func db_dial(ratio int ,campaignid string ){
 			checkErr(err)
 			ast_eon(campaignid)
 		}else{
-			db_dial_res(row,campaignid)
+			db_dial_res(row.Next(),campaignid)
 		}
 		if(ratio>1){
 			ratio--
