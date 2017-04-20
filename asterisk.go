@@ -316,6 +316,7 @@ func ast_ready(agent string)(int , string){
 		plog("Agent "+agent+" is ready",1)
 		agents[agent]["status"]="ready"
 		agents[agent]["when"]=strconv.FormatInt(time.Now().Unix(),10)
+		agent_cnt[campaignid]++
 		ratio= calc_ratio(campaignid)
 		plog("Ratio:"+strconv.Itoa(ratio),1)
 		plog("ast_ready "+agent+", "+ext+", "+conf_num,1)
