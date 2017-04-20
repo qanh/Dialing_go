@@ -133,6 +133,7 @@ func ast_originate_response(m map[string] string){
 	if(len(actionID)>3) {
 		agent = actionID[3]
 	}
+	fmt.Println(m)
 	uid:=m["Uniqueid"]
 	reason,_:=strconv.Atoi(m["Reason"])
 	fromchannel:=m["Channel"]
