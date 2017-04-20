@@ -240,7 +240,7 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 		number5 := rc.row["Phone5"]
 		plog("db_dial_res" + number1 + " " + number2, 1)
 		if _, ok := list_ringcard[ringcardid]; ok {
-			time.Sleep(1)
+			//time.Sleep(1)
 			go db_dial(1, campaignid)
 		} else {
 			list_ringcard["ringcardid"] = 1
