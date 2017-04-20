@@ -436,7 +436,7 @@ func ast_dial(dest string,ringcardid string,campaignid string )(int , string){
 	//camparr[dest]=campaignid
 	plog("Dial "+conf+" to :"+dest+" Ringcard: "+ringcardid+" Campaign: "+campaignid ,1)
 	result, _ := a.Action(map[string]string{"Action": "Originate",
-		"Channel": 	"Local/"+dest+"@selecttrunk",
+		"Channel": 	"Local/"+dest+"@selecttrunk/n",
 		"Context": 	"default",
 		"Exten":	"8000000",
 		"Timeout":	strconv.Itoa(dial_timeout),
