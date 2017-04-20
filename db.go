@@ -195,7 +195,7 @@ func db_dial(ratio int ,campaignid string ){
 	if(ratio>0){
 		row, err := db.Query(query)
 		fmt.Println(row)
-		defer row.Close()
+		//defer row.Close()
 		if(err!=nil){
 			checkErr(err)
 			ast_eon(campaignid)
@@ -317,6 +317,7 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 				plog ("inget nummer har bra status på detta ringkort $ringkort\n", 1);
 				update_query = "UPDATE tCampRingCards Set userID=0,statusID=(select bortfall_status from tCampaign where campaignID="+campaignid+"),subID=(select inget_nr_sub from tCampaign where campaignID="+campaignid+"), closed_date=now() WHERE rID="+ringcardid;
 			}
+			plog(update_query,1)
 			_,err=db.Exec(update_query)
 			checkErr(err)
 			delete(list_ringcard,ringcardid)
