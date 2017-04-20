@@ -117,8 +117,8 @@ func init(){
 	a.RegisterHandler("MeetmeJoin",ast_join)
 	a.RegisterHandler("MeetmeLeave",ast_leave)
 	a.RegisterHandler("OriginateResponse",ast_originate_response)
-	c := make(chan map[string]string, 100)
-	a.SetEventChannel(c)
+	//c := make(chan map[string]string, 100)
+	//a.SetEventChannel(c)
 	//listen http request
 
 	http.HandleFunc("/user_state", state_check) // set router
