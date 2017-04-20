@@ -196,6 +196,10 @@ func db_dial(ratio int ,campaignid string ){
 		row, err := db.Query(query)
 		fmt.Println(row)
 		//defer row.Close()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(row.Columns())
 		if(err!=nil){
 			checkErr(err)
 			ast_eon(campaignid)
