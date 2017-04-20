@@ -189,6 +189,7 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 
 }
 func db_dial(ratio int ,campaignid string ){
+	plog("db_dial",1)
 	tidsperiod:=tidsperiod ()
 	query:="call PTakeActiveRingCard("+campaignid+","+strconv.Itoa(tidsperiod)+")"
 	if(ratio>0){
@@ -206,6 +207,7 @@ func db_dial(ratio int ,campaignid string ){
 	}
 }
 func db_dial_res(row *sql.Rows,campaignid string ){
+	plog("db_dial_res",1)
 	number:=""
 	number_index:=0
 	number_check:=1
@@ -224,6 +226,7 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 	number3:=rc.row["Phone3"]
 	number4:=rc.row["Phone4"]
 	number5:=rc.row["Phone5"]
+	plog("db_dial_res"+number1+" "+number2,1)
 	if _, ok := list_ringcard[ringcardid]; ok{
 		time.Sleep(1)
 		go db_dial(1,campaignid)
