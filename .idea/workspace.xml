@@ -34,7 +34,7 @@
         <entry file="file://$PROJECT_DIR$/db.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="482">
-              <caret line="122" column="18" lean-forward="false" selection-start-line="122" selection-start-column="8" selection-end-line="122" selection-end-column="18" />
+              <caret line="266" column="72" lean-forward="false" selection-start-line="266" selection-start-column="72" selection-end-line="266" selection-end-column="72" />
               <folding>
                 <element signature="e#13#186#0" expanded="true" />
               </folding>
@@ -310,14 +310,7 @@
       <workItem from="1489995432799" duration="2812000" />
       <workItem from="1490064274166" duration="26195000" />
       <workItem from="1492137419520" duration="14073000" />
-      <workItem from="1492395465321" duration="55846000" />
-    </task>
-    <task id="LOCAL-00068" summary="Test">
-      <created>1492156105631</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1492156105632</updated>
+      <workItem from="1492395465321" duration="56117000" />
     </task>
     <task id="LOCAL-00069" summary="Test">
       <created>1492156153057</created>
@@ -655,11 +648,18 @@
       <option name="project" value="LOCAL" />
       <updated>1492671602821</updated>
     </task>
-    <option name="localTasksCounter" value="117" />
+    <task id="LOCAL-00117" summary="fix bug">
+      <created>1492672078871</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1492672078871</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="189676000" />
+    <option name="totallyTimeSpent" value="189947000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1056" extended-state="0" />
@@ -701,7 +701,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/db.go</url>
-          <line>350</line>
+          <line>352</line>
           <properties />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
@@ -1220,7 +1220,7 @@
     <entry file="file://$PROJECT_DIR$/db.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="482">
-          <caret line="122" column="18" lean-forward="false" selection-start-line="122" selection-start-column="8" selection-end-line="122" selection-end-column="18" />
+          <caret line="266" column="72" lean-forward="false" selection-start-line="266" selection-start-column="72" selection-end-line="266" selection-end-column="72" />
           <folding>
             <element signature="e#13#186#0" expanded="true" />
           </folding>

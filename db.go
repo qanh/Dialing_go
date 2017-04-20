@@ -116,15 +116,17 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 		}else{
 			index++
 		}
-		status["status"+strconv.Itoa(i)]=strconv.Atoi(rc.row["status"+strconv.Itoa(i)])
+		status["status"+strconv.Itoa(i)],_=strconv.Atoi(rc.row["status"+strconv.Itoa(i)])
 		i++
 	}
 	//phone_key:="Phone"+index
 	status_key:="status"+strconv.Itoa(index)
 	if(reason=="trasigt"){
-		real_status=strconv.Atoi(rc.row[status_key])+1000
+		real_status,_=strconv.Atoi(rc.row[status_key])
+		real_status+=1000
 	}else if(reason=="ejsvar"){
-		real_status=strconv.Atoi(rc.row[status_key])+1
+		real_status,_=strconv.Atoi(rc.row[status_key])
+		real_status+=1
 	}else{
 		plog ("error: set_num_status () unknow reason\n", 1);
 	}
@@ -262,7 +264,7 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 				number_ok := 0
 				update_query := ""
 				for i := 5; i > 0; i-- {
-					status, _ := strconv.Atoi(status["status" + strconv.Itoa(i)])
+					status, _ := strconv.Atoi(rc.row["status" + strconv.Itoa(i)])
 					if (status < 500) {
 						number_ok = 1
 					}
