@@ -217,7 +217,6 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 	rc := NewMapStringScan(columnNames)
 	if(!row.Next()){
 		fmt.Println("Nu är det slut på telefonnummer i den här kampanjen")
-		exit
 	}else {
 		rc.Update(row)
 		fmt.Printf("%#v\n\n", rc.row)
