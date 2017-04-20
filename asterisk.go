@@ -558,7 +558,7 @@ func unmute(conf_num string ,user string,agent string){
 }
 //Calulate ratio
 func calc_ratio(campaignid string)int {
-	plog("current ratio:"+strconv.Itoa(cur_ratio[campaignid])+ " agent_cnt:"+strconv.FormatFloat(agent_cnt[campaignid]) +" num queue:"+strconv.Itoa(num_queue[campaignid]),1)
+	plog("current ratio:"+strconv.FormatFloat(cur_ratio[campaignid], 'E', -1, 64)+ " agent_cnt:"+strconv.Itoa(agent_cnt[campaignid]) +" num queue:"+strconv.Itoa(num_queue[campaignid]),1)
 	ratio :=int((cur_ratio[campaignid] * float64(agent_cnt[campaignid])) - float64(num_queue[campaignid]))
 	if(ratio>=2){
 		return 2
