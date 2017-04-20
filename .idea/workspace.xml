@@ -33,8 +33,8 @@
       <file leaf-file-name="db.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/db.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="618">
-              <caret line="228" column="46" lean-forward="false" selection-start-line="228" selection-start-column="46" selection-end-line="228" selection-end-column="46" />
+            <state relative-caret-position="397">
+              <caret line="197" column="23" lean-forward="false" selection-start-line="197" selection-start-column="23" selection-end-line="197" selection-end-column="23" />
               <folding>
                 <element signature="e#13#186#0" expanded="true" />
               </folding>
@@ -45,7 +45,7 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
+            <state relative-caret-position="-981">
               <caret line="39" column="13" lean-forward="false" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="13" />
               <folding>
                 <element signature="e#13#220#0" expanded="true" />
@@ -93,8 +93,8 @@
       <find>flashdata</find>
       <find>w.WriteHeader(http.StatusOK)</find>
       <find>Len</find>
-      <find>No need to call</find>
       <find>agent_cnt</find>
+      <find>No need to call</find>
     </findStrings>
     <replaceStrings>
       <replace>plog</replace>
@@ -305,14 +305,7 @@
       <workItem from="1489995432799" duration="2812000" />
       <workItem from="1490064274166" duration="26195000" />
       <workItem from="1492137419520" duration="14073000" />
-      <workItem from="1492395465321" duration="48759000" />
-    </task>
-    <task id="LOCAL-00045" summary="Test">
-      <created>1492144678949</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1492144678949</updated>
+      <workItem from="1492395465321" duration="48890000" />
     </task>
     <task id="LOCAL-00046" summary="Test">
       <created>1492144838312</created>
@@ -650,11 +643,18 @@
       <option name="project" value="LOCAL" />
       <updated>1492659508017</updated>
     </task>
-    <option name="localTasksCounter" value="94" />
+    <task id="LOCAL-00094" summary="fix bug">
+      <created>1492659918369</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1492659918369</updated>
+    </task>
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="182589000" />
+    <option name="totallyTimeSpent" value="182720000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1056" extended-state="0" />
@@ -696,7 +696,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/db.go</url>
-          <line>336</line>
+          <line>337</line>
           <properties />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
@@ -1186,16 +1186,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="39" column="13" lean-forward="false" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="13" />
-          <folding>
-            <element signature="e#13#220#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/asterisk.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="542">
@@ -1206,10 +1196,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-981">
+          <caret line="39" column="13" lean-forward="false" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="13" />
+          <folding>
+            <element signature="e#13#220#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/db.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="618">
-          <caret line="228" column="46" lean-forward="false" selection-start-line="228" selection-start-column="46" selection-end-line="228" selection-end-column="46" />
+        <state relative-caret-position="397">
+          <caret line="197" column="23" lean-forward="false" selection-start-line="197" selection-start-column="23" selection-end-line="197" selection-end-column="23" />
           <folding>
             <element signature="e#13#186#0" expanded="true" />
           </folding>
