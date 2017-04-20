@@ -133,7 +133,6 @@ func ast_originate_response(m map[string] string){
 	if(len(actionID)>3) {
 		agent = actionID[3]
 	}
-	fmt.Println(m)
 	uid:=m["Uniqueid"]
 	reason,_:=strconv.Atoi(m["Reason"])
 	fromchannel:=m["Channel"]
@@ -249,12 +248,13 @@ func ast_join(m map[string]string){
 			ast_ratio_down(campaignid)
 			usernum=agents[agent]["usernum"]
 			unmute(conf,usernum,agent)
-			a.Action(map[string]string{"Action": "Redirect",
+			result, _ :=a.Action(map[string]string{"Action": "Redirect",
 				"Channel":	channel,
 				"Context":	"default",
 				"Exten":	conf,
 				"Priority":	"1",
 			})
+			fmt.Println(result)
 			plog("Ringcard: "+ringcardid+", "+callee,1)
 			db_log_soundfile(ringcardid,campaignid,agent)
 		}else{

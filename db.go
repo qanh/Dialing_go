@@ -224,10 +224,9 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 	checkErr(err)
 	rc := NewMapStringScan(columnNames)
 	if(!row.Next()){
-		fmt.Println("Nu är det slut på telefonnummer i den här kampanjen")
+		plog("Nu är det slut på telefonnummer i den här kampanjen",1)
 	}else {
 		rc.Update(row)
-		fmt.Printf("%#v\n\n", rc.row)
 		ringcardid := rc.row["rID"]
 		status1, _ := strconv.Atoi(rc.row["status1"])
 		status2, _ := strconv.Atoi(rc.row["status2"])

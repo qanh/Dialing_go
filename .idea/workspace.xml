@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f7c1f2cd-2bdd-4862-9012-3140ec844fde" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asterisk.go" afterPath="$PROJECT_DIR$/asterisk.go" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.go" afterPath="$PROJECT_DIR$/db.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,11 +19,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="asterisk.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="asterisk.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/asterisk.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="610">
-              <caret line="179" column="25" lean-forward="false" selection-start-line="179" selection-start-column="8" selection-end-line="179" selection-end-column="25" />
+            <state relative-caret-position="-427">
+              <caret line="250" column="36" lean-forward="false" selection-start-line="250" selection-start-column="24" selection-end-line="250" selection-end-column="36" />
               <folding>
                 <element signature="e#13#68#0" expanded="true" />
               </folding>
@@ -30,11 +31,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="db.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="db.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/db.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="482">
-              <caret line="266" column="72" lean-forward="false" selection-start-line="266" selection-start-column="72" selection-end-line="266" selection-end-column="72" />
+            <state relative-caret-position="108">
+              <caret line="226" column="76" lean-forward="false" selection-start-line="226" selection-start-column="76" selection-end-line="226" selection-end-column="76" />
               <folding>
                 <element signature="e#13#186#0" expanded="true" />
               </folding>
@@ -95,8 +96,8 @@
       <find>Len</find>
       <find>agent_cnt</find>
       <find>No need to call</find>
-      <find>make</find>
       <find>phone[</find>
+      <find>make</find>
       <find>rc.row[&quot;status&quot;</find>
     </findStrings>
     <replaceStrings>
@@ -115,8 +116,8 @@
       <list>
         <option value="$PROJECT_DIR$/main.go" />
         <option value="$PROJECT_DIR$/http.go" />
-        <option value="$PROJECT_DIR$/asterisk.go" />
         <option value="$PROJECT_DIR$/db.go" />
+        <option value="$PROJECT_DIR$/asterisk.go" />
       </list>
     </option>
   </component>
@@ -310,14 +311,7 @@
       <workItem from="1489995432799" duration="2812000" />
       <workItem from="1490064274166" duration="26195000" />
       <workItem from="1492137419520" duration="14073000" />
-      <workItem from="1492395465321" duration="56117000" />
-    </task>
-    <task id="LOCAL-00069" summary="Test">
-      <created>1492156153057</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1492156153057</updated>
+      <workItem from="1492395465321" duration="56653000" />
     </task>
     <task id="LOCAL-00070" summary="Test">
       <created>1492156296321</created>
@@ -655,11 +649,18 @@
       <option name="project" value="LOCAL" />
       <updated>1492672078871</updated>
     </task>
-    <option name="localTasksCounter" value="118" />
+    <task id="LOCAL-00118" summary="fix bug">
+      <created>1492672357868</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1492672357868</updated>
+    </task>
+    <option name="localTasksCounter" value="119" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="189947000" />
+    <option name="totallyTimeSpent" value="190483000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1056" extended-state="0" />
@@ -701,13 +702,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/db.go</url>
-          <line>352</line>
+          <line>351</line>
           <properties />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/asterisk.go</url>
-          <line>139</line>
+          <line>138</line>
           <properties />
           <option name="timeStamp" value="3" />
         </line-breakpoint>
@@ -1207,22 +1208,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/asterisk.go">
+    <entry file="file://$PROJECT_DIR$/db.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="610">
-          <caret line="179" column="25" lean-forward="false" selection-start-line="179" selection-start-column="8" selection-end-line="179" selection-end-column="25" />
+        <state relative-caret-position="108">
+          <caret line="226" column="76" lean-forward="false" selection-start-line="226" selection-start-column="76" selection-end-line="226" selection-end-column="76" />
           <folding>
-            <element signature="e#13#68#0" expanded="true" />
+            <element signature="e#13#186#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/db.go">
+    <entry file="file://$PROJECT_DIR$/asterisk.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="482">
-          <caret line="266" column="72" lean-forward="false" selection-start-line="266" selection-start-column="72" selection-end-line="266" selection-end-column="72" />
+        <state relative-caret-position="-427">
+          <caret line="250" column="36" lean-forward="false" selection-start-line="250" selection-start-column="24" selection-end-line="250" selection-end-column="36" />
           <folding>
-            <element signature="e#13#186#0" expanded="true" />
+            <element signature="e#13#68#0" expanded="true" />
           </folding>
         </state>
       </provider>
