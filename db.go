@@ -204,7 +204,7 @@ func db_dial(ratio int ,campaignid string ){
 			checkErr(err)
 			ast_eon(campaignid)
 		}else{
-			db_dial_res(row.Next(),campaignid)
+			db_dial_res(row,campaignid)
 		}
 		if(ratio>1){
 			ratio--
@@ -221,6 +221,7 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 	checkErr(err)
 	rc := NewMapStringScan(columnNames)
 	rc.Update(row)
+	fmt.Println(rc)
 	ringcardid:=rc.row["rID"]
 	status1,_:=strconv.Atoi(rc.row["status1"])
 	status2,_:=strconv.Atoi(rc.row["status2"])
