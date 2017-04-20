@@ -216,8 +216,8 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 	columnNames, err := row.Columns()
 	checkErr(err)
 	rc := NewMapStringScan(columnNames)
+	row.Next()
 	rc.Update(row)
-	fmt.Printf("%#v\n\n", rc.row)
 	ringcardid:=rc.row["rID"]
 	status1,_:=strconv.Atoi(rc.row["status1"])
 	status2,_:=strconv.Atoi(rc.row["status2"])
@@ -318,7 +318,7 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 				plog ("inget nummer har bra status på detta ringkort $ringkort\n", 1);
 				update_query = "UPDATE tCampRingCards Set userID=0,statusID=(select bortfall_status from tCampaign where campaignID="+campaignid+"),subID=(select inget_nr_sub from tCampaign where campaignID="+campaignid+"), closed_date=now() WHERE rID="+ringcardid;
 			}
-			plog(update_query,1)
+
 			_,err=db.Exec(update_query)
 			checkErr(err)
 			delete(list_ringcard,ringcardid)
@@ -327,6 +327,7 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 			//	go db_dial(1,campaignid)
 			//}
 		}
+		plog(strconv.Itoa(number_index)+" "+strconv.Itoa(number_check),1)
 		if(number_index!=0 || number_check==0){
 			update_query:="UPDATE tCampRingCards SET status"+strconv.Itoa(number_index)+" =  1 where rID="+ringcardid
 			_,err=db.Exec(update_query)
