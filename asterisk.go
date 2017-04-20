@@ -363,10 +363,10 @@ func ast_standby(agent string)(int , string){
 			}
 			plog("Do hangup: "+agent+", "+channel+", "+conf_num,1)
 			plog("Agent "+agent+" is standby",1)
+			a.Action(map[string]string{"Action": "Hangup", "Channel": agents[agent]["channel"],"Context":"default","Exten":conf_num,"Priority":"1"})
 			agents[agent]["ringcard_id"]=""
 			agents[agent]["channel"]=""
 			agents[agent]["callee"]=""
-			a.Action(map[string]string{"Action": "Hangup", "Channel": agents[agent]["channel"],"Context":"default","Exten":conf_num,"Priority":"1"})
 			//fmt.Println(result, err)
 		}
 		agents[agent]["status"]="standby"
