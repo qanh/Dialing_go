@@ -194,6 +194,7 @@ func db_dial(ratio int ,campaignid string ){
 	query:="call PTakeActiveRingCard("+campaignid+","+strconv.Itoa(tidsperiod)+")"
 	if(ratio>0){
 		row, err := db.Query(query)
+		fmt.Println(row)
 		defer row.Close()
 		if(err!=nil){
 			checkErr(err)
@@ -320,9 +321,9 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 			checkErr(err)
 			delete(list_ringcard,ringcardid)
 
-			if(number_check!=0){
-				go db_dial(1,campaignid)
-			}
+			//if(number_check!=0){
+			//	go db_dial(1,campaignid)
+			//}
 		}
 		if(number_index!=0 || number_check==0){
 			update_query:="UPDATE tCampRingCards SET status"+strconv.Itoa(number_index)+" =  1 where rID="+ringcardid
