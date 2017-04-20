@@ -258,7 +258,7 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 				for i := 5; i > 0; i-- {
 					status, _ := strconv.Atoi(rc.row["status" + strconv.Itoa(i)])
 					if (status < 500) {
-						number_ok = 0
+						number_ok = 1
 					}
 				}
 				if (number_ok == 1) {
