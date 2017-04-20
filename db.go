@@ -217,125 +217,127 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 	rc := NewMapStringScan(columnNames)
 	if(!row.Next()){
 		fmt.Println("Nu är det slut på telefonnummer i den här kampanjen")
-	}
-	rc.Update(row)
-	fmt.Printf("%#v\n\n", rc.row)
-	ringcardid:=rc.row["rID"]
-	status1,_:=strconv.Atoi(rc.row["status1"])
-	status2,_:=strconv.Atoi(rc.row["status2"])
-	status3,_:=strconv.Atoi(rc.row["status3"])
-	status4,_:=strconv.Atoi(rc.row["status4"])
-	status5,_:=strconv.Atoi(rc.row["status5"])
-	number1:=rc.row["Phone1"]
-	number2:=rc.row["Phone2"]
-	number3:=rc.row["Phone3"]
-	number4:=rc.row["Phone4"]
-	number5:=rc.row["Phone5"]
-	plog("db_dial_res"+number1+" "+number2,1)
-	if _, ok := list_ringcard[ringcardid]; ok{
-		time.Sleep(1)
-		go db_dial(1,campaignid)
-	}else{
-		list_ringcard["ringcardid"]=1
-		if(len(number1)>4 && status1==0){
-			number=number1
-			number_index=1
-		}else if(len(number2)>4 && status2==0){
-			number=number2
-			number_index=2
-		}else if(len(number3)>4 && status3==0){
-		number=number3
-		number_index=3
-		}else if(len(number4)>4 && status4==0){
-		number=number4
-		number_index=4
-		}else if(len(number5)>4 && status5==0){
-		number=number5
-		number_index=5
-		}else{
-			number_ok:=0
-			update_query:=""
-			for i:=5 ;i>0;i-- {
-				status,_:=strconv.Atoi(rc.row["status"+strconv.Itoa(i)])
-				if(status<500){
-					number_ok=0
+		exit
+	}else {
+		rc.Update(row)
+		fmt.Printf("%#v\n\n", rc.row)
+		ringcardid := rc.row["rID"]
+		status1, _ := strconv.Atoi(rc.row["status1"])
+		status2, _ := strconv.Atoi(rc.row["status2"])
+		status3, _ := strconv.Atoi(rc.row["status3"])
+		status4, _ := strconv.Atoi(rc.row["status4"])
+		status5, _ := strconv.Atoi(rc.row["status5"])
+		number1 := rc.row["Phone1"]
+		number2 := rc.row["Phone2"]
+		number3 := rc.row["Phone3"]
+		number4 := rc.row["Phone4"]
+		number5 := rc.row["Phone5"]
+		plog("db_dial_res" + number1 + " " + number2, 1)
+		if _, ok := list_ringcard[ringcardid]; ok {
+			time.Sleep(1)
+			go db_dial(1, campaignid)
+		} else {
+			list_ringcard["ringcardid"] = 1
+			if (len(number1) > 4 && status1 == 0) {
+				number = number1
+				number_index = 1
+			} else if (len(number2) > 4 && status2 == 0) {
+				number = number2
+				number_index = 2
+			} else if (len(number3) > 4 && status3 == 0) {
+				number = number3
+				number_index = 3
+			} else if (len(number4) > 4 && status4 == 0) {
+				number = number4
+				number_index = 4
+			} else if (len(number5) > 4 && status5 == 0) {
+				number = number5
+				number_index = 5
+			} else {
+				number_ok := 0
+				update_query := ""
+				for i := 5; i > 0; i-- {
+					status, _ := strconv.Atoi(rc.row["status" + strconv.Itoa(i)])
+					if (status < 500) {
+						number_ok = 0
+					}
 				}
-			}
-			if(number_ok==1){
-				tidsperiod := tidsperiod ()
-				update_query="UPDATE tCampRingCards Set lastcalldate=CURDATE()"
-				if (tidsperiod == 1) {
-					update_query = update_query+", AMdate=CURDATE()"
-				}else if (tidsperiod == 2) {
-					update_query = update_query+", PMdate=CURDATE()";
-				} else if (tidsperiod == 3) {
-					update_query = update_query+", Eveningdate=CURDATE()";
-				}
-				if ((len(number1) < 5) || (status1 > 500)) {
-					update_query = update_query+", status1 = 1000 ";
+				if (number_ok == 1) {
+					tidsperiod := tidsperiod()
+					update_query = "UPDATE tCampRingCards Set lastcalldate=CURDATE()"
+					if (tidsperiod == 1) {
+						update_query = update_query + ", AMdate=CURDATE()"
+					} else if (tidsperiod == 2) {
+						update_query = update_query + ", PMdate=CURDATE()";
+					} else if (tidsperiod == 3) {
+						update_query = update_query + ", Eveningdate=CURDATE()";
+					}
+					if ((len(number1) < 5) || (status1 > 500)) {
+						update_query = update_query + ", status1 = 1000 ";
+					} else {
+						update_query = update_query + ", status1 = 0 ";
+						number_check = 0;
+						number_index = 1;
+						number = number1;
+					}
+					if ((len(number2) < 5) || (status2 > 500)) {
+						update_query = update_query + ", status2 = 1000 ";
+					} else {
+						update_query = update_query + ", status2 = 0 ";
+						number_check = 0;
+						number_index = 2;
+						number = number2;
+					}
+					if ((len(number3) < 5) || (status3 > 500)) {
+						update_query = update_query + ", status3 = 1000 ";
+					} else {
+						update_query = update_query + ", status3 = 0 ";
+						number_check = 0;
+						number_index = 3;
+						number = number3;
+					}
+					if ((len(number4) < 5) || (status4 > 500)) {
+						update_query = update_query + ", status4 = 1000 ";
+					} else {
+						update_query = update_query + ", status4 = 0 ";
+						number_check = 0;
+						number_index = 4;
+						number = number4;
+					}
+					if ((len(number5) < 5) || (status5 > 500)) {
+						update_query = update_query + ", status5 = 1000 ";
+					} else {
+						update_query = update_query + ", status5 = 0 ";
+						number_check = 0;
+						number_index = 5;
+						number = number5;
+					}
+					update_query = update_query + " WHERE rID=" + ringcardid
+					if (number_check == 1) {
+						plog("inga nummer med bra status och längd på detta ringkort $ringkort\n", 1);
+						update_query = "UPDATE tCampRingCards Set userID=0,statusID=(select bortfall_status from tCampaign where campaignID=" + campaignid + "),subID=(select inget_nr_sub from tCampaign where campaignID=" + campaignid + "), closed_date=now() WHERE rID=" + ringcardid;
+					}
 				} else {
-					update_query = update_query+", status1 = 0 ";
-					number_check = 0;
-					number_index = 1;
-					number = number1;
+					plog("inget nummer har bra status på detta ringkort $ringkort\n", 1);
+					update_query = "UPDATE tCampRingCards Set userID=0,statusID=(select bortfall_status from tCampaign where campaignID=" + campaignid + "),subID=(select inget_nr_sub from tCampaign where campaignID=" + campaignid + "), closed_date=now() WHERE rID=" + ringcardid;
 				}
-				if ((len(number2) < 5) || (status2 > 500)) {
-					update_query = update_query+", status2 = 1000 ";
-				} else {
-					update_query = update_query+", status2 = 0 ";
-					number_check = 0;
-					number_index = 2;
-					number = number2;
-				}
-				if ((len(number3) < 5) || (status3 > 500)) {
-					update_query = update_query+", status3 = 1000 ";
-				} else {
-					update_query = update_query+", status3 = 0 ";
-					number_check = 0;
-					number_index = 3;
-					number = number3;
-				}
-				if ((len(number4) < 5) || (status4 > 500)) {
-					update_query = update_query+", status4 = 1000 ";
-				} else {
-					update_query = update_query+", status4 = 0 ";
-					number_check = 0;
-					number_index = 4;
-					number = number4;
-				}
-				if ((len(number5) < 5) || (status5 > 500)) {
-					update_query = update_query+", status5 = 1000 ";
-				} else {
-					update_query = update_query+", status5 = 0 ";
-					number_check = 0;
-					number_index = 5;
-					number = number5;
-				}
-				update_query = update_query+" WHERE rID="+ringcardid
-				if (number_check==1) {
-					plog ("inga nummer med bra status och längd på detta ringkort $ringkort\n", 1);
-					update_query = "UPDATE tCampRingCards Set userID=0,statusID=(select bortfall_status from tCampaign where campaignID="+campaignid+"),subID=(select inget_nr_sub from tCampaign where campaignID="+campaignid+"), closed_date=now() WHERE rID="+ringcardid;
-				}
-			}else{
-				plog ("inget nummer har bra status på detta ringkort $ringkort\n", 1);
-				update_query = "UPDATE tCampRingCards Set userID=0,statusID=(select bortfall_status from tCampaign where campaignID="+campaignid+"),subID=(select inget_nr_sub from tCampaign where campaignID="+campaignid+"), closed_date=now() WHERE rID="+ringcardid;
-			}
 
-			_,err=db.Exec(update_query)
-			checkErr(err)
-			delete(list_ringcard,ringcardid)
+				_, err = db.Exec(update_query)
+				checkErr(err)
+				delete(list_ringcard, ringcardid)
 
-			if(number_check!=0){
-				go db_dial(1,campaignid)
+				if (number_check != 0) {
+					go db_dial(1, campaignid)
+				}
 			}
-		}
-		plog(strconv.Itoa(number_index)+" "+strconv.Itoa(number_check),1)
-		if(number_index!=0 || number_check==0){
-			update_query:="UPDATE tCampRingCards SET status"+strconv.Itoa(number_index)+" =  1 where rID="+ringcardid
-			_,err=db.Exec(update_query)
-			checkErr(err)
-			delete(list_ringcard,ringcardid)
-			ast_dial(number,ringcardid,campaignid)
+			plog(strconv.Itoa(number_index) + " " + strconv.Itoa(number_check), 1)
+			if (number_index != 0 || number_check == 0) {
+				update_query := "UPDATE tCampRingCards SET status" + strconv.Itoa(number_index) + " =  1 where rID=" + ringcardid
+				_, err = db.Exec(update_query)
+				checkErr(err)
+				delete(list_ringcard, ringcardid)
+				ast_dial(number, ringcardid, campaignid)
+			}
 		}
 	}
 }
