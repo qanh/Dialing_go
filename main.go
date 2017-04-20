@@ -104,6 +104,13 @@ func init(){
 	}
 	//listen asterisk event and request
 	a.Connect()
+	// Listen for connection events
+	a.On("connect", func(message string) {
+		fmt.Println("Connected", message)
+	})
+	a.On("error", func(message string) {
+		fmt.Println("Connection error:", message)
+	})
 	//register asterisk event listener
 	a.RegisterDefaultHandler(DefaultHandler)
 	a.RegisterHandler("Hangup",ast_hangup_event)
