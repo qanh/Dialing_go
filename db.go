@@ -225,6 +225,7 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 	rc := NewMapStringScan(columnNames)
 	if(!row.Next()){
 		plog("Nu är det slut på telefonnummer i den här kampanjen",1)
+		ast_eon(campaignid)
 	}else {
 		rc.Update(row)
 		ringcardid := rc.row["rID"]
