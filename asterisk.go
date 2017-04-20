@@ -125,17 +125,21 @@ func ast_hangup_event(m map[string]string){
 }
 //check lai trang thai cua reason code
 func ast_originate_response(m map[string] string){
+	var agent string
 	actionID:=strings.Split(m["ActionID"],":")
 	callee:=actionID[0]
 	ringcardid:=actionID[1]
 	campaignid:=actionID[2]
-	agent:=actionID[3]
-
+	if(len(actionID)>3) {
+		agent = actionID[3]
+	}
 	uid:=m["Uniqueid"]
 	reason,_:=strconv.Atoi(m["Reason"])
 	fromchannel:=m["Channel"]
 	call_arr[uid]["ringcardid"]=ringcardid
-	call_arr[uid]["agent"]=agent
+	if(agent!="") {
+		call_arr[uid]["agent"] = agent
+	}
 	call_arr[uid]["callee"]=callee
 	call_arr[uid]["campaignid"]=campaignid
 	status:=""
