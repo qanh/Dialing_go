@@ -205,6 +205,7 @@ func ast_join(m map[string]string){
 	uid:=m["Uniqueid"]
 	usernum:=m["Usernum"]
 	//tmpclid:=idarr[uid]
+	fmt.Println(m)
 	callee:=call_arr[uid]["callee"]
 	ringcardid:=call_arr[uid]["ringcardid"]
 	campaignid:=call_arr[uid]["campaignid"]
