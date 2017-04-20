@@ -137,6 +137,9 @@ func ast_originate_response(m map[string] string){
 	uid:=m["Uniqueid"]
 	reason,_:=strconv.Atoi(m["Reason"])
 	fromchannel:=m["Channel"]
+	if(call_arr[uid]== nil) {
+		call_arr[uid] = make(map[string]string)
+	}
 	call_arr[uid]["ringcardid"]=ringcardid
 	if(agent!="") {
 		call_arr[uid]["agent"] = agent
