@@ -83,6 +83,14 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 		status5 int
 	}
 	//var campaign Campaign
+
+	phone:=map [string]string{
+		"Phone1":"",
+		"Phone2":"",
+		"Phone3":"",
+		"Phone4":"",
+		"Phone5":"",
+	}*/
 	update_query := "UPDATE tCampRingCards SET ";
 	var real_status int
 	status:=map [string]int{
@@ -92,13 +100,6 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 		"status4":0,
 		"status5":0,
 	}
-	phone:=map [string]string{
-		"Phone1":"",
-		"Phone2":"",
-		"Phone3":"",
-		"Phone4":"",
-		"Phone5":"",
-	}*/
 	select_query := "SELECT Phone1,Phone2,Phone3,Phone4,Phone5,status1,status2,status3,status4,status5 from tCampRingCards WHERE rID ="+ringcardid
 	row,err := db.Query(select_query)//.Scan(phone["Phone1"],phone["Phone2"],phone["Phone3"],phone["Phone4"],phone["Phone5"],status["status1"],status["status2"],status["status3"],status["status4"],status["status5"])
 	checkErr(err)
@@ -115,26 +116,27 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 		}else{
 			index++
 		}
+		status["status"+strconv.Itoa(i)]=strconv.Atoi(rc.row["status"+strconv.Itoa(i)])
 		i++
 	}
 	//phone_key:="Phone"+index
 	status_key:="status"+strconv.Itoa(index)
 	if(reason=="trasigt"){
-		real_status=rc.row[status_key]+1000
+		real_status=strconv.Atoi(rc.row[status_key])+1000
 	}else if(reason=="ejsvar"){
-		real_status=rc.row[status_key]+1
+		real_status=strconv.Atoi(rc.row[status_key])+1
 	}else{
 		plog ("error: set_num_status () unknow reason\n", 1);
 	}
 	called:=1
 	fail:=1
 	for i := 1; i < 6; i++ {
-		if(rc.row["status"+strconv.Itoa(i)]==0 && len (rc.row["Phone"+strconv.Itoa(i)])>4){
+		if(status["status"+strconv.Itoa(i)]==0 && len (rc.row["Phone"+strconv.Itoa(i)])>4){
 			if(i!=index){
 				called=0
 			}
 		}
-		if(rc.row["status"+strconv.Itoa(i)]<500 && len (rc.row["Phone"+strconv.Itoa(i)])>4){
+		if(status["status"+strconv.Itoa(i)]<500 && len (rc.row["Phone"+strconv.Itoa(i)])>4){
 			if(i!=index){
 				fail=0
 			}else if(reason=="ejsvar"){
@@ -149,7 +151,7 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 		i:=1
 		for i < 6 {
 			phonestatus:="status"+strconv.Itoa(i)
-			if(rc.row[phonestatus]<500 && len(rc.row["Phone"+strconv.Itoa(i)])>4){
+			if(status[phonestatus]<500 && len(rc.row["Phone"+strconv.Itoa(i)])>4){
 				update_query = update_query+" "+phonestatus+" = 0, "
 			}else{
 				update_query = update_query+" "+phonestatus+" = 1000, "
@@ -260,7 +262,7 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 				number_ok := 0
 				update_query := ""
 				for i := 5; i > 0; i-- {
-					status, _ := strconv.Atoi(rc.row["status" + strconv.Itoa(i)])
+					status, _ := strconv.Atoi(status["status" + strconv.Itoa(i)])
 					if (status < 500) {
 						number_ok = 1
 					}
