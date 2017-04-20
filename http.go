@@ -34,11 +34,11 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
 			} else {
 				
-				plog ("http chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1);
+				plog ("http chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
 				code,message:=ast_chcamp(r.FormValue("agent"),r.FormValue("campaignID"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
-				//$poe_kernel->post( 'monitor', 'ast_chcamp', $agent, $anknytning, $kampanjid);
+				//$poe_kernel->post( 'monitor', 'ast_chcamp', $agent, $anknytning, $kampanjid)
 			}
 
 		//call agent mobile phone number then join it to room

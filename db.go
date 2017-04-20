@@ -53,7 +53,7 @@ func db_getstate(campaignid string){
 
 }
 func db_log(status string, agent string, ext string, campaignid string){
-	query, err :=db.Prepare("INSERT INTO log set state = ?, agentid = ?,extension = ?,kampanj = ?, tid = NOW()");
+	query, err :=db.Prepare("INSERT INTO log set state = ?, agentid = ?,extension = ?,kampanj = ?, tid = NOW()")
 	checkErr(err)
 	defer query.Close()
 	//query.Raw.Bind(status,agent,ext,campaignid)
@@ -91,7 +91,7 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 		"Phone4":"",
 		"Phone5":"",
 	}*/
-	update_query := "UPDATE tCampRingCards SET ";
+	update_query := "UPDATE tCampRingCards SET "
 	var real_status int
 	status:=map [string]int{
 		"status1":0,
@@ -128,7 +128,7 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 		real_status,_=strconv.Atoi(rc.row[status_key])
 		real_status+=1
 	}else{
-		plog ("error: set_num_status () unknow reason\n", 1);
+		plog ("error: set_num_status () unknow reason\n", 1)
 	}
 	called:=1
 	fail:=1
@@ -147,7 +147,7 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 		}
 	}
 	if(fail==1){
-		plog ("set_num_status: all number fail, update database for ringcard "+ringcardid,1);
+		plog ("set_num_status: all number fail, update database for ringcard "+ringcardid,1)
 		update_query="UPDATE tCampRingCards Set fail_try=fail_try+1 WHERE rID="+ringcardid
 	}else if(called==1){
 		i:=1
@@ -274,58 +274,58 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 					if (tidsperiod == 1) {
 						update_query = update_query + ", AMdate=CURDATE()"
 					} else if (tidsperiod == 2) {
-						update_query = update_query + ", PMdate=CURDATE()";
+						update_query = update_query + ", PMdate=CURDATE()"
 					} else if (tidsperiod == 3) {
-						update_query = update_query + ", Eveningdate=CURDATE()";
+						update_query = update_query + ", Eveningdate=CURDATE()"
 					}
 					if ((len(number1) < 5) || (status1 > 500)) {
-						update_query = update_query + ", status1 = 1000 ";
+						update_query = update_query + ", status1 = 1000 "
 					} else {
-						update_query = update_query + ", status1 = 0 ";
-						number_check = 0;
-						number_index = 1;
-						number = number1;
+						update_query = update_query + ", status1 = 0 "
+						number_check = 0
+						number_index = 1
+						number = number1
 					}
 					if ((len(number2) < 5) || (status2 > 500)) {
-						update_query = update_query + ", status2 = 1000 ";
+						update_query = update_query + ", status2 = 1000 "
 					} else {
-						update_query = update_query + ", status2 = 0 ";
-						number_check = 0;
-						number_index = 2;
-						number = number2;
+						update_query = update_query + ", status2 = 0 "
+						number_check = 0
+						number_index = 2
+						number = number2
 					}
 					if ((len(number3) < 5) || (status3 > 500)) {
-						update_query = update_query + ", status3 = 1000 ";
+						update_query = update_query + ", status3 = 1000 "
 					} else {
-						update_query = update_query + ", status3 = 0 ";
-						number_check = 0;
-						number_index = 3;
-						number = number3;
+						update_query = update_query + ", status3 = 0 "
+						number_check = 0
+						number_index = 3
+						number = number3
 					}
 					if ((len(number4) < 5) || (status4 > 500)) {
-						update_query = update_query + ", status4 = 1000 ";
+						update_query = update_query + ", status4 = 1000 "
 					} else {
-						update_query = update_query + ", status4 = 0 ";
-						number_check = 0;
-						number_index = 4;
-						number = number4;
+						update_query = update_query + ", status4 = 0 "
+						number_check = 0
+						number_index = 4
+						number = number4
 					}
 					if ((len(number5) < 5) || (status5 > 500)) {
-						update_query = update_query + ", status5 = 1000 ";
+						update_query = update_query + ", status5 = 1000 "
 					} else {
-						update_query = update_query + ", status5 = 0 ";
-						number_check = 0;
-						number_index = 5;
-						number = number5;
+						update_query = update_query + ", status5 = 0 "
+						number_check = 0
+						number_index = 5
+						number = number5
 					}
 					update_query = update_query + " WHERE rID=" + ringcardid
 					if (number_check == 1) {
-						plog("inga nummer med bra status och längd på detta ringkort $ringkort\n", 1);
-						update_query = "UPDATE tCampRingCards Set userID=0,statusID=(select bortfall_status from tCampaign where campaignID=" + campaignid + "),subID=(select inget_nr_sub from tCampaign where campaignID=" + campaignid + "), closed_date=now() WHERE rID=" + ringcardid;
+						plog("inga nummer med bra status och längd på detta ringkort $ringkort\n", 1)
+						update_query = "UPDATE tCampRingCards Set userID=0,statusID=(select bortfall_status from tCampaign where campaignID=" + campaignid + "),subID=(select inget_nr_sub from tCampaign where campaignID=" + campaignid + "), closed_date=now() WHERE rID=" + ringcardid
 					}
 				} else {
-					plog("inget nummer har bra status på detta ringkort $ringkort\n", 1);
-					update_query = "UPDATE tCampRingCards Set userID=0,statusID=(select bortfall_status from tCampaign where campaignID=" + campaignid + "),subID=(select inget_nr_sub from tCampaign where campaignID=" + campaignid + "), closed_date=now() WHERE rID=" + ringcardid;
+					plog("inget nummer har bra status på detta ringkort $ringkort\n", 1)
+					update_query = "UPDATE tCampRingCards Set userID=0,statusID=(select bortfall_status from tCampaign where campaignID=" + campaignid + "),subID=(select inget_nr_sub from tCampaign where campaignID=" + campaignid + "), closed_date=now() WHERE rID=" + ringcardid
 				}
 
 				_, err = db.Exec(update_query)

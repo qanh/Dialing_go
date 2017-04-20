@@ -179,7 +179,7 @@ func ast_originate_response(m map[string] string){
 	db_set_num_status(campaignid,ringcardid,failtext,callee)
 	plog("To DB ringcard id:"+ringcardid+" number:"+callee+" Campaign ID:"+campaignid,1)
 	if(fromchannel[0:10]!="Local/8800"){
-		num_queue[campaignid]--;
+		num_queue[campaignid]--
 		localcount:=0
 		for _, value := range agents {
 			if (value["status"] == "ready" && value["campaignid"] == campaignid) {
@@ -194,7 +194,7 @@ func ast_originate_response(m map[string] string){
 				if(ratio>0){
 					db_dial(ratio,campaignid)
 				}
-				break;
+				break
 			}
 		}
 	}
@@ -210,7 +210,7 @@ func ast_join(m map[string]string){
 	campaignid:=call_arr[uid]["campaignid"]
 	//none:=1
 	conf:=""
-	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+m["Meetme"]+" "+usernum,1);
+	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+m["Meetme"]+" "+usernum,1)
 	if(m["Meetme"]=="8000000"){
 		ans_cnt++
 		ans_cntarr["campaignid"]++
@@ -263,7 +263,7 @@ func ast_join(m map[string]string){
 			//delete(callarr,callee+":"+ringcardid)
 			//delete(callarr2,callee+":"+uid)
 			//delete(idarr,uid)
-			tapp_cnt++;
+			tapp_cnt++
 			tapp_cntarr[campaignid]++
 			ratio_reset(campaignid)
 			db_reg_tapp(ringcardid)
@@ -429,8 +429,8 @@ func ast_dial(dest string,ringcardid string,campaignid string )(int , string){
 		}
 		plog("Trunk: "+ trunkname,1)
 	}
-	dial_cnt++;
-	dial_cntarr[campaignid]++;
+	dial_cnt++
+	dial_cntarr[campaignid]++
 	actionID:=dest+":"+ringcardid+":"+campaignid
 	//callarr[dest+":"+ringcardid]=ringcardid
 	//camparr[dest]=campaignid
@@ -467,8 +467,8 @@ func ast_mdial_trunk(agent string,ext string,dest string,ringcardid string)(int 
 		}
 		plog("Mdial Trunk: "+ trunkname ,1)
 	}
-	dial_cnt++;
-	dial_cntarr[campaignid]++;
+	dial_cnt++
+	dial_cntarr[campaignid]++
 	//callarr[dest+":"+ringcardid]=ringcardid
 	//camparr[dest]=campaignid
 	plog("Mdial "+conf+" to :"+dest+" Ringcard: "+ringcardid+" Campaign: "+campaignid ,1)
@@ -552,13 +552,13 @@ func mute(conf_num string ,user string,agent string){
 	_, err := a.Action(map[string]string{"Action": "MeetmeMute", "Meetme": conf_num,"Usernum":user})
 	//fmt.Println(result, err)
 	checkErr(err)
-	plog("User "+user+" in conference "+conf_num+" MUTE",1);
+	plog("User "+user+" in conference "+conf_num+" MUTE",1)
 }
 func unmute(conf_num string ,user string,agent string){
 	_, err := a.Action(map[string]string{"Action": "MeetmeUnMute", "Meetme": conf_num,"Usernum":user})
 	//fmt.Println(result, err)
 	checkErr(err)
-	plog("User "+user+" in conference "+conf_num+" UNMUTE",1);
+	plog("User "+user+" in conference "+conf_num+" UNMUTE",1)
 }
 //Calulate ratio
 func calc_ratio(campaignid string)int {
@@ -609,7 +609,7 @@ func ratio_reset(campaignid string){
 		db_ratio[campaignid]=default_ratio
 	}
 	cur_ratio[campaignid]=1.0
-	plog( "reset:Ratio for campaign "+campaignid,1);
+	plog( "reset:Ratio for campaign "+campaignid,1)
 }
 func ast_stepratio(tratio_up float64,tratio_down float64, campaignid string)(int , string){
 	if(tratio_down>-2.0 && tratio_down<2.0){
@@ -624,11 +624,11 @@ func ast_stepratio(tratio_up float64,tratio_down float64, campaignid string)(int
 }
 //End of number
 func ast_eon(campaignid string){
-	num_queue[campaignid]--;
+	num_queue[campaignid]--
 	if(num_queue[campaignid]<0){
 		num_queue[campaignid]=0
 	}
-	plog( "decrease num_queue for campaign "+campaignid,1);
+	plog( "decrease num_queue for campaign "+campaignid,1)
 }
 /*
 func flashdata(campaignid string){
