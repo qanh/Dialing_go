@@ -194,8 +194,7 @@ func db_dial(ratio int ,campaignid string ){
 	query:="call PTakeActiveRingCard("+campaignid+","+strconv.Itoa(tidsperiod)+")"
 	if(ratio>0){
 		row, err := db.Query(query)
-
-		//defer row.Close()
+		defer row.Close()
 		if(err!=nil){
 			checkErr(err)
 			ast_eon(campaignid)
@@ -216,8 +215,11 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 	columnNames, err := row.Columns()
 	checkErr(err)
 	rc := NewMapStringScan(columnNames)
-	row.Next()
+	if(!row.Next()){
+		fmt.Println("Nu är det slut på telefonnummer i den här kampanjen")
+	}
 	rc.Update(row)
+	fmt.Printf("%#v\n\n", rc.row)
 	ringcardid:=rc.row["rID"]
 	status1,_:=strconv.Atoi(rc.row["status1"])
 	status2,_:=strconv.Atoi(rc.row["status2"])
