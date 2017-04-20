@@ -7,7 +7,7 @@ import (
 	"time"
 )
 func DefaultHandler(m map[string]string) {
-	fmt.Printf("Event received: %v\n", m)
+	fmt.Printf("Event received: %v\n\n\n", m)
 }
 //Join Agent to room 8800+ext
 func ast_login(agent string, ext string , campaignid string)(int , string) {
