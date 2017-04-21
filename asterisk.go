@@ -5,6 +5,7 @@ import (
 	"strconv"
 	//"os"
 	"time"
+	"github.com/bradfitz/gomemcache/memcache"
 )
 func DefaultHandler(m map[string]string) {
 	fmt.Printf("Event received: %v\n\n\n", m)
