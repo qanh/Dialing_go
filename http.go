@@ -15,7 +15,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			//http://dialern.televinken.se/user_state?agent=4711&anknytning=021&campaignID=5&action=login
 			if ((r.FormValue("agent")=="") || (r.FormValue("anknytning")== "") || (r.FormValue("campaignID")== "") || (r.FormValue("clientID")== "")) {
 				w.WriteHeader(http.StatusBadRequest)
-				fmt.Fprintf(w, "Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"))
+				fmt.Fprintf(w, "Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID")+" ClientID:"+r.FormValue("clientID"))
 				plog ("Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
 			} else {
 
@@ -46,7 +46,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			//http://dialern.televinken.se/user_state?agent=4711&anknytning=021&campaignID=5&action=loginremote
 			if ((r.FormValue("agent")=="") || (r.FormValue("anknytning")== "") || (r.FormValue("campaignID")== "")|| (r.FormValue("dest")== "") || (r.FormValue("clientID")== "")) {
 				w.WriteHeader(http.StatusBadRequest)
-				fmt.Fprintf(w, "Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"))
+				fmt.Fprintf(w, "Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID")+" ClientID:"+r.FormValue("clientID"))
 				plog ("Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
 			} else {
 				
