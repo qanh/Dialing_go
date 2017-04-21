@@ -9,7 +9,7 @@ import (
 	"github.com/ivahaev/amigo"
 	"github.com/kardianos/service"
 	_ "github.com/go-sql-driver/mysql"
-	//"github.com/bradfitz/gomemcache/memcache"
+	"github.com/bradfitz/gomemcache/memcache"
 )
 type program struct{}
 //Init variable
@@ -31,6 +31,7 @@ var settings = &amigo.Settings{Username: "trumpen", Password: "foobar", Host: "d
 //memcache
 //var mc := memcache.New("127.0.0.1:11211")
 var a=amigo.New(settings)
+var mc=memcache.New("127.0.0.1:11211")
 var dial_timeout=25000
 var agents=make(map[string]map[string]string)
 var db_ratio =make(map[string]float64)

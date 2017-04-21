@@ -291,8 +291,9 @@ func ast_join(m map[string]string){
 							ext:=agents[key]["ext"]
 							db_log("incall",key,ext,campaignid)
 							db_log_soundfile(ringcardid,campaignid,key)
-							plog("Mdial Agent: "+key+" Ringcard: "+ringcardid+" Callee:"+callee+" Campaign: "+campaignid,1)
-							//break
+							url:="/dialing/card/"+ringcardid+"?dialnumber="+callee
+							mc.Set(&memcache.Item{Key: "redirect_"+agents[key]["clientid"]+"_"+key, Value: []byte(url)})
+							break
 						}
 					}
 				//}
@@ -303,7 +304,7 @@ func ast_join(m map[string]string){
 						agents[key]["usernum"]=usernum
 						mute(conf,usernum,key)
 						db_user_connected(key,1)
-						//break
+						break
 					}
 				}
 			}
