@@ -13,7 +13,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 		//call to agent anknytning then join it to room
 		case "login":
 			//http://dialern.televinken.se/user_state?agent=4711&anknytning=021&campaignID=5&action=login
-			if ((r.FormValue("agent")=="") || (r.FormValue("anknytning")== "") || (r.FormValue("campaignID")== "")) {
+			if ((r.FormValue("agent")=="") || (r.FormValue("anknytning")== "") || (r.FormValue("campaignID")== "") || (r.FormValue("clientID")== "")) {
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"))
 				plog ("Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
@@ -21,7 +21,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 
 				plog ("HTTP login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
 
-				code,message:=ast_login(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"))
+				code,message:=ast_login(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"),r.FormValue("clientID"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
 			}
@@ -34,7 +34,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
 			} else {
 				
-				plog ("http chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
+				plog ("http chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),,1)
 				code,message:=ast_chcamp(r.FormValue("agent"),r.FormValue("campaignID"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
@@ -44,13 +44,13 @@ func state_check(w http.ResponseWriter, r *http.Request){
 		//call agent mobile phone number then join it to room
 		case "loginremote":
 			//http://dialern.televinken.se/user_state?agent=4711&anknytning=021&campaignID=5&action=loginremote
-			if ((r.FormValue("agent")=="") || (r.FormValue("anknytning")== "") || (r.FormValue("campaignID")== "")|| (r.FormValue("dest")== "")) {
+			if ((r.FormValue("agent")=="") || (r.FormValue("anknytning")== "") || (r.FormValue("campaignID")== "")|| (r.FormValue("dest")== "") || (r.FormValue("clientID")== "")) {
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"))
 				plog ("Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
 			} else {
 				
-				code,message:=ast_login_remote(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"),r.FormValue("dest"))
+				code,message:=ast_login_remote(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"),r.FormValue("dest"),r.FormValue("clientID"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
 			}

@@ -107,10 +107,10 @@ func init(){
 	a.Connect()
 	// Listen for connection events
 	a.On("connect", func(message string) {
-		fmt.Println("Connected", message)
+		plog("Connected"+ message,1)
 	})
 	a.On("error", func(message string) {
-		fmt.Println("Connection error:", message)
+		plog("Connection error:"+ message,1)
 	})
 	//register asterisk event listener
 	//a.RegisterDefaultHandler(DefaultHandler)

@@ -11,7 +11,7 @@ func DefaultHandler(m map[string]string) {
 	fmt.Printf("Event received: %v\n\n\n", m)
 }
 //Join Agent to room 8800+ext
-func ast_login(agent string, ext string , campaignid string)(int , string) {
+func ast_login(agent string, ext string , campaignid string,clientid string)(int , string) {
 	conf_num:="8800"+ext
 	if(agents[agent]["ownchannel"]!=""){
 		a.Action(map[string]string{"Action":"Hangup","Channel":agents[agent]["ownchannel"]})
@@ -25,6 +25,7 @@ func ast_login(agent string, ext string , campaignid string)(int , string) {
 	agents[agent]["campaignid"]=campaignid
 	agents[agent]["conf_num"]=conf_num
 	agents[agent]["status"]="standby"
+	agents[agent]["clientid"]=clientid
 	//Callee number
 	agents[agent]["callee"]=""
 	agents[agent]["channel"]=""
@@ -44,7 +45,7 @@ func ast_login(agent string, ext string , campaignid string)(int , string) {
 }
 
 //Call to agent mobile phone and join to room 8800+ext
-func ast_login_remote(agent string, ext string , campaignid string,dest string)(int , string){
+func ast_login_remote(agent string, ext string , campaignid string,dest string,clientid string)(int , string){
 	conf_num:="8800"+ext
 	if (agents[agent]["ownchannel"] != "") {
 		result, err := a.Action(map[string]string{"Action":"Hangup", "Channel":agents[agent]["ownchannel"]})
@@ -56,6 +57,7 @@ func ast_login_remote(agent string, ext string , campaignid string,dest string)(
 	agents[agent]["conf_num"]=conf_num
 	agents[agent]["remote_num"]=dest
 	agents[agent]["status"]="standby"
+	agents[agent]["clientid"]=clientid
 	//Callee number
 	agents[agent]["callee"]=""
 	agents[agent]["channel"]=""
