@@ -252,13 +252,13 @@ func ast_join(m map[string]string){
 			ast_ratio_down(campaignid)
 			usernum=agents[agent]["usernum"]
 			unmute(conf,usernum,agent)
-			result, _ :=a.Action(map[string]string{"Action": "Redirect",
+			a.Action(map[string]string{"Action": "Redirect",
 				"Channel":	channel,
 				"Context":	"default",
 				"Exten":	conf,
 				"Priority":	"1",
 			})
-			fmt.Println(result)
+			//fmt.Println(result)
 			plog("Ringcard: "+ringcardid+", "+callee,1)
 			db_log_soundfile(ringcardid,campaignid,agent)
 		}else{
@@ -513,7 +513,7 @@ func ast_hangup(agent string)(int , string){
 			db_log("standby",agent,ext,campaignid)
 			agents[agent]["channel"]=""
 			agents[agent]["callee"]=""
-			result, _ := a.Action(map[string]string{"Action": "Originate",
+			result, _ := a.Action(map[string]string{"Action": "Hangup",
 				"Channel":	channel,
 				"Context":	"default",
 				"Exten":	conf,

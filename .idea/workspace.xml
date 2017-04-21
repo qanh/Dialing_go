@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f7c1f2cd-2bdd-4862-9012-3140ec844fde" name="Default" comment="fix bug">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http.go" afterPath="$PROJECT_DIR$/http.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asterisk.go" afterPath="$PROJECT_DIR$/asterisk.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,11 +18,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="asterisk.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="asterisk.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/asterisk.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="28" column="23" lean-forward="true" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
+            <state relative-caret-position="185">
+              <caret line="254" column="24" lean-forward="false" selection-start-line="254" selection-start-column="24" selection-end-line="254" selection-end-column="24" />
               <folding>
                 <element signature="e#13#111#0" expanded="true" />
               </folding>
@@ -54,7 +54,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="http.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="http.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/http.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="187">
@@ -70,7 +70,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>callarr</find>
       <find>trunk_l</find>
       <find>connected</find>
       <find>logger</find>
@@ -93,13 +92,14 @@
       <find>num_queue</find>
       <find>num_q</find>
       <find>slee</find>
-      <find>fmt</find>
       <find>sleep</find>
       <find>num_qu</find>
       <find>Sleep</find>
       <find>time</find>
-      <find>;</find>
       <find>clientid</find>
+      <find>;</find>
+      <find>agents[agent][&quot;channel&quot;]=&quot;&quot;</find>
+      <find>fmt</find>
     </findStrings>
     <replaceStrings>
       <replace>plog</replace>
@@ -117,8 +117,8 @@
       <list>
         <option value="$PROJECT_DIR$/db.go" />
         <option value="$PROJECT_DIR$/main.go" />
-        <option value="$PROJECT_DIR$/asterisk.go" />
         <option value="$PROJECT_DIR$/http.go" />
+        <option value="$PROJECT_DIR$/asterisk.go" />
       </list>
     </option>
   </component>
@@ -312,14 +312,7 @@
       <workItem from="1489995432799" duration="2812000" />
       <workItem from="1490064274166" duration="26195000" />
       <workItem from="1492137419520" duration="14073000" />
-      <workItem from="1492395465321" duration="66110000" />
-    </task>
-    <task id="LOCAL-00089" summary="fix bug">
-      <created>1492598233447</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1492598233447</updated>
+      <workItem from="1492395465321" duration="66674000" />
     </task>
     <task id="LOCAL-00090" summary="fix bug">
       <created>1492598548732</created>
@@ -657,11 +650,18 @@
       <option name="project" value="LOCAL" />
       <updated>1492746057143</updated>
     </task>
-    <option name="localTasksCounter" value="138" />
+    <task id="LOCAL-00138" summary="fix bug">
+      <created>1492746151204</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1492746151204</updated>
+    </task>
+    <option name="localTasksCounter" value="139" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="199940000" />
+    <option name="totallyTimeSpent" value="200504000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1056" extended-state="0" />
@@ -1209,22 +1209,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/asterisk.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="28" column="23" lean-forward="true" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
-          <folding>
-            <element signature="e#13#111#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/http.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="11" column="10" lean-forward="false" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
           <folding>
             <element signature="e#13#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/asterisk.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="254" column="24" lean-forward="false" selection-start-line="254" selection-start-column="24" selection-end-line="254" selection-end-column="24" />
+          <folding>
+            <element signature="e#13#111#0" expanded="true" />
           </folding>
         </state>
       </provider>
