@@ -180,7 +180,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("MMissing argument to set step ratio Ratio Up:"+ r.FormValue("rup")+"Ratio Down:"+ r.FormValue("rner")+"Campaign ID:"+ r.FormValue("campaignID"),1)
 			} else {
 				
-				http_ratio,_:=strconv.Atoi(r.FormValue("ratio"))
+				http_ratio,_:=strconv.FormatFloat(r.FormValue("ratio"), 'E', -1, 64)
 				http_timeout,_:=strconv.Atoi(r.FormValue("timeout"))
 				code,message:=ast_stepratio(http_ratio,r.FormValue("campaignID"),http_timeout)
 				w.WriteHeader(code)

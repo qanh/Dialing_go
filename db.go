@@ -12,6 +12,7 @@ import(
 	"net/http"
 	"path"
 	"path/filepath"
+	"string"
 )
 func db_getstate(campaignid string){
 
@@ -397,13 +398,13 @@ func tidsperiod() int {
 }
 func db_get_file(fileid string)(int,string){
 	var host_name string
-	var path string
+	var path_sql string
 	select_query := "select host_name,path from dialplan_voicefiles where id=="+fileid
-	err:=db.QueryRow(select_query).Scan(&host_name,&path)
+	err:=db.QueryRow(select_query).Scan(&host_name,&path_sql)
 	if(err!=nil){
-		ext := filepath.Ext(path)
-		path=strings.Replace(path,ext,".wav")
-		filename := path.Base(path)
+		ext := filepath.Ext(path_sql)
+		path_sql=strings.Replace(path_sql,ext,".wav")
+		filename := path.Base(path_sql)
 		out, err := os.Create("/var/lib/asterisk/sounds/dialplan/"+filename)
 		if err != nil  {
 			return 400,err
@@ -411,12 +412,12 @@ func db_get_file(fileid string)(int,string){
 		defer out.Close()
 		resp, err := http.Get("http://"+host_name+"/"+path)
 		if err != nil {
-			return 400,err
+			return 400,err.Error()
 		}
 		defer resp.Body.Close()
 		_, err = io.Copy(out, resp.Body)
 		if err != nil  {
-			return 400,err
+			return 400,err.Error()
 		}
 	}
 	return 200,"OK"

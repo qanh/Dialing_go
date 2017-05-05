@@ -3,7 +3,7 @@ import (
 	"fmt"
 	"strings"
 	"strconv"
-	//"os"
+	"os/exec"
 	"time"
 	"github.com/bradfitz/gomemcache/memcache"
 )
@@ -721,7 +721,7 @@ func ast_record(phonenum string, recfile string,trunk string)(int,string){
 		"Channel": 	channel,
 		"Context": 	"record",
 		"Exten":	"s",
-		"Timeout":	dial_timeout,
+		"Timeout":	strconv.Itoa(dial_timeout),
 		"Async":	"1",
 		"ActionID":	"record_"+phonenum,
 		"Variable":	"__recfile="+recfile,
@@ -736,7 +736,7 @@ func ast_record_stop(phonenum string, recfile string,delete int)(int,string){
 	channel, _ := mc.Get("record_"+phonenum)
 	mc.Delete("record_"+phonenum)
 	a.Action(map[string]string{"Action": "Hangup",
-		"Channel":channel	})
+		"Channel":string(channel)	})
 	if(delete == 1){
 		cmd :=exec.Command("rm"," /var/lib/asterisk/sounds/dialplan/"+recfile+".wav")
 		cmd.Run()
