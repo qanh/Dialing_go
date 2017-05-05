@@ -12,7 +12,7 @@ import(
 	"net/http"
 	"path"
 	"path/filepath"
-	"string"
+	"strings"
 )
 func db_getstate(campaignid string){
 
