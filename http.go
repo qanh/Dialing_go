@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"io/ioutil"
+	"bytes"
 )
 
 var listfile map[string]string
@@ -179,10 +180,10 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to set step ratio Ratio Up:"+ r.FormValue("rup")+"Ratio Down:"+ r.FormValue("rner")+"Campaign ID:"+ r.FormValue("campaignID"))
 				plog ("MMissing argument to set step ratio Ratio Up:"+ r.FormValue("rup")+"Ratio Down:"+ r.FormValue("rner")+"Campaign ID:"+ r.FormValue("campaignID"),1)
 			} else {
-				
-				http_ratio,_:=strconv.FormatFloat(r.FormValue("ratio"), 'E', -1, 64)
-				http_timeout,_:=strconv.Atoi(r.FormValue("timeout"))
-				code,message:=ast_stepratio(http_ratio,r.FormValue("campaignID"),http_timeout)
+
+				rup,_:=strconv.ParseFloat(r.FormValue("rup"),  64)
+				rner,_:=strconv.ParseFloat(r.FormValue("rner"), 64)
+				code,message:=ast_stepratio(rup,rner,r.FormValue("campaignID"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
 			}
@@ -259,7 +260,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				streamPDFbytes, err := ioutil.ReadFile(file)
 				if err != nil {
 					w.WriteHeader(http.StatusBadRequest)
-					fmt.Fprintf(w,err)
+					fmt.Fprintf(w,err.Error())
 
 				}else{
 					b := bytes.NewBuffer(streamPDFbytes)
@@ -268,7 +269,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 					w.Header().Set("Content-type", "application/octet-stream")
 					w.WriteHeader(200)
 					if _, err := b.WriteTo(w); err != nil { // <----- here!
-						fmt.Fprintf(w, "%s", err)
+						fmt.Fprintf(w, "%s", err.Error())
 					}
 				}
 

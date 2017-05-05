@@ -403,14 +403,14 @@ func db_get_file(fileid string)(int,string){
 	err:=db.QueryRow(select_query).Scan(&host_name,&path_sql)
 	if(err!=nil){
 		ext := filepath.Ext(path_sql)
-		path_sql=strings.Replace(path_sql,ext,".wav")
+		path_sql=strings.Replace(path_sql,ext,".wav",-1)
 		filename := path.Base(path_sql)
 		out, err := os.Create("/var/lib/asterisk/sounds/dialplan/"+filename)
 		if err != nil  {
-			return 400,err
+			return 400,err.Error()
 		}
 		defer out.Close()
-		resp, err := http.Get("http://"+host_name+"/"+path)
+		resp, err := http.Get("http://"+host_name+"/"+path_sql)
 		if err != nil {
 			return 400,err.Error()
 		}
