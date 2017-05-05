@@ -76,7 +76,7 @@ func ast_login_remote(agent string, ext string , campaignid string,dest string,c
 
 }
 func ast_logout(agent string)(int , string){
-	plog( "Logout agent: "+agent,1)
+	//plog( "Logout agent: "+agent,1)
 	if val, ok := agents[agent]; ok {
 		plog( "At logout, hangup: "+agent+", "+val["ext"]+", "+val["conf_num"]+", "+val["channel"]+", "+val["ownchannel"]+", "+val["campaignid"]+"",1)
 		result, _ := a.Action(map[string]string{"Action":"Command","Command":"meetme kick "+val["conf_num"]+" all"})
@@ -116,7 +116,7 @@ func ast_hangup_event(m map[string]string){
 	plog("Hangup!  "+m["Channel"]+" "+ m["Uniqueid"]+" " + m["Callerid"],1)
 	var agent=call_arr[m["Uniqueid"]]["agent"]
 	//var channel=strings.Split(m["Channel"],"@")[0]
-	plog("Agent: "+agent+"  hangup with UniqueID"+ m["Uniqueid"],1)
+
 	delete(inbound_arr,m["Channel"])
 	delete(call_arr,m["Uniqueid"])
 	if(agent !="") {
@@ -294,6 +294,7 @@ func ast_join(m map[string]string){
 							ext:=agents[key]["ext"]
 							db_log("incall",key,ext,campaignid)
 							db_log_soundfile(ringcardid,campaignid,key)
+							call_arr[uid]["agent"]=key
 							url:="/dialing/card/"+ringcardid+"?dialnumber="+callee
 							mc.Set(&memcache.Item{Key: "redirect_"+agents[key]["clientid"]+"_"+key, Value: []byte(url)})
 							break
@@ -544,8 +545,6 @@ func ast_leave(m map[string]string){
 			if(status=="incall") {
 				a.Action(map[string]string{"Action": "Hangup",
 					"Channel":        current_channel,
-					"Context":        "default",
-					"Priority":        "1",
 				})
 			}
 		}
@@ -660,4 +659,87 @@ func set_default_ratio(campaignid string){
 	if(ratio_down[campaignid]==0){
 		ratio_down[campaignid]=default_ratio_down
 	}
+}
+
+func ast_idial(agent string,ext string,dest string,ringcard string, channel string)(int , string){
+	usernum:=agents[agent]["usernum"]
+	campaignid:=agents[agent]["campaignid"]
+	conf:="8800"+ext
+	unmute(conf,usernum,agent)
+	dial_cnt++
+	dial_cntarr[campaignid]++
+	agents[agent]["channel"]=channel
+	plog("Inbound from "+dest+" to "+conf+" Ringcard:"+ringcard,1)
+	result, _:=a.Action(map[string]string{"Action": "Redirect",
+		"Channel":channel,
+		"Context":"default",
+		"Exten":conf,
+		"Priority":"1"})
+	if(result["Response"]=="Error"){
+		return 406,result["Message"]
+	}
+	return 200,"OK"
+}
+func ast_transfer(agent string,toagent string, phonenum string)(int , string){
+	cur_conf:="8800"+agents[agent]["ext"]
+	conf:="8800"+agents[toagent]["ext"]
+	ringcardid:=agents[agent]["ringcardid"]
+	channel:=agents[agent]["channel"]
+	campaignid:=agents[agent]["campaignid"]
+	usernum:=agents[agent]["usernum"]
+	agents[agent]["logging"]="off"
+	db_log("recoff",agent,agents[agent]["ext"],campaignid)
+	a.Action(map[string]string{"Action": "COMMAND",
+		"Command":"mixmonitor stop "+channel	})
+	//plog("standby: Agent "+agent+" is standby",1)
+	agents[agent]["status"]="standby"
+	db_log("standby",agent,agents[agent]["ext"],campaignid)
+	agents[agent]["ringcardid"]=""
+	agents[agent]["channel"]=""
+	agents[agent]["callee"]=""
+	mute(cur_conf,usernum,agent)
+	unmute(conf, agents[toagent]["usernum"],toagent)
+	plog("Transfer call from "+agent+" , "+campaignid+" , "+phonenum+" , "+ringcardid+" , "+channel+" to "+toagent,1)
+	db_user_connected(agent,0)
+	result, _:=a.Action(map[string]string{"Action": "Redirect",
+		"Channel":channel,
+		"Context":"default",
+		"Exten":conf,
+		"Priority":"1"})
+	if(result["Response"]=="Error"){
+		return 406,result["Message"]
+	}
+	return 200,"OK"
+}
+func ast_record(phonenum string, recfile string,trunk string)(int,string){
+	channel:="SIP/"+phonenum
+	mc.Set(&memcache.Item{Key: "record_"+phonenum, Value: []byte(channel)})
+	if(len(phonenum)>5){
+		channel="SIP/tr"+trunk+"/"+phonenum
+	}
+	result, _ := a.Action(map[string]string{"Action": "Originate",
+		"Channel": 	channel,
+		"Context": 	"record",
+		"Exten":	"s",
+		"Timeout":	dial_timeout,
+		"Async":	"1",
+		"ActionID":	"record_"+phonenum,
+		"Variable":	"__recfile="+recfile,
+		"Priority":	"1"	})
+	if(result["Response"]=="Error"){
+		return 406,result["Message"]
+	}
+	return 200,"OK"
+
+}
+func ast_record_stop(phonenum string, recfile string,delete int)(int,string){
+	channel, _ := mc.Get("record_"+phonenum)
+	mc.Delete("record_"+phonenum)
+	a.Action(map[string]string{"Action": "Hangup",
+		"Channel":channel	})
+	if(delete == 1){
+		cmd :=exec.Command("rm"," /var/lib/asterisk/sounds/dialplan/"+recfile+".wav")
+		cmd.Run()
+	}
+	return 200,"OK"
 }

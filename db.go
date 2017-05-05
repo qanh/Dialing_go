@@ -8,6 +8,10 @@ import(
  	"time"
 	"os"
 	"fmt"
+	"io"
+	"net/http"
+	"path"
+	"path/filepath"
 )
 func db_getstate(campaignid string){
 
@@ -391,7 +395,32 @@ func tidsperiod() int {
 	if(hour>=17 && hour < 23){return 3}
 	return 0
 }
-
+func db_get_file(fileid string)(int,string){
+	var host_name string
+	var path string
+	select_query := "select host_name,path from dialplan_voicefiles where id=="+fileid
+	err:=db.QueryRow(select_query).Scan(&host_name,&path)
+	if(err!=nil){
+		ext := filepath.Ext(path)
+		path=strings.Replace(path,ext,".wav")
+		filename := path.Base(path)
+		out, err := os.Create("/var/lib/asterisk/sounds/dialplan/"+filename)
+		if err != nil  {
+			return 400,err
+		}
+		defer out.Close()
+		resp, err := http.Get("http://"+host_name+"/"+path)
+		if err != nil {
+			return 400,err
+		}
+		defer resp.Body.Close()
+		_, err = io.Copy(out, resp.Body)
+		if err != nil  {
+			return 400,err
+		}
+	}
+	return 200,"OK"
+}
 /**
   using a map
 */

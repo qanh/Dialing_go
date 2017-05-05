@@ -3,6 +3,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"io/ioutil"
 )
 
 var listfile map[string]string
@@ -180,25 +181,99 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			} else {
 				
 				http_ratio,_:=strconv.Atoi(r.FormValue("ratio"))
-				http_timout,_:=strconv.Atoi(r.FormValue("timeout"))
-				code,message:=ast_ratio(http_ratio,r.FormValue("campaignID"),http_timout)
+				http_timeout,_:=strconv.Atoi(r.FormValue("timeout"))
+				code,message:=ast_stepratio(http_ratio,r.FormValue("campaignID"),http_timeout)
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
 			}
 		//listen specified call
-		/*case "idial":
+		case "idial":
 			//http://dialern.televinken.se/user_state?agent=4711&anknytning=021&ringkort=5&channel=SIP/123&action=idial
 			if ((r.FormValue("agent")=="") || (r.FormValue("anknytning")== "") || (r.FormValue("ringkort")== "")|| (r.FormValue("dest")== "")|| (r.FormValue("channel")== "")) {
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "Missing argument to monitor dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" RingcardID:"+r.FormValue("ringkort")+" Channel:"+r.FormValue("channel"))
-				plog ("Missing argument to monitor dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" RingcardID:"+r.FormValue("ringkort")+" Channel:"+r.FormValue("channel"))
+				plog ("Missing argument to monitor dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" RingcardID:"+r.FormValue("ringkort")+" Channel:"+r.FormValue("channel"),1)
 			} else {
 				
 				code,message:=ast_idial(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("dest"),r.FormValue("ringkort"),r.FormValue("channel"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
-			}*/
-		default:
+			}
+		case "copyFile":
+			if(r.FormValue("fileID")==""){
+				w.WriteHeader(http.StatusBadRequest)
+				fmt.Fprintf(w,"Missing argument to download file ")
+				plog ("Missing argument to download file ", 1)
+			}else{
+				code,message:=db_get_file(r.FormValue("fileID"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
+			}
+		case "transfer":
+			if(r.FormValue("phonenumber")=="" ||r.FormValue("agent")=="" || r.FormValue("to_agent")==""){
+				w.WriteHeader(http.StatusBadRequest)
+				fmt.Fprintf(w,"Missing argument to transfer call: "+r.FormValue("agent")+","+r.FormValue("to_agent")+","+r.FormValue("phonenumber"))
+				plog ("Missing argument to transfer call: "+r.FormValue("agent")+","+r.FormValue("to_agent")+","+r.FormValue("phonenumber"), 1)
+			}else{
+				code,message:=ast_transfer(r.FormValue("agent"),r.FormValue("to_agent"),r.FormValue("phonenumber"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
+			}
+		case "record":
+			if(r.FormValue("phonenumber")=="" ||r.FormValue("recname")=="" || r.FormValue("trunk")==""){
+				w.WriteHeader(http.StatusBadRequest)
+				fmt.Fprintf(w,"Missing argument to record voice promts: "+r.FormValue("phonenumber")+","+r.FormValue("recname")+","+r.FormValue("trunk"))
+				plog ("Missing argument to record voice promts: "+r.FormValue("phonenumber")+","+r.FormValue("recname")+","+r.FormValue("trunk"), 1)
+			}else{
+				code,message:=ast_record(r.FormValue("phonenumber"),r.FormValue("recname"),r.FormValue("trunk"))
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
+			}
+		case "recordcancel":
+			if(r.FormValue("phonenumber")=="" ||r.FormValue("recname")=="" ){
+				w.WriteHeader(http.StatusBadRequest)
+				fmt.Fprintf(w,"Missing argument to stop record voice promts: "+r.FormValue("phonenumber")+","+r.FormValue("recname"))
+				plog ("Missing argument to stop record voice promts: "+r.FormValue("phonenumber")+","+r.FormValue("recname"), 1)
+			}else{
+				code,message:=ast_record_stop(r.FormValue("phonenumber"),r.FormValue("recname"),1)
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
+			}
+		case "recordfinish":
+			if(r.FormValue("phonenumber")=="" ||r.FormValue("recname")=="" ){
+				w.WriteHeader(http.StatusBadRequest)
+				fmt.Fprintf(w,"Missing argument to stop record voice promts: "+r.FormValue("phonenumber")+","+r.FormValue("recname"))
+				plog ("Missing argument to stop record voice promts: "+r.FormValue("phonenumber")+","+r.FormValue("recname"), 1)
+			}else{
+				code,message:=ast_record_stop(r.FormValue("phonenumber"),r.FormValue("recname"),0)
+				w.WriteHeader(code)
+				fmt.Fprintf(w, message)
+			}
+		case "recordget":
+			if(r.FormValue("recname")==""){
+				w.WriteHeader(http.StatusBadRequest)
+				fmt.Fprintf(w,"Missing argument to get record voice promts: "+r.FormValue("recname"))
+				plog ("Missing argument to get record voice promts: "+r.FormValue("recname"), 1)
+			}else{
+				file:="/var/lib/asterisk/sounds/dialplan/"+r.FormValue("recname")+".wav"
+				streamPDFbytes, err := ioutil.ReadFile(file)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					fmt.Fprintf(w,err)
+
+				}else{
+					b := bytes.NewBuffer(streamPDFbytes)
+
+					// stream straight to client(browser)
+					w.Header().Set("Content-type", "application/octet-stream")
+					w.WriteHeader(200)
+					if _, err := b.WriteTo(w); err != nil { // <----- here!
+						fmt.Fprintf(w, "%s", err)
+					}
+				}
+
+			}
+			default:
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, r.FormValue("action")+ " is not an allowed action" )
 
