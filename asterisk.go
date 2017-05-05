@@ -736,7 +736,7 @@ func ast_record_stop(phonenum string, recfile string,delete int)(int,string){
 	channel, _ := mc.Get("record_"+phonenum)
 	mc.Delete("record_"+phonenum)
 	a.Action(map[string]string{"Action": "Hangup",
-		"Channel":string(channel)	})
+		"Channel":string(channel.Value)	})
 	if(delete == 1){
 		cmd :=exec.Command("rm"," /var/lib/asterisk/sounds/dialplan/"+recfile+".wav")
 		cmd.Run()
