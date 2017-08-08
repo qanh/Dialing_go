@@ -775,7 +775,7 @@ func ast_delete_peercache()(int,string){
 			}
 		}
 	}*/
-	ut, err := exec.Command("/var/run/asterisk/asterisk -rx \"sip show peers\"").Output()
+	ut, err := exec.Command("/usr/sbin/asterisk -rx \"sip show peers\"").Output()
 	fmt.Println(ut,err)
 	return 200,"OK"
 }
