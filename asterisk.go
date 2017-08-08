@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"os/exec"
 	"time"
-	"encoding/json"
 	"github.com/bradfitz/gomemcache/memcache"
 )
 func DefaultHandler(m map[string]string) {
