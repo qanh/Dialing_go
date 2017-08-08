@@ -756,6 +756,7 @@ func ast_peerstatus(peer string)(int,string){
 			status="OK"
 		}
 	}
+	plog(status,1)
 	return 200,"OK"
 }
 func ast_delete_peercache()(int,string){
