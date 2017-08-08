@@ -765,7 +765,9 @@ func ast_delete_peercache()(int,string){
 		return 406,result["Message"]
 	}else {
 		//peers:=result["events"]
-		plog(result,1)
+		for key, value := range result {
+			fmt.Println("Key:", key, "Value:", value)
+		}
 		/*for i:=0;i<len(peers);i++ {
 			if(peers[i]["ObjectName"]==3) {
 				mc.Delete("peer_" + peers[i]["ObjectName"])
