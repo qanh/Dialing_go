@@ -760,7 +760,7 @@ func ast_peerstatus(peer string)(int,string){
 	return 200,"OK"
 }
 func ast_delete_peercache()(int,string){
-	result, _ := a.Action(map[string]string{"Action": "SIPpeers"})
+	result, _ := a.Action(map[string]string{"Action": "SIPpeers","ActionID":"allpeers_123"})
 	if(result["Response"]=="Error"){
 		return 406,result["Message"]
 	}else {
