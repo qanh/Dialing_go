@@ -21,8 +21,8 @@
       <file leaf-file-name="asterisk.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/asterisk.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="548">
-              <caret line="758" column="21" lean-forward="false" selection-start-line="758" selection-start-column="21" selection-end-line="758" selection-end-column="21" />
+            <state relative-caret-position="415">
+              <caret line="754" column="39" lean-forward="false" selection-start-line="754" selection-start-column="39" selection-end-line="754" selection-end-column="39" />
               <folding>
                 <element signature="e#13#114#0" expanded="true" />
               </folding>
@@ -58,7 +58,7 @@
         <entry file="file://$PROJECT_DIR$/http.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="667">
-              <caret line="280" column="30" lean-forward="false" selection-start-line="280" selection-start-column="30" selection-end-line="280" selection-end-column="30" />
+              <caret line="280" column="32" lean-forward="false" selection-start-line="280" selection-start-column="22" selection-end-line="280" selection-end-column="32" />
               <folding>
                 <element signature="e#13#75#0" expanded="true" />
               </folding>
@@ -333,14 +333,7 @@
       <workItem from="1493000968232" duration="600000" />
       <workItem from="1493780290360" duration="1804000" />
       <workItem from="1493868741645" duration="12904000" />
-      <workItem from="1502164752830" duration="2934000" />
-    </task>
-    <task id="LOCAL-00097" summary="fix bug">
-      <created>1492660808151</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1492660808151</updated>
+      <workItem from="1502164752830" duration="3181000" />
     </task>
     <task id="LOCAL-00098" summary="fix bug">
       <created>1492661058710</created>
@@ -678,11 +671,18 @@
       <option name="project" value="LOCAL" />
       <updated>1502177399308</updated>
     </task>
-    <option name="localTasksCounter" value="146" />
+    <task id="LOCAL-00146" summary="fix bug">
+      <created>1502177444218</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1502177444218</updated>
+    </task>
+    <option name="localTasksCounter" value="147" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="220278000" />
+    <option name="totallyTimeSpent" value="220525000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-16" width="1936" height="1056" extended-state="6" />
@@ -1231,7 +1231,7 @@
     <entry file="file://$PROJECT_DIR$/http.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="667">
-          <caret line="280" column="30" lean-forward="false" selection-start-line="280" selection-start-column="30" selection-end-line="280" selection-end-column="30" />
+          <caret line="280" column="32" lean-forward="false" selection-start-line="280" selection-start-column="22" selection-end-line="280" selection-end-column="32" />
           <folding>
             <element signature="e#13#75#0" expanded="true" />
           </folding>
@@ -1240,8 +1240,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/asterisk.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="548">
-          <caret line="758" column="21" lean-forward="false" selection-start-line="758" selection-start-column="21" selection-end-line="758" selection-end-column="21" />
+        <state relative-caret-position="415">
+          <caret line="754" column="39" lean-forward="false" selection-start-line="754" selection-start-column="39" selection-end-line="754" selection-end-column="39" />
           <folding>
             <element signature="e#13#114#0" expanded="true" />
           </folding>

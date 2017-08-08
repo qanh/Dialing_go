@@ -752,7 +752,7 @@ func ast_peerstatus(peer string)(int,string){
 		return 406,result["Message"]
 	}else{
 		plog(result["Status"],1)
-		if(result["Status"]=="OK"){
+		if(result["Status"][0:2]=="OK"){
 			status="OK"
 		}
 	}
@@ -764,8 +764,8 @@ func ast_delete_peercache()(int,string){
 	if(result["Response"]=="Error"){
 		return 406,result["Message"]
 	}else {
-		peers:=result["events"]
-		plog(peers,1)
+		//peers:=result["events"]
+		plog(result,1)
 		/*for i:=0;i<len(peers);i++ {
 			if(peers[i]["ObjectName"]==3) {
 				mc.Delete("peer_" + peers[i]["ObjectName"])
