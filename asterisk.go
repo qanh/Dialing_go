@@ -743,3 +743,31 @@ func ast_record_stop(phonenum string, recfile string,delete int)(int,string){
 	}
 	return 200,"OK"
 }
+
+func ast_peerstatus(peer string)(int,string){
+	result, _ := a.Action(map[string]string{"Action": "SIPshowpeer",
+		"Peer": 	peer	})
+	status:="FAIL"
+	if(result["Response"]=="Error"){
+		return 406,result["Message"]
+	}else{
+		plog(result["Status"],1)
+		if(result["Status"]=="OK"){
+			status="OK"
+		}
+	}
+	return 200,"OK"
+}
+func ast_delete_peercache(){
+	result, _ := a.Action(map[string]string{"Action": "SIPpeers"})
+	if(result["Response"]=="Error"){
+		return 406,result["Message"]
+	}else {
+		peers:=result["events"]
+		for i:=0;i<len(peers);i++ {
+			if(peers[i]["ObjectName"]==3) {
+				mc.Delete("peer_" + peers[i]["ObjectName"])
+			}
+		}
+	}
+}
