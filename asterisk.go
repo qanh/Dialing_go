@@ -761,7 +761,7 @@ func ast_peerstatus(peer string)(int,string){
 	return 200,"OK"
 }
 func ast_delete_peercache()(int,string){
-	result, _ := a.Action(map[string]string{"Action": "SIPpeerstatus","ActionID":"allpeers_123"})
+	/*result, _ := a.Action(map[string]string{"Action": "SIPpeerstatus","ActionID":"allpeers_123"})
 	if(result["Response"]=="Error"){
 		return 406,result["Message"]
 	}else {
@@ -774,7 +774,9 @@ func ast_delete_peercache()(int,string){
 			if(peers[i]["ObjectName"]==3) {
 				mc.Delete("peer_" + peers[i]["ObjectName"])
 			}
-		}*/
-	}
+		}
+	}*/
+	ut, err := exec.Command("asterisk -rx \"sip show peers\"").Output()
+	fmt.Println(ut)
 	return 200,"OK"
 }
