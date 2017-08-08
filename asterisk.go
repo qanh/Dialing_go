@@ -765,6 +765,7 @@ func ast_delete_peercache()(int,string){
 		return 406,result["Message"]
 	}else {
 		//peers:=result["events"]
+		fmt.Println(result)
 		for key, value := range result {
 			fmt.Println("Key:", key, "Value:", value)
 		}
