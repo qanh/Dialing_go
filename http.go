@@ -278,6 +278,10 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			code,message:=ast_peerstatus(r.FormValue("peer"))
 			w.WriteHeader(code)
 			fmt.Fprintf(w, message)
+		case "peerdelete":
+			code,message:=ast_delete_peercache()
+			w.WriteHeader(code)
+			fmt.Fprintf(w, message)
 		default:
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, r.FormValue("action")+ " is not an allowed action" )
