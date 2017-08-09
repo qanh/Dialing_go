@@ -782,6 +782,6 @@ func ast_channel(m map[string]string){
 	}
 }
 func checknumqueue(){
-	cmd,_ :=exec.Command("sudo /usr/sbin/asterisk -rx 'core show channels concise'|grep '@selecttrunk'|awk -F '!' '$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/'|wc -l").Output()
+	cmd,_ :=exec.Command("sudo /usr/sbin/asterisk -rx 'core show channels concise'|wc -l").Output()
 	fmt.Println(cmd)
 }
