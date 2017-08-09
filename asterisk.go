@@ -764,7 +764,7 @@ func ast_delete_peercache()(int,string){
 	if(result["Response"]=="Error"){
 		return 406,result["Message"]
 	}
-	cmd:=exec.Command("asterisk -rx 'core show channels concise'|wc -l")
+	cmd:=exec.Command("/usr/sbin/asterisk -rx 'core show channels concise'|wc -l")
 
 	output, err := cmd.CombinedOutput()
 	fmt.Println(string(output),err)
