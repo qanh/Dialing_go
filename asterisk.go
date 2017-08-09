@@ -766,7 +766,7 @@ func ast_delete_peercache()(int,string){
 		return 406,result["Message"]
 	}
 	//cmd:=exec.Command("asterisk","-rx","core show channels concise","wc"," -l")
-	count, err:=sh.Command("asterisk","-rx","core show channels concise").Command("wc","-l").Output()
+	count, err:=sh.Command("asterisk","-rx","core show channels concise").Command("grep","@selecttrunk").Command("awk","-F","!","$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/").Command("wc","-l").Output()
 
 	//output, err := cmd.CombinedOutput()
 	fmt.Println(string(count),err)
@@ -789,5 +789,6 @@ func ast_channel(m map[string]string){
 }
 func checknumqueue(){
 	cmd,_ :=exec.Command("sudo /usr/sbin/asterisk -rx 'core show channels concise'|grep '@selecttrunk'|awk -F '!' '$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/'|wc -l").Output()
+	count, err:=sh.Command("asterisk","-rx","core show channels concise").Command("grep","@selecttrunk").Command("awk","-F","!","$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/").Command("wc","-l").Output()
 	fmt.Println(cmd)
 }
