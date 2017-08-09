@@ -769,9 +769,9 @@ func ast_delete_peercache()(int,string){
 }
 func ast_peer_status(m map[string]string){
 	if m["ActionID"]=="allpeers_123"{
-		if len(m["Peer"]==7){
+		if len(m["Peer"])==7 {
 			fmt.Println(m["Peer"][4])
-			mc.Delete("peer_"+m["Peer"][4])
+			mc.Delete("peer_"+m["Peer"][4:])
 		}
 	}
 }

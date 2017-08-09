@@ -21,8 +21,8 @@
       <file leaf-file-name="asterisk.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/asterisk.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="556">
-              <caret line="765" column="9" lean-forward="true" selection-start-line="765" selection-start-column="9" selection-end-line="765" selection-end-column="9" />
+            <state relative-caret-position="692">
+              <caret line="773" column="54" lean-forward="false" selection-start-line="773" selection-start-column="54" selection-end-line="773" selection-end-column="54" />
               <folding>
                 <element signature="e#13#114#0" expanded="true" />
               </folding>
@@ -333,14 +333,7 @@
       <workItem from="1493000968232" duration="600000" />
       <workItem from="1493780290360" duration="1804000" />
       <workItem from="1493868741645" duration="12904000" />
-      <workItem from="1502164752830" duration="8864000" />
-    </task>
-    <task id="LOCAL-00113" summary="fix bug">
-      <created>1492670649127</created>
-      <option name="number" value="00113" />
-      <option name="presentableId" value="LOCAL-00113" />
-      <option name="project" value="LOCAL" />
-      <updated>1492670649128</updated>
+      <workItem from="1502164752830" duration="8960000" />
     </task>
     <task id="LOCAL-00114" summary="fix bug">
       <created>1492671004122</created>
@@ -678,11 +671,18 @@
       <option name="project" value="LOCAL" />
       <updated>1502265650539</updated>
     </task>
-    <option name="localTasksCounter" value="162" />
+    <task id="LOCAL-00162" summary="fix bug">
+      <created>1502265688513</created>
+      <option name="number" value="00162" />
+      <option name="presentableId" value="LOCAL-00162" />
+      <option name="project" value="LOCAL" />
+      <updated>1502265688513</updated>
+    </task>
+    <option name="localTasksCounter" value="163" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="226208000" />
+    <option name="totallyTimeSpent" value="226304000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-16" width="1936" height="1056" extended-state="6" />
@@ -1240,8 +1240,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/asterisk.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="556">
-          <caret line="765" column="9" lean-forward="true" selection-start-line="765" selection-start-column="9" selection-end-line="765" selection-end-column="9" />
+        <state relative-caret-position="692">
+          <caret line="773" column="54" lean-forward="false" selection-start-line="773" selection-start-column="54" selection-end-line="773" selection-end-column="54" />
           <folding>
             <element signature="e#13#114#0" expanded="true" />
           </folding>
