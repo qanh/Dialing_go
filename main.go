@@ -119,6 +119,7 @@ func init(){
 	a.RegisterHandler("MeetmeLeave",ast_leave)
 	a.RegisterHandler("OriginateResponse",ast_originate_response)
 	a.RegisterHandler("PeerStatus",ast_peer_status)
+	a.RegisterHandler("CoreShowChannel",ast_channel)
 	//c := make(chan map[string]string, 100)
 	//a.SetEventChannel(c)
 	//listen http request

@@ -760,18 +760,28 @@ func ast_peerstatus(peer string)(int,string){
 	return 200,"OK"
 }
 func ast_delete_peercache()(int,string){
-	result, _ := a.Action(map[string]string{"Action": "SIPpeerstatus","ActionID":"allpeers_123"})
+	result, _ := a.Action(map[string]string{"Action": "SIPpeerstatus","ActionID":"allpeers"})
 	if(result["Response"]=="Error"){
 		return 406,result["Message"]
 	}
-
+	cmd,_ :=exec.Command("sudo /usr/sbin/asterisk -rx 'core show channels concise'|grep '@selecttrunk'|awk -F '!' '$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/'|wc -l").Output()
+	fmt.Println(cmd)
 	return 200,"OK"
 }
 func ast_peer_status(m map[string]string){
-	if m["ActionID"]=="allpeers_123"{
+	if m["ActionID"]=="allpeers"{
 		if len(m["Peer"])==7 {
-			fmt.Println(m["Peer"][4:])
+			//fmt.Println(m["Peer"][4:])
 			mc.Delete("peer_"+m["Peer"][4:])
 		}
 	}
+}
+func ast_channel(m map[string]string){
+	if m["ActionID"]=="allchannel" && m["Context"]=="dial-out" && Contains(m["Channel"],"selecttrunk"){
+
+	}
+}
+func checknumqueue(){
+	cmd,_ :=exec.Command("sudo /usr/sbin/asterisk -rx 'core show channels concise'|grep '@selecttrunk'|awk -F '!' '$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/'|wc -l").Output()
+	fmt.Println(cmd)
 }
