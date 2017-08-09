@@ -765,9 +765,9 @@ func ast_delete_peercache()(int,string){
 		return 406,result["Message"]
 	}
 	cmd,err :=exec.Command("sudo"," /usr/sbin/asterisk -rx 'core show channels concise'|wc -l").Output()
-	fmt.Println(cmd,err)
+	fmt.Println(string(cmd),err)
 	test,er:=exec.Command("date").Output();
-	fmt.Println(test,er)
+	fmt.Println(string(test),er)
 	return 200,"OK"
 }
 func ast_peer_status(m map[string]string){
