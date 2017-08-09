@@ -764,8 +764,8 @@ func ast_delete_peercache()(int,string){
 	if(result["Response"]=="Error"){
 		return 406,result["Message"]
 	}
-	cmd,_ :=exec.Command("sudo /usr/sbin/asterisk -rx 'core show channels concise'|grep '@selecttrunk'|awk -F '!' '$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/'|wc -l").Output()
-	fmt.Println(cmd)
+	cmd,err :=exec.Command("sudo /usr/sbin/asterisk -rx 'core show channels concise'|wc -l").Output()
+	fmt.Println(cmd,err)
 	return 200,"OK"
 }
 func ast_peer_status(m map[string]string){
@@ -782,6 +782,6 @@ func ast_channel(m map[string]string){
 	}
 }
 func checknumqueue(){
-	cmd,err :=exec.Command("sudo /usr/sbin/asterisk -rx 'core show channels concise'|wc -l").Output()
-	fmt.Println(cmd,err)
+	cmd,_ :=exec.Command("sudo /usr/sbin/asterisk -rx 'core show channels concise'|grep '@selecttrunk'|awk -F '!' '$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/'|wc -l").Output()
+	fmt.Println(cmd)
 }
