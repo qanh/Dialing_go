@@ -766,7 +766,8 @@ func ast_delete_peercache()(int,string){
 		return 406,result["Message"]
 	}
 	//cmd:=exec.Command("asterisk","-rx","core show channels concise","wc"," -l")
-	count, err=sh.Command("asterisk","-rx","core show channels concise").Command("wc"," -l").Run()
+	count, err=sh.Command("asterisk","-rx","core show channels concise").Command("wc"," -l").Output()
+
 	//output, err := cmd.CombinedOutput()
 	fmt.Println(string(count),err)
 	test,er:=exec.Command("date").Output();
