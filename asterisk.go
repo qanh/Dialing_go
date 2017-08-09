@@ -766,7 +766,7 @@ func ast_delete_peercache()(int,string){
 	}
 	cmd,err :=exec.Command("sudo"," /usr/sbin/asterisk -rx 'core show channels concise'|wc -l").Output()
 	fmt.Println(cmd,err)
-	test,er:=exec.Command("date");
+	test,er:=exec.Command("date").Output();
 	fmt.Println(test,er)
 	return 200,"OK"
 }
