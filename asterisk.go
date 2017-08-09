@@ -777,7 +777,7 @@ func ast_peer_status(m map[string]string){
 	}
 }
 func ast_channel(m map[string]string){
-	if m["ActionID"]=="allchannel" && m["Context"]=="dial-out" && Contains(m["Channel"],"selecttrunk"){
+	if m["ActionID"]=="allchannel" && m["Context"]=="dial-out" && strings.Contains(m["Channel"],"selecttrunk"){
 
 	}
 }
