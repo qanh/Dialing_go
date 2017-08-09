@@ -21,10 +21,10 @@
       <file leaf-file-name="asterisk.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/asterisk.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="364">
-              <caret line="766" column="78" lean-forward="false" selection-start-line="766" selection-start-column="78" selection-end-line="766" selection-end-column="78" />
+            <state relative-caret-position="415">
+              <caret line="770" column="32" lean-forward="false" selection-start-line="770" selection-start-column="32" selection-end-line="770" selection-end-column="32" />
               <folding>
-                <element signature="e#13#114#0" expanded="true" />
+                <element signature="e#13#146#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -334,14 +334,7 @@
       <workItem from="1493780290360" duration="1804000" />
       <workItem from="1493868741645" duration="12904000" />
       <workItem from="1502164752830" duration="9235000" />
-      <workItem from="1502267161585" duration="3786000" />
-    </task>
-    <task id="LOCAL-00133" summary="fix bug">
-      <created>1492744622655</created>
-      <option name="number" value="00133" />
-      <option name="presentableId" value="LOCAL-00133" />
-      <option name="project" value="LOCAL" />
-      <updated>1492744622655</updated>
+      <workItem from="1502267161585" duration="4505000" />
     </task>
     <task id="LOCAL-00134" summary="fix bug">
       <created>1492745507097</created>
@@ -679,11 +672,18 @@
       <option name="project" value="LOCAL" />
       <updated>1502270821259</updated>
     </task>
-    <option name="localTasksCounter" value="182" />
+    <task id="LOCAL-00182" summary="fix bug">
+      <created>1502271102729</created>
+      <option name="number" value="00182" />
+      <option name="presentableId" value="LOCAL-00182" />
+      <option name="project" value="LOCAL" />
+      <updated>1502271102729</updated>
+    </task>
+    <option name="localTasksCounter" value="183" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="230365000" />
+    <option name="totallyTimeSpent" value="231084000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-16" width="1936" height="1056" extended-state="6" />
@@ -730,7 +730,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/asterisk.go</url>
-          <line>141</line>
+          <line>142</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
@@ -754,7 +754,7 @@
         <state relative-caret-position="8619">
           <caret line="511" column="54" lean-forward="false" selection-start-line="511" selection-start-column="16" selection-end-line="511" selection-end-column="54" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -794,7 +794,7 @@
         <state relative-caret-position="8687">
           <caret line="511" column="54" lean-forward="false" selection-start-line="511" selection-start-column="16" selection-end-line="511" selection-end-column="54" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -834,7 +834,7 @@
         <state relative-caret-position="10200">
           <caret line="604" column="3" lean-forward="false" selection-start-line="604" selection-start-column="3" selection-end-line="604" selection-end-column="3" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -874,7 +874,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -914,7 +914,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -954,7 +954,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -994,7 +994,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1034,7 +1034,7 @@
         <state relative-caret-position="4284">
           <caret line="255" column="56" lean-forward="false" selection-start-line="255" selection-start-column="56" selection-end-line="255" selection-end-column="56" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1074,7 +1074,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1114,7 +1114,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1154,7 +1154,7 @@
         <state relative-caret-position="595">
           <caret line="37" column="45" lean-forward="true" selection-start-line="37" selection-start-column="45" selection-end-line="37" selection-end-column="45" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1194,7 +1194,7 @@
         <state relative-caret-position="68">
           <caret line="6" column="1" lean-forward="true" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1241,10 +1241,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/asterisk.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="364">
-          <caret line="766" column="78" lean-forward="false" selection-start-line="766" selection-start-column="78" selection-end-line="766" selection-end-column="78" />
+        <state relative-caret-position="415">
+          <caret line="770" column="32" lean-forward="false" selection-start-line="770" selection-start-column="32" selection-end-line="770" selection-end-column="32" />
           <folding>
-            <element signature="e#13#114#0" expanded="true" />
+            <element signature="e#13#146#0" expanded="true" />
           </folding>
         </state>
       </provider>

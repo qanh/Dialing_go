@@ -4,6 +4,7 @@ import (
 	"strings"
 	"strconv"
 	"os/exec"
+	"github.com/codeskyblue/go-sh"
 	"time"
 	"github.com/bradfitz/gomemcache/memcache"
 )
@@ -764,10 +765,10 @@ func ast_delete_peercache()(int,string){
 	if(result["Response"]=="Error"){
 		return 406,result["Message"]
 	}
-	cmd:=exec.Command("asterisk","-rx","core show channels concise","wc"," -l")
-
-	output, err := cmd.CombinedOutput()
-	fmt.Println(string(output),err)
+	//cmd:=exec.Command("asterisk","-rx","core show channels concise","wc"," -l")
+	count, err=sh.Command("asterisk","-rx","core show channels concise").Command("wc"," -l").Run()
+	//output, err := cmd.CombinedOutput()
+	fmt.Println(string(count),err)
 	test,er:=exec.Command("date").Output();
 	fmt.Println(string(test),er)
 	return 200,"OK"
