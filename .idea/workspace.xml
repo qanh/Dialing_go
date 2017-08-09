@@ -4,7 +4,6 @@
     <list default="true" id="f7c1f2cd-2bdd-4862-9012-3140ec844fde" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asterisk.go" afterPath="$PROJECT_DIR$/asterisk.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.go" afterPath="$PROJECT_DIR$/main.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -22,8 +21,8 @@
       <file leaf-file-name="asterisk.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/asterisk.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="607">
-              <caret line="775" column="19" lean-forward="false" selection-start-line="775" selection-start-column="19" selection-end-line="775" selection-end-column="19" />
+            <state relative-caret-position="692">
+              <caret line="783" column="48" lean-forward="false" selection-start-line="783" selection-start-column="48" selection-end-line="783" selection-end-column="48" />
               <folding>
                 <element signature="e#13#114#0" expanded="true" />
               </folding>
@@ -334,14 +333,7 @@
       <workItem from="1493000968232" duration="600000" />
       <workItem from="1493780290360" duration="1804000" />
       <workItem from="1493868741645" duration="12904000" />
-      <workItem from="1502164752830" duration="8514000" />
-    </task>
-    <task id="LOCAL-00111" summary="fix bug">
-      <created>1492670353780</created>
-      <option name="number" value="00111" />
-      <option name="presentableId" value="LOCAL-00111" />
-      <option name="project" value="LOCAL" />
-      <updated>1492670353781</updated>
+      <workItem from="1502164752830" duration="8826000" />
     </task>
     <task id="LOCAL-00112" summary="fix bug">
       <created>1492670407310</created>
@@ -679,11 +671,18 @@
       <option name="project" value="LOCAL" />
       <updated>1502187392118</updated>
     </task>
-    <option name="localTasksCounter" value="160" />
+    <task id="LOCAL-00160" summary="fix bug">
+      <created>1502265339678</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1502265339678</updated>
+    </task>
+    <option name="localTasksCounter" value="161" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="225858000" />
+    <option name="totallyTimeSpent" value="226170000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-16" width="1936" height="1056" extended-state="6" />
@@ -1241,8 +1240,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/asterisk.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="607">
-          <caret line="775" column="19" lean-forward="false" selection-start-line="775" selection-start-column="19" selection-end-line="775" selection-end-column="19" />
+        <state relative-caret-position="692">
+          <caret line="783" column="48" lean-forward="false" selection-start-line="783" selection-start-column="48" selection-end-line="783" selection-end-column="48" />
           <folding>
             <element signature="e#13#114#0" expanded="true" />
           </folding>
