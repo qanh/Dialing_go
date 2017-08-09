@@ -763,17 +763,6 @@ func ast_delete_peercache()(int,string){
 	result, _ := a.Action(map[string]string{"Action": "SIPpeerstatus","ActionID":"allpeers_123"})
 	if(result["Response"]=="Error"){
 		return 406,result["Message"]
-	}else {
-		//peers:=result["events"]
-		fmt.Println(result)
-		for key, value := range result {
-			fmt.Println("Key:", key, "Value:", value)
-		}
-		/*for i:=0;i<len(peers);i++ {
-			if(peers[i]["ObjectName"]==3) {
-				mc.Delete("peer_" + peers[i]["ObjectName"])
-			}
-		}*/
 	}
 
 	return 200,"OK"
