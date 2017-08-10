@@ -16,11 +16,9 @@ type program struct{}
 //Init variable
 
 
-var t=viper.SetConfigName("app")
-var t1 = viper.ReadInConfig()
-var log_file=viper.GetString("log.path")
+var log_file=""
 var file os.File
-var port=viper.GetString("http.port")
+var port=""
 //var logger service.Logger
 //database config
 
@@ -30,13 +28,15 @@ var port=viper.GetString("http.port")
 //var db_name="dialingdb"
 //var db =autorc.New("tcp", "", db_host, db_user, db_pass, db_name)
 var db *sql.DB
-var db_string=viper.GetString("mysql.db_string")
+var db_string=""
 //Asterisk variable
-var settings = &amigo.Settings{Username: viper.GetString("asterisk.user"), Password: viper.GetString("asterisk.pass"), Host: viper.GetString("asterisk.host"),Port:viper.GetString("asterisk.port")}
+
 //memcache
 //var mc := memcache.New("127.0.0.1:11211")
-var a=amigo.New(settings)
-var mc=memcache.New(viper.GetString("memcache.mem_string"))
+//var a=amigo.New(settings)
+var a *amigo.Amigo
+var mc *memcache.Client
+
 var dial_timeout=25000
 var agents=make(map[string]map[string]string)
 var db_ratio =make(map[string]float64)
@@ -108,6 +108,8 @@ func init(){
 	}else{
 		plog("DB connected",1)
 	}
+	settings := &amigo.Settings{Username: viper.GetString("asterisk.user"), Password: viper.GetString("asterisk.pass"), Host: viper.GetString("asterisk.host"),Port:viper.GetString("asterisk.port")}
+	a = amigo.New(settings)
 	//listen asterisk event and request
 	a.Connect()
 	// Listen for connection events
@@ -151,6 +153,13 @@ func main() {
 		DisplayName: "Dialing Service",
 		Description: "Dialing Asterisk app.",
 	}
+	viper.SetConfigName("app")
+	viper.AddConfigPath(".")
+	_ := viper.ReadInConfig()
+	db_string=viper.GetString("mysql.db_string")
+	log_file=viper.GetString("log.path")
+	port=viper.GetString("http.port")
+	mc=memcache.New(viper.GetString("memcache.mem_string"))
 	fmt.Println("Start")
 	//Database mysql
 
