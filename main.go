@@ -16,8 +16,8 @@ type program struct{}
 //Init variable
 
 
-_:=viper.SetConfigName("app")
-err := viper.ReadInConfig()
+var t=viper.SetConfigName("app")
+var t1 = viper.ReadInConfig()
 var log_file=viper.GetString("log.path")
 var file os.File
 var port=viper.GetString("http.port")
