@@ -30,6 +30,8 @@ func ast_login(agent string, ext string , campaignid string,clientid string)(int
 	//Callee number
 	agents[agent]["callee"]=""
 	agents[agent]["channel"]=""
+	agents[agent]["ownchannel"]=""
+
 	plog( "Login "+agent+", "+ext+", "+conf_num,1)
 	result, _ := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+ext,"Context":"default","Exten":conf_num,"Priority":"1"})
 
@@ -62,6 +64,7 @@ func ast_login_remote(agent string, ext string , campaignid string,dest string,c
 	//Callee number
 	agents[agent]["callee"]=""
 	agents[agent]["channel"]=""
+	agents[agent]["ownchannel"]=""
 	plog( "Login "+agent+", "+ext+", "+conf_num+", "+dest,1)
 	result, _ := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+dest+"\\@siptrunk","Context":"default","Exten":conf_num,"Priority":"1"})
 	if(result["Response"]=="Error"){
@@ -120,6 +123,11 @@ func ast_hangup_event(m map[string]string){
 
 	delete(inbound_arr,m["Channel"])
 	delete(call_arr,m["Uniqueid"])
+	for key, _ := range agents {
+		if agents[key]["ownchannel"] == m["Channel"]{
+			mc.Set(&memcache.Item{Key: "peer_"+agents[key]["ext"], Value: []byte("FAIL")})
+		}
+	}
 	if(agent !="") {
 		usernum := agents[agent]["usernum"]
 		conf_num := agents[agent]["conf_num"]
@@ -770,8 +778,7 @@ func ast_delete_peercache()(int,string){
 
 	//output, err := cmd.CombinedOutput()
 	fmt.Println(string(count),err)
-	test,er:=exec.Command("date").Output();
-	fmt.Println(string(test),er)
+
 	return 200,"OK"
 }
 func ast_peer_status(m map[string]string){
@@ -782,11 +789,7 @@ func ast_peer_status(m map[string]string){
 		}
 	}
 }
-func ast_channel(m map[string]string){
-	if m["ActionID"]=="allchannel" && m["Context"]=="dial-out" && strings.Contains(m["Channel"],"selecttrunk"){
 
-	}
-}
 func checknumqueue(){
 	cmd,_ :=exec.Command("sudo /usr/sbin/asterisk -rx 'core show channels concise'|grep '@selecttrunk'|awk -F '!' '$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/'|wc -l").Output()
 	//count, err:=sh.Command("asterisk","-rx","core show channels concise").Command("grep","@selecttrunk").Command("awk","-F","!","$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/").Command("wc","-l").Output()

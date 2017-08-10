@@ -10,12 +10,17 @@ import (
 	"github.com/kardianos/service"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/bradfitz/gomemcache/memcache"
+	"github.com/spf13/viper"
 )
 type program struct{}
 //Init variable
-var log_file="dialing.log"
+viper.SetConfigName("app")
+err := viper.ReadInConfig()
+
+
+var log_file=viper.GetString("log.path")
 var file os.File
-var port="8888"
+var port=viper.GetString("http.port")
 //var logger service.Logger
 //database config
 
@@ -25,13 +30,13 @@ var port="8888"
 //var db_name="dialingdb"
 //var db =autorc.New("tcp", "", db_host, db_user, db_pass, db_name)
 var db *sql.DB
-var db_string="dialing:Dl@fj1ra@/dialingdb"
+var db_string=viper.GetString("mysql.db_string")
 //Asterisk variable
-var settings = &amigo.Settings{Username: "trumpen", Password: "foobar", Host: "dev.dialingozone.com",Port:"1234"}
+var settings = &amigo.Settings{Username: viper.GetString("asterisk.user"), Password: viper.GetString("asterisk.pass"), Host: viper.GetString("asterisk.host"),Port:viper.GetString("asterisk.port")}
 //memcache
 //var mc := memcache.New("127.0.0.1:11211")
 var a=amigo.New(settings)
-var mc=memcache.New("127.0.0.1:11211")
+var mc=memcache.New(viper.GetString("memcache.mem_string"))
 var dial_timeout=25000
 var agents=make(map[string]map[string]string)
 var db_ratio =make(map[string]float64)
@@ -119,7 +124,7 @@ func init(){
 	a.RegisterHandler("MeetmeLeave",ast_leave)
 	a.RegisterHandler("OriginateResponse",ast_originate_response)
 	a.RegisterHandler("PeerStatus",ast_peer_status)
-	a.RegisterHandler("CoreShowChannel",ast_channel)
+
 	//c := make(chan map[string]string, 100)
 	//a.SetEventChannel(c)
 	//listen http request
