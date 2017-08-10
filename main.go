@@ -16,7 +16,8 @@ type program struct{}
 //Init variable
 
 
-
+_:=viper.SetConfigName("app")
+err := viper.ReadInConfig()
 var log_file=viper.GetString("log.path")
 var file os.File
 var port=viper.GetString("http.port")
@@ -152,8 +153,7 @@ func main() {
 	}
 	fmt.Println("Start")
 	//Database mysql
-	viper.SetConfigName("app")
-	err := viper.ReadInConfig()
+
 
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
