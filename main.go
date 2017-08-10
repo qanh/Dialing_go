@@ -88,6 +88,17 @@ func plog(str string,level int){
 	}
 }
 func init(){
+	viper.SetConfigName("app")
+	viper.AddConfigPath(".")
+	verr := viper.ReadInConfig()
+	if verr != nil { // Handle errors reading the config file
+		panic(fmt.Errorf("Fatal error config file: %s \n", verr))
+	}
+	db_string=viper.GetString("mysql.db_string")
+	log_file=viper.GetString("log.path")
+	port=viper.GetString("http.port")
+	mc=memcache.New(viper.GetString("memcache.mem_string"))
+
 	ex, err := os.Executable()
 	if err != nil {
 		panic(err)
@@ -153,16 +164,7 @@ func main() {
 		DisplayName: "Dialing Service",
 		Description: "Dialing Asterisk app.",
 	}
-	viper.SetConfigName("app")
-	viper.AddConfigPath(".")
-	verr := viper.ReadInConfig()
-	if verr != nil { // Handle errors reading the config file
-		panic(fmt.Errorf("Fatal error config file: %s \n", verr))
-	}
-	db_string=viper.GetString("mysql.db_string")
-	log_file=viper.GetString("log.path")
-	port=viper.GetString("http.port")
-	mc=memcache.New(viper.GetString("memcache.mem_string"))
+
 	fmt.Println("Start")
 	//Database mysql
 
