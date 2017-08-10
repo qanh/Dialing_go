@@ -155,7 +155,7 @@ func main() {
 	}
 	viper.SetConfigName("app")
 	viper.AddConfigPath(".")
-	_ := viper.ReadInConfig()
+	verr := viper.ReadInConfig()
 	db_string=viper.GetString("mysql.db_string")
 	log_file=viper.GetString("log.path")
 	port=viper.GetString("http.port")
