@@ -156,6 +156,9 @@ func main() {
 	viper.SetConfigName("app")
 	viper.AddConfigPath(".")
 	verr := viper.ReadInConfig()
+	if verr != nil { // Handle errors reading the config file
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	}
 	db_string=viper.GetString("mysql.db_string")
 	log_file=viper.GetString("log.path")
 	port=viper.GetString("http.port")
