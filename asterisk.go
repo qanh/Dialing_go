@@ -403,7 +403,7 @@ func ast_join_event(m map[string]string){
 				unmute(conf, usernum, agent)
 				a.Action(map[string]string{"Action": "Redirect",
 					"Channel":        channel,
-					"Context":        "default",
+					"Context":        "call-meetme",
 					"Exten":        conf,
 					"Priority":        "1",
 				})
@@ -425,7 +425,7 @@ func ast_join_event(m map[string]string){
 				db_reg_tapp(ringcardid)
 				a.Action(map[string]string{"Action": "Hangup",
 					"Channel":        channel,
-					"Context":        "default",
+					"Context":        "call-meetme",
 					"Priority":        "1",
 				})
 			}
