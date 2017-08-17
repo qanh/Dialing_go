@@ -265,6 +265,8 @@ func ast_hangup_event(m map[string]string){
 func ast_originate_response(m map[string] string){
 	var agent string
 	actionID:=strings.Split(m["ActionID"],":")
+	jsonString, _ := json.Marshal(m)
+	plog("event: "+string(jsonString),1)
 	callee:=actionID[0]
 	ringcardid:=actionID[1]
 	campaignid:=actionID[2]
