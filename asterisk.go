@@ -435,9 +435,7 @@ func ast_join_event(m map[string]string){
 			jsonString, _ := json.Marshal(agents)
 			plog("event: "+string(jsonString),1)
 			for key, _ := range agents {
-				jsonString, _ := json.Marshal(agents[key])
-				plog("event: "+string(jsonString),1)
-				if(agents[key]["conf_num"]==conf){
+				if(agents[key]["conf_num"]==m["Meetme"]){
 					plog(m["Meetme"][0:2],1)
 					agents[key]["ownchannel"]=channel
 					agents[key]["usernum"]=usernum
@@ -451,7 +449,7 @@ func ast_join_event(m map[string]string){
 		jsonString, _ := json.Marshal(agents)
 		plog("event: "+string(jsonString),1)
 		for key, _ := range agents {
-			if(agents[key]["conf_num"]==conf){
+			if(agents[key]["conf_num"]==m["Meetme"]){
 				agents[key]["channel"]=channel
 				agents[key]["status"]="incall"
 				agents[key]["ringcardid"]=ringcardid
@@ -467,7 +465,7 @@ func ast_join_event(m map[string]string){
 	}else if context=="ext-remote"{
 
 		for key, _ := range agents {
-			if(agents[key]["conf_num"]==conf && agents[key]["ownchannel"]==""){
+			if(agents[key]["conf_num"]==m["Meetme"] && agents[key]["ownchannel"]==""){
 				agents[key]["ownchannel"]=channel
 				agents[key]["usernum"]=usernum
 				//mute(conf,usernum,key)
