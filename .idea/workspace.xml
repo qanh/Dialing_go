@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f7c1f2cd-2bdd-4862-9012-3140ec844fde" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asterisk.go" afterPath="$PROJECT_DIR$/asterisk.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -349,14 +348,7 @@
       <workItem from="1502347784588" duration="6104000" />
       <workItem from="1502420287946" duration="648000" />
       <workItem from="1502434078505" duration="835000" />
-      <workItem from="1502680767599" duration="28330000" />
-    </task>
-    <task id="LOCAL-00164" summary="fix bug">
-      <created>1502267222368</created>
-      <option name="number" value="00164" />
-      <option name="presentableId" value="LOCAL-00164" />
-      <option name="project" value="LOCAL" />
-      <updated>1502267222368</updated>
+      <workItem from="1502680767599" duration="28357000" />
     </task>
     <task id="LOCAL-00165" summary="fix bug">
       <created>1502267289949</created>
@@ -694,11 +686,18 @@
       <option name="project" value="LOCAL" />
       <updated>1502961900265</updated>
     </task>
-    <option name="localTasksCounter" value="213" />
+    <task id="LOCAL-00213" summary="fix bug">
+      <created>1502962097385</created>
+      <option name="number" value="00213" />
+      <option name="presentableId" value="LOCAL-00213" />
+      <option name="project" value="LOCAL" />
+      <updated>1502962097385</updated>
+    </task>
+    <option name="localTasksCounter" value="214" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="268280000" />
+    <option name="totallyTimeSpent" value="268307000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-16" width="1936" height="1056" extended-state="6" />
