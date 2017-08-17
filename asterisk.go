@@ -252,7 +252,7 @@ func ast_hangup_event(m map[string]string){
 	//process robocall
 	if(m["Context"] == "robo-play") {
 	item,_ := mc.Get("robo_call");
-		count:=int(item.Value)
+		count,_:= strconv.Atoi(string(item.Value))
 		count--;
 		mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(count)})
 	}
@@ -430,7 +430,8 @@ func ast_join(m map[string]string){
 		if _, ok := inbound_arr[channel]; ok {
 			db_inbound_delete(channel)
 			//set status for inbound call
-			status, _ := mc.Get(channel+"_status")
+			item, _ := mc.Get(channel+"_status")
+			status:=string(item.Value)
 			if status!=""{
 				mc.Set(&memcache.Item{Key: channel+"_status", Value: []byte("1")})
 			}
@@ -792,7 +793,8 @@ func ast_record(phonenum string, recfile string,trunk string)(int,string){
 
 }
 func ast_record_stop(phonenum string, recfile string,delete int)(int,string){
-	channel, _ := mc.Get("record_"+phonenum)
+	item, _ := mc.Get("record_"+phonenum)
+	channel:=string(item.Value)
 	mc.Delete("record_"+phonenum)
 	a.Action(map[string]string{"Action": "Hangup",
 		"Channel":string(channel.Value)	})
@@ -846,7 +848,7 @@ func ast_peer_status_event(m map[string]string){
 
 func check_numqueue(){
 	size:=len(agent_cnt)
-	plog ("check_numqueue: "+string.Atoi(size),1);
+	plog ("check_numqueue: "+strconv.Atoi(size),1);
 	if size>0 {
 		for key, _ := range agents {
 			if(num_queue[key] > 0){
