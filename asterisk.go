@@ -350,7 +350,7 @@ func ast_join_event(m map[string]string){
 	uid:=m["Uniqueid"]
 	usernum:=m["Usernum"]
 	//tmpclid:=idarr[uid]
-	jsonString, err := json.Marshal(m)
+	jsonString, _ := json.Marshal(m)
 	plog("event: "+string(jsonString),1)
 	callee:=call_arr[uid]["callee"]
 	ringcardid:=call_arr[uid]["ringcardid"]
