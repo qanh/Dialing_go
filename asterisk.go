@@ -361,6 +361,7 @@ func ast_join_event(m map[string]string){
 	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+m["Meetme"]+" "+m["User"]+" "+" "+usernum+" "+context,1)
 	if context=="default"{
 		if(m["Meetme"]=="8000000") {
+			plog("1",1)
 			ans_cnt++
 			ans_cntarr["campaignid"]++
 			//num_queue["campaignid"]--
@@ -429,11 +430,11 @@ func ast_join_event(m map[string]string){
 					"Priority":        "1",
 				})
 			}
-		}
-		plog(m["Meetme"][0:2],1)
-		if(m["Meetme"][0:2]=="88") {
+		}else if(m["Meetme"][0:2]=="88") {
+			plog("2",1)
 			for key, _ := range agents {
 				if(agents[key]["conf_num"]==conf){
+					plog(m["Meetme"][0:2],1)
 					agents[key]["ownchannel"]=channel
 					agents[key]["usernum"]=usernum
 					mute(conf,usernum,key)
