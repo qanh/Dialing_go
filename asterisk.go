@@ -74,7 +74,7 @@ func ast_login_remote(agent string, ext string , campaignid string,dest string,c
 	agents[agent]["channel"]=""
 	agents[agent]["ownchannel"]=""
 	plog( "Login "+agent+", "+ext+", "+conf_num+", "+dest,1)
-	result, _ := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+dest+"\\@siptrunk","Context":"default","Exten":conf_num,"Priority":"1"})
+	result, _ := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+dest+"\\@siptrunk","Context":"ext-remote","Exten":conf_num,"Priority":"1"})
 	if(result["Response"]=="Error"){
 		return 406,result["Message"]
 	}

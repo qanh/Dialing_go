@@ -12,7 +12,7 @@ db_string="dialing:Dl@fj1ra@/dialingdb"
 mem_string="127.0.0.1:11211"
 
 [http]
-port="8888"
+port="8000"
 
 [log]
 path="dialing.log"
