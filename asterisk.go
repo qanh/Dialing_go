@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"github.com/codeskyblue/go-sh"
 	"time"
-	//"encoding/json"
+	"encoding/json"
 	"github.com/bradfitz/gomemcache/memcache"
 )
 func DefaultHandler(m map[string]string) {
@@ -442,6 +442,8 @@ func ast_join_event(m map[string]string){
 			}
 		}
 	}else if context=="call-meetme" {
+		jsonString, _ := json.Marshal(agents)
+		plog("event: "+string(jsonString),1)
 		for key, _ := range agents {
 			if(agents[key]["conf_num"]==conf){
 				agents[key]["channel"]=channel
