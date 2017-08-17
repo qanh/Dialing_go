@@ -254,7 +254,7 @@ func ast_hangup_event(m map[string]string){
 	item,_ := mc.Get("robo_call");
 		count,_:= strconv.Atoi(string(item.Value))
 		count--;
-		mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(count)})
+		mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(strconv.ItoA(count))})
 	}
 
 
