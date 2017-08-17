@@ -7,7 +7,6 @@ import (
 	"github.com/codeskyblue/go-sh"
 	"time"
 	"github.com/bradfitz/gomemcache/memcache"
-	"reflect"
 )
 func DefaultHandler(m map[string]string) {
 	fmt.Printf("Event received: %v\n\n\n", m)
@@ -798,7 +797,7 @@ func ast_record_stop(phonenum string, recfile string,delete int)(int,string){
 	channel:=string(item.Value)
 	mc.Delete("record_"+phonenum)
 	a.Action(map[string]string{"Action": "Hangup",
-		"Channel":string(channel.Value)	})
+		"Channel":string(channel)	})
 	if(delete == 1){
 		cmd :=exec.Command("rm"," /var/lib/asterisk/sounds/dialplan/"+recfile+".wav")
 		cmd.Run()
@@ -829,7 +828,7 @@ func ast_delete_peercache()(int,string){
 
 
 	//output, err := cmd.CombinedOutput()
-	fmt.Println(string(count),err)
+	//fmt.Println(string(count),err)
 
 	return 200,"OK"
 }
@@ -849,7 +848,7 @@ func ast_peer_status_event(m map[string]string){
 
 func check_numqueue(){
 	size:=len(agent_cnt)
-	plog ("check_numqueue: "+strconv.Atoi(size),1);
+	plog ("check_numqueue: "+strconv.Itoa(size),1);
 	if size>0 {
 		for key, _ := range agents {
 			if(num_queue[key] > 0){
@@ -857,7 +856,7 @@ func check_numqueue(){
 				if ratio < 1{
 					rs, _:=sh.Command("asterisk","-rx","core show channels concise").Command("grep","@selecttrunk").Command("awk","-F","!","$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/").Command("wc","-l").Output()
 					//fmt.Println(reflect.TypeOf(count))
-					count:=strconv.Atoi(string(rs))
+					count,_:=strconv.Atoi(string(rs))
 					plog ("check_numqueue: call "+string(rs),1);
 					if ((num_queue[key]-count)>=3*num_queue(key)/10) || count==0{
 						num_queue[key]=count
@@ -865,7 +864,7 @@ func check_numqueue(){
 							ratio=calc_ratio(key)
 							if ratio >0 {
 								num_queue[key]+=ratio
-								plog("check_numqueue: db_dial campaign "+key+" with new ratio "+ratio,1)
+								plog("check_numqueue: db_dial campaign "+key+" with new ratio "+strconv.Itoa(ratio),1)
 								go db_dial(ratio,key)
 							}
 						}
