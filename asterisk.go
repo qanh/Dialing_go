@@ -15,7 +15,7 @@ func DefaultHandler(m map[string]string) {
 func ast_login(agent string, ext string , campaignid string,clientid string,inbound string)(int , string) {
 	conf_num:="8800"+ext
 	mc.Delete("peer_"+ext)
-	if (len(ext) == 3 &&  peer_check_status(ext)=="OK") {
+	if (len(ext) == 3 &&  ast_get_peer_status(ext)=="OK") {
 		if (agents[agent]["ownchannel"]!=""){
 			a.Action(map[string]string{"Action":"Hangup", "Channel":agents[agent]["ownchannel"]})
 			agents[agent]["ownchannel"] =""
@@ -168,7 +168,8 @@ func ast_ready(agent string)(int , string){
 	//use websocket to update status call not do yet
 	//flashdata(campaignid)
 	if (status=="standby"){
-		peer_status,_:=mc.Get("peer_"+ext)
+		item,_:=mc.Get("peer_"+ext)
+		peer_status:=string(item.Value)
 		if agents[agent]["remote_num"]=="" {
 			peer_status=ast_get_peer_status(ext)
 		}
@@ -250,9 +251,10 @@ func ast_hangup_event(m map[string]string){
 	}
 	//process robocall
 	if(m["Context"] == "robo-play") {
-	count,_ := mc.Get("robo_call");
-	count--;
-	mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(count)})
+	item,_ := mc.Get("robo_call");
+		count:=int(item.Value)
+		count--;
+		mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(count)})
 	}
 
 
@@ -380,7 +382,7 @@ func ast_join(m map[string]string){
 			conf=agents[agent]["conf_num"]
 			status:="OK"
 			if(agents[agent][""] ==""){
-				status=ast_peerstatus(ext)
+				status=ast_get_peer_status(ext)
 			}
 			plog("Found agent "+agent+", "+ext+", "+conf+", campaign id: "+campaignid+" "+status,1)
 			plog("Redirect:"+channel+", "+conf,1)
@@ -844,7 +846,7 @@ func ast_peer_status_event(m map[string]string){
 
 func check_numqueue(){
 	size:=len(agent_cnt)
-	plog ("check_numqueue: "+size,1);
+	plog ("check_numqueue: "+string.Atoi(size),1);
 	if size>0 {
 		for key, _ := range agents {
 			if(num_queue[key] > 0){
