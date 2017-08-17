@@ -12,46 +12,53 @@ func DefaultHandler(m map[string]string) {
 	fmt.Printf("Event received: %v\n\n\n", m)
 }
 //Join Agent to room 8800+ext
-func ast_login(agent string, ext string , campaignid string,clientid string)(int , string) {
+func ast_login(agent string, ext string , campaignid string,clientid string,inbound string)(int , string) {
 	conf_num:="8800"+ext
-	if(agents[agent]["ownchannel"]!=""){
-		a.Action(map[string]string{"Action":"Hangup","Channel":agents[agent]["ownchannel"]})
+	mc.Delete("peer_"+ext)
+	if (len(ext) == 3 &&  peer_check_status(ext)=="OK") {
+		if (agents[agent]["ownchannel"]!=""){
+			a.Action(map[string]string{"Action":"Hangup", "Channel":agents[agent]["ownchannel"]})
+			agents[agent]["ownchannel"] =""
+		}
+		if (agents[agent]== nil) {
+			agents[agent] = make(map[string]string)
+		}
+		agents[agent]["id"] = agent
+		agents[agent]["ext"] = ext
+		agents[agent]["campaignid"] = campaignid
+		agents[agent]["conf_num"] = conf_num
+		agents[agent]["status"] = "standby"
+		agents[agent]["clientid"] = clientid
+		//Callee number
+		agents[agent]["callee"] = ""
+		agents[agent]["channel"] = ""
+		agents[agent]["ownchannel"] = ""
+		agents[agent]["inbound"] = inbound
+		plog( "Login "+agent+", "+ext+", "+conf_num+ " Campaign "+campaignid , 1)
+		result, _ := a.Action(map[string]string{"Action":"Originate", "Channel":"SIP/"+ext,"Context":"default", "Exten":conf_num, "Priority":"1"})
 
+		if (result["Response"]=="Error"){
+			return 406, result["Message"]
+		}
+		go db_log("standby", agent, ext,campaignid)
+		go db_getstate(campaignid)
+		_, check := cur_ratio[campaignid]
+		if (!check){
+			cur_ratio[campaignid] = 1.0
+		}
+		return 200, "OK"
+	}else{
+		return 406, "FAIL"
 	}
-	if(agents[agent]== nil) {
-		agents[agent] = make(map[string]string)
-	}
-	agents[agent]["id"]=agent
-	agents[agent]["ext"]=ext
-	agents[agent]["campaignid"]=campaignid
-	agents[agent]["conf_num"]=conf_num
-	agents[agent]["status"]="standby"
-	agents[agent]["clientid"]=clientid
-	//Callee number
-	agents[agent]["callee"]=""
-	agents[agent]["channel"]=""
-	agents[agent]["ownchannel"]=""
-
-	plog( "Login "+agent+", "+ext+", "+conf_num,1)
-	result, _ := a.Action(map[string]string{"Action":"Originate","Channel":"SIP/"+ext,"Context":"default","Exten":conf_num,"Priority":"1"})
-
-	if(result["Response"]=="Error"){
-		return 406,result["Message"]
-	}
-	go db_log("standby",agent,ext,campaignid)
-	go db_getstate(campaignid)
-	_,check:=cur_ratio[campaignid]
-	if(!check){
-		cur_ratio[campaignid]=1.0
-	}
-	return 200,"OK"
 }
 
 //Call to agent mobile phone and join to room 8800+ext
-func ast_login_remote(agent string, ext string , campaignid string,dest string,clientid string)(int , string){
+func ast_login_remote(agent string, ext string , campaignid string,dest string,clientid string,inbound string)(int , string){
 	conf_num:="8800"+ext
+	mc.Delete("peer_"+ext)
 	if (agents[agent]["ownchannel"] != "") {
 		result, err := a.Action(map[string]string{"Action":"Hangup", "Channel":agents[agent]["ownchannel"]})
+		agents[agent]["ownchannel"]=""
 		fmt.Println(result, err)
 	}
 	agents[agent]["id"]=agent
@@ -61,6 +68,7 @@ func ast_login_remote(agent string, ext string , campaignid string,dest string,c
 	agents[agent]["remote_num"]=dest
 	agents[agent]["status"]="standby"
 	agents[agent]["clientid"]=clientid
+	agents[agent]["inbound"] = inbound
 	//Callee number
 	agents[agent]["callee"]=""
 	agents[agent]["channel"]=""
@@ -88,19 +96,53 @@ func ast_logout(agent string)(int , string){
 			return 406,result["Message"]
 		}
 		db_log("logout",agent,val["ext"],val["campaignid"])
+		mc.Delete("peer_"+val["ext"])
 		delete(agents,agent)
 
 	}
 	return 200,"OK"
 }
+
+func ast_hangup(agent string)(int , string){
+	plog("Hangup call for agent: "+agent,1)
+	if val, ok := agents[agent]; ok {
+		if (val["status"] == "incall"){
+			ext := val["ext"]
+			conf := val["conf_num"]
+			channel := val["channel"]
+			campaignid := val["campaignid"]
+			plog("Do hangup: "+agent+" ,"+channel+" ,"+conf ,1)
+			plog("Do hangup: Agent "+agent+" is standby",1)
+			agents[agent]["status"]="standby"
+			agents[agent]["ringcardid"]=""
+			usernum:=agents[agent]["usernum"]
+			mute(conf,usernum,agent)
+			db_log("standby",agent,ext,campaignid)
+			agents[agent]["channel"]=""
+			agents[agent]["callee"]=""
+			result, _ := a.Action(map[string]string{"Action": "Hangup",
+				"Channel":	channel,
+				"Context":	"default",
+				"Exten":	conf,
+				"Priority":	"1",
+			})
+			if(result["Response"]=="Error"){
+				return 406,result["Message"]
+			}
+
+		}
+	}
+	return 200,"OK"
+}
 //Change agent to new campaign 
-func ast_chcamp(agent string,  campaignid string)(int , string){
+func ast_chcamp(agent string,  campaignid string,inbound string)(int , string){
 	var status string
 	_,check:=agents[agent]
 	if(check){
 		status=agents[agent]["status"]
 		agents[agent]["id"]=agent
 		agents[agent]["campaignid"]=campaignid
+		agents[agent]["inbound"] = inbound
 		plog( "ast_chcamp changing campaign for ["+agent+"] to campaign ["+campaignid+"]",1)
 		db_log(status,agent,agents[agent]["ext"],campaignid)
 		db_getstate(campaignid)
@@ -113,6 +155,79 @@ func ast_chcamp(agent string,  campaignid string)(int , string){
 		cur_ratio[campaignid]=1.0
 	}
 	return 200,"OK"
+}
+
+//Set agent status = ready
+func ast_ready(agent string)(int , string){
+	ratio:=1
+	ext:=agents[agent]["ext"]
+	conf_num:=agents[agent]["conf_num"]
+	campaignid:=agents[agent]["campaignid"]
+	status:=agents[agent]["status"]
+	plog("Dials: "+strconv.Itoa(dial_cnt)+" Answers: "+strconv.Itoa(ans_cnt)+" Tapp: "+strconv.Itoa(tapp_cnt)+" Fail: "+strconv.Itoa(fail_cnt),1)
+	//use websocket to update status call not do yet
+	//flashdata(campaignid)
+	if (status=="standby"){
+		peer_status,_:=mc.Get("peer_"+ext)
+		if agents[agent]["remote_num"]=="" {
+			peer_status=ast_get_peer_status(ext)
+		}
+		if( peer_status=="OK"){
+			plog("Agent "+agent+" is ready",1)
+			agents[agent]["status"]="ready"
+			agents[agent]["when"]=strconv.FormatInt(time.Now().Unix(),10)
+			agent_cnt[campaignid]++
+			ratio= calc_ratio(campaignid)
+			plog("Ratio:"+strconv.Itoa(ratio),1)
+			plog("ast_ready "+agent+", "+ext+", "+conf_num,1)
+			db_log("ready",agent,ext,campaignid)
+			if(ratio==0){
+				plog("No need to call",1)
+			}else {
+				go db_dial(ratio,campaignid)
+				num_queue[campaignid]+=ratio
+			}
+		}
+	}else{
+		plog("Agent "+agent+" now in "+status+" not in stanby - ignore",1)
+	}
+	return 200,"OK"
+
+}
+
+//Set agent status = standby
+func ast_standby(agent string)(int , string){
+	if val, ok := agents[agent]; ok {
+		ext:=agents[agent]["ext"]
+		conf_num:=agents[agent]["conf_num"]
+		campaignid:=agents[agent]["campaignid"]
+		channel:=agents[agent]["channel"]
+		db_log("standby",agent,ext,campaignid)
+		plog("ast_standby "+agent+", "+ext+", "+conf_num,1)
+		if(val["status"]=="ready" && val["inbound"]!="2" ){
+			agent_cnt[campaignid]--
+			if(agent_cnt[campaignid]<0) {
+				agent_cnt[campaignid] = 0
+			}
+		}
+		if(val["status"]=="incall" ){
+			agent_cnt[campaignid]--
+			if(agent_cnt[campaignid]<0) {
+				agent_cnt[campaignid] = 0
+			}
+			plog("Do hangup: "+agent+", "+channel+", "+conf_num,1)
+			plog("Agent "+agent+" is standby",1)
+			a.Action(map[string]string{"Action": "Hangup", "Channel": agents[agent]["channel"],"Context":"default","Exten":conf_num,"Priority":"1"})
+			agents[agent]["ringcard_id"]=""
+			agents[agent]["channel"]=""
+			agents[agent]["callee"]=""
+			//fmt.Println(result, err)
+		}
+		agents[agent]["status"]="standby"
+		return 200,"OK"
+	}
+	return 400,"Agent not avaiable"
+
 }
 //Process hang up event
 func ast_hangup_event(m map[string]string){
@@ -133,9 +248,17 @@ func ast_hangup_event(m map[string]string){
 		conf_num := agents[agent]["conf_num"]
 		mute(conf_num, usernum, agent)
 	}
+	//process robocall
+	if(m["Context"] == "robo-play") {
+	count,_ := mc.Get("robo_call");
+	count--;
+	mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(count)})
+	}
+
 
 }
 //check lai trang thai cua reason code
+//
 func ast_originate_response(m map[string] string){
 	var agent string
 	actionID:=strings.Split(m["ActionID"],":")
@@ -148,6 +271,13 @@ func ast_originate_response(m map[string] string){
 	uid:=m["Uniqueid"]
 	reason,_:=strconv.Atoi(m["Reason"])
 	fromchannel:=m["Channel"]
+	if(strings.Contains(fromchannel,"selecttrunk")){
+		num_queue[campaignid]--
+		if(num_queue[campaignid]<1){
+			num_queue[campaignid]=0
+		}
+	}
+	//create call_arr store call infomation by unique id of channel
 	if(call_arr[uid]== nil) {
 		call_arr[uid] = make(map[string]string)
 	}
@@ -163,50 +293,50 @@ func ast_originate_response(m map[string] string){
 	//}
 	switch reason{
 	case 0:
-		status="Failure"
+		status="Failure" //ej svar
 	case 1:
-		status="No Answer"
+		status="No Answer" //trasigt nummer
 	case 4:
-		status="OK"
+		status="OK" //OK
 	case 5:
-		status="BUSY"
+		status="BUSY" //upptaget
 	case 8:
-		status="Congested"
+		status="Congested" //inget nummer
 	default:
-		status="Unknown fail"
+		status="Unknown fail" //Odefinierat fel
 	}
 	plog("Originate result: "+callee+", "+uid+", "+strconv.Itoa(reason)+", "+status+", "+agent,1)
 	//Use socket to control reatime status of call
 	// /flashdata(campaignid)
-	if(m["Response"]!="Success"){
+	if(m["Response"]!="Success") {
 		fail_cnt++
 		fail_cntarr[campaignid]++
 		ast_ratio_up(campaignid)
 
-	}
-	failtext:="ejsvar"
-	if(reason==1 || reason==8){
-		failtext="trasigt"
-	}
-	db_set_num_status(campaignid,ringcardid,failtext,callee)
-	plog("To DB ringcard id:"+ringcardid+" number:"+callee+" Campaign ID:"+campaignid,1)
-	if(fromchannel[0:10]!="Local/8800"){
-		num_queue[campaignid]--
-		localcount:=0
-		for _, value := range agents {
-			if (value["status"] == "ready" && value["campaignid"] == campaignid) {
-				localcount++
-			}
+		failtext := "ejsvar"
+		if (reason == 1 || reason == 8) {
+			failtext = "trasigt"
 		}
-		agent_cnt[campaignid]=localcount
-		for _, value := range agents {
-			if(value["status"]=="ready" && value["campaignid"]==campaignid){
-				ratio:=calc_ratio(campaignid)
-				num_queue[campaignid]+=ratio
-				if(ratio>0){
-					db_dial(ratio,campaignid)
+		db_set_num_status(campaignid, ringcardid, failtext, callee)
+		plog("To DB ringcard id:" + ringcardid + " number:" + callee + " Campaign ID:" + campaignid, 1)
+		if (fromchannel[0:10] != "Local/8800") {
+			//num_queue[campaignid]--
+			localcount := 0
+			for _, value := range agents {
+				if (value["status"] == "ready" && value["campaignid"] == campaignid && (value["inbound"]=="" || value["inbound"] !="2")) {
+					localcount++
 				}
-				break
+			}
+			agent_cnt[campaignid] = localcount
+			for _, value := range agents {
+				if (value["status"] == "ready" && value["campaignid"] == campaignid) {
+					ratio := calc_ratio(campaignid)
+					num_queue[campaignid] += ratio
+					if (ratio > 0) {
+						db_dial(ratio, campaignid)
+					}
+					break
+				}
 			}
 		}
 	}
@@ -227,12 +357,12 @@ func ast_join(m map[string]string){
 	if(m["Meetme"]=="8000000"){
 		ans_cnt++
 		ans_cntarr["campaignid"]++
-		num_queue["campaignid"]--
+		//num_queue["campaignid"]--
 		oldwhen:=time.Now().Unix()
 		when:=0
 		nextagent:=0
 		for key, value := range agents {
-			if(value["status"]=="ready" && campaignid==value["campaignid"]){
+			if(value["status"]=="ready" && campaignid==value["campaignid"] &&(value["inbound"] =="" ||  value["inbound"] !="2")){
 				if(nextagent==0){
 					nextagent,_=strconv.Atoi(key)
 				}
@@ -248,7 +378,11 @@ func ast_join(m map[string]string){
 			agent:=strconv.Itoa(nextagent)
 			ext:=agents[agent]["ext"]
 			conf=agents[agent]["conf_num"]
-			plog("Found agent "+agent+", "+ext+", "+conf+", campaign id: "+campaignid,1)
+			status:="OK"
+			if(agents[agent][""] ==""){
+				status=ast_peerstatus(ext)
+			}
+			plog("Found agent "+agent+", "+ext+", "+conf+", campaign id: "+campaignid+" "+status,1)
 			plog("Redirect:"+channel+", "+conf,1)
 			agents[agent]["status"]="incall"
 			agents[agent]["callee"]=callee
@@ -269,6 +403,9 @@ func ast_join(m map[string]string){
 			})
 			//fmt.Println(result)
 			plog("Ringcard: "+ringcardid+", "+callee,1)
+			url := "/dialing/card/"+ringcardid+"?dialnumber="+callee
+			clientid:=agents[agent]["clientid"];
+			mc.Set(&memcache.Item{Key: "redirect_"+clientid+"_"+agent, Value: []byte(url)})
 			db_log_soundfile(ringcardid,campaignid,agent)
 		}else{
 			plog("No agent for call with ringcard: "+ringcardid,1)
@@ -290,6 +427,11 @@ func ast_join(m map[string]string){
 		conf=m["Meetme"]
 		if _, ok := inbound_arr[channel]; ok {
 			db_inbound_delete(channel)
+			//set status for inbound call
+			status, _ := mc.Get(channel+"_status")
+			if status!=""{
+				mc.Set(&memcache.Item{Key: channel+"_status", Value: []byte("1")})
+			}
 		}
 		if(channel[4:6]!="pseudo"){
 			if(channel[4:7]!=conf[4:7]){
@@ -297,7 +439,6 @@ func ast_join(m map[string]string){
 					for key, _ := range agents {
 						if(agents[key]["conf_num"]==conf){
 							agents[key]["channel"]=channel
-							//agents[key]["ownchannel"]=channel
 							agents[key]["status"]="incall"
 							agents[key]["ringcardid"]=ringcardid
 							ext:=agents[key]["ext"]
@@ -325,71 +466,8 @@ func ast_join(m map[string]string){
 	}
 
 }
-//Set agent status = ready
-func ast_ready(agent string)(int , string){
-	ratio:=1
-	ext:=agents[agent]["ext"]
-	conf_num:=agents[agent]["conf_num"]
-	campaignid:=agents[agent]["campaignid"]
-	status:=agents[agent]["status"]
-	plog("Dials: "+strconv.Itoa(dial_cnt)+" Answers: "+strconv.Itoa(ans_cnt)+" Tapp: "+strconv.Itoa(tapp_cnt)+" Fail: "+strconv.Itoa(fail_cnt),1)
-	//use websocket to update status call not do yet
-	//flashdata(campaignid)
-	if (status=="standby"){
-		plog("Agent "+agent+" is ready",1)
-		agents[agent]["status"]="ready"
-		agents[agent]["when"]=strconv.FormatInt(time.Now().Unix(),10)
-		agent_cnt[campaignid]++
-		ratio= calc_ratio(campaignid)
-		plog("Ratio:"+strconv.Itoa(ratio),1)
-		plog("ast_ready "+agent+", "+ext+", "+conf_num,1)
-		db_log("ready",agent,ext,campaignid)
-		if(ratio==0){
-			plog("No need to call",1)
-		}else {
-			go db_dial(ratio,campaignid)
-			num_queue[campaignid]+=ratio
-		}
-	}else{
-		plog("Agent "+agent+" now in "+status+" not in stanby - ignore",1)
-	}
-	return 200,"OK"
 
-}
-//Set agent status = standby
-func ast_standby(agent string)(int , string){
-	if val, ok := agents[agent]; ok {
-		ext:=agents[agent]["ext"]
-		conf_num:=agents[agent]["conf_num"]
-		campaignid:=agents[agent]["campaignid"]
-		channel:=agents[agent]["channel"]
-		db_log("standby",agent,ext,campaignid)
-		plog("ast_standby "+agent+", "+ext+", "+conf_num,1)
-		if(val["status"]=="ready" ){
-			agent_cnt[campaignid]--
-			if(agent_cnt[campaignid]<0) {
-				agent_cnt[campaignid] = 0
-			}
-		}
-		if(val["status"]=="incall" ){
-			agent_cnt[campaignid]--
-			if(agent_cnt[campaignid]<0) {
-				agent_cnt[campaignid] = 0
-			}
-			plog("Do hangup: "+agent+", "+channel+", "+conf_num,1)
-			plog("Agent "+agent+" is standby",1)
-			a.Action(map[string]string{"Action": "Hangup", "Channel": agents[agent]["channel"],"Context":"default","Exten":conf_num,"Priority":"1"})
-			agents[agent]["ringcard_id"]=""
-			agents[agent]["channel"]=""
-			agents[agent]["callee"]=""
-			//fmt.Println(result, err)
-		}
-		agents[agent]["status"]="standby"
-		return 200,"OK"
-	}
-	return 400,"Agent not avaiable"
 
-}
 //Start record call
 func ast_rec_start(agent string,filename string, clientid string) (int , string){
 	if val, ok := agents[agent]; ok {
@@ -506,37 +584,7 @@ func ast_mdial_trunk(agent string,ext string,dest string,ringcardid string)(int 
 	}
 	return 200,"OK"
 }
-func ast_hangup(agent string)(int , string){
-	plog("Hangup call for agent: "+agent,1)
-	if val, ok := agents[agent]; ok {
-		if (val["status"] == "incall"){
-			ext := val["ext"]
-			conf := val["conf_num"]
-			channel := val["channel"]
-			campaignid := val["campaignid"]
-			plog("Do hangup: "+agent+" ,"+channel+" ,"+conf ,1)
-			plog("Do hangup: Agent "+agent+" is standby",1)
-			agents[agent]["status"]="standby"
-			agents[agent]["ringcardid"]=""
-			usernum:=agents[agent]["usernum"]
-			mute(conf,usernum,agent)
-			db_log("standby",agent,ext,campaignid)
-			agents[agent]["channel"]=""
-			agents[agent]["callee"]=""
-			result, _ := a.Action(map[string]string{"Action": "Hangup",
-				"Channel":	channel,
-				"Context":	"default",
-				"Exten":	conf,
-				"Priority":	"1",
-			})
-			if(result["Response"]=="Error"){
-				return 406,result["Message"]
-			}
 
-		}
-	}
-	return 200,"OK"
-}
 
 func ast_leave(m map[string]string){
 	channel:=m["Channel"]
@@ -753,20 +801,19 @@ func ast_record_stop(phonenum string, recfile string,delete int)(int,string){
 	return 200,"OK"
 }
 
-func ast_peerstatus(peer string)(int,string){
+func ast_get_peer_status(peer string)(string){
 	result, _ := a.Action(map[string]string{"Action": "SIPshowpeer",
 		"Peer": 	peer	})
 	status:="FAIL"
-	if(result["Response"]=="Error"){
-		return 406,result["Message"]
-	}else{
+	if(result["Response"]!="Error"){
 		plog(result["Status"],1)
-		if(result["Status"][0:2]=="OK"){
+		if(strings.Contains(result["Status"],"OK")){
 			status="OK"
 		}
 	}
-	plog(status,1)
-	return 200,"OK"
+	plog("Peer status: "+status,1)
+	mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte(status)})
+	return status
 }
 func ast_delete_peercache()(int,string){
 	result, _ := a.Action(map[string]string{"Action": "SIPpeerstatus","ActionID":"allpeers"})
@@ -774,24 +821,51 @@ func ast_delete_peercache()(int,string){
 		return 406,result["Message"]
 	}
 	//cmd:=exec.Command("asterisk","-rx","core show channels concise","wc"," -l")
-	count, err:=sh.Command("asterisk","-rx","core show channels concise").Command("grep","@selecttrunk").Command("awk","-F","!","$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/").Command("wc","-l").Output()
+
 
 	//output, err := cmd.CombinedOutput()
 	fmt.Println(string(count),err)
 
 	return 200,"OK"
 }
-func ast_peer_status(m map[string]string){
-	if m["ActionID"]=="allpeers"{
-		if len(m["Peer"])==7 {
+func ast_peer_status_event(m map[string]string){
+	if len(m["Peer"])==7 {
+		peer:=m["Peer"][4:]
+		if m["ActionID"]=="allpeers"{
 			//fmt.Println(m["Peer"][4:])
-			mc.Delete("peer_"+m["Peer"][4:])
+			mc.Delete("peer_"+peer)
+		}else{
+			if m["Status"]=="Unregistered" || m["Status"]=="Unreachable"{
+				mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte("FAIL")})
+			}
 		}
 	}
 }
 
-func checknumqueue(){
-	cmd,_ :=exec.Command("sudo /usr/sbin/asterisk -rx 'core show channels concise'|grep '@selecttrunk'|awk -F '!' '$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/'|wc -l").Output()
-	//count, err:=sh.Command("asterisk","-rx","core show channels concise").Command("grep","@selecttrunk").Command("awk","-F","!","$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/").Command("wc","-l").Output()
-	fmt.Println(cmd)
+func check_numqueue(){
+	size:=len(agent_cnt)
+	plog ("check_numqueue: "+size,1);
+	if size>0 {
+		for key, _ := range agents {
+			if(num_queue[key] > 0){
+				ratio:=calc_ratio(key)
+				if ratio < 1{
+					count, _:=sh.Command("asterisk","-rx","core show channels concise").Command("grep","@selecttrunk").Command("awk","-F","!","$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/").Command("wc","-l").Output()
+					plog ("check_numqueue: call "+count,1);
+					if ((num_queue[key]-count)>=3*num_queue(key)/10) || count==0{
+						num_queue[key]=count
+						if(count==0 && agent_cnt[key]>0){
+							ratio=calc_ratio(key)
+							if ratio >0 {
+								num_queue[key]+=ratio
+								plog("check_numqueue: db_dial campaign "+key+" with new ratio "+ratio,1)
+								go db_dial(ratio,key)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 }

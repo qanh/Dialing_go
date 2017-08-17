@@ -53,6 +53,7 @@ var dial_cntarr =make(map [string]int)
 //var mdialarr =make(map [string]string)
 var inbound_arr =make(map [string]int)
 var ans_cntarr =make(map [string]int)
+// store infomation of call by uniqueid
 var call_arr  =make(map [string]map[string]string)
 //var idarr =make(map [string]string)
 var tapp_cntarr  =make(map [string]int)
@@ -136,7 +137,7 @@ func init(){
 	a.RegisterHandler("MeetmeJoin",ast_join)
 	a.RegisterHandler("MeetmeLeave",ast_leave)
 	a.RegisterHandler("OriginateResponse",ast_originate_response)
-	a.RegisterHandler("PeerStatus",ast_peer_status)
+	a.RegisterHandler("PeerStatus",ast_peer_status_event)
 
 	//c := make(chan map[string]string, 100)
 	//a.SetEventChannel(c)

@@ -21,10 +21,13 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID")+" ClientID:"+r.FormValue("clientid"))
 				plog ("Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID")+" ClientID:"+r.FormValue("clientid"),1)
 			} else {
-
+				inbound:=""
+				if val, ok := r.FormValue("inbound"); ok {
+					inbound	=val
+				}
 				plog ("HTTP login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
 
-				code,message:=ast_login(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"),r.FormValue("clientid"))
+				code,message:=ast_login(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"),r.FormValue("clientid"),inbound)
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
 			}
@@ -38,7 +41,11 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			} else {
 				
 				plog ("http chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
-				code,message:=ast_chcamp(r.FormValue("agent"),r.FormValue("campaignID"))
+				inbound:=""
+				if val, ok := r.FormValue("inbound"); ok {
+					inbound	=val
+				}
+				code,message:=ast_chcamp(r.FormValue("agent"),r.FormValue("campaignID"),inbound)
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
 				//$poe_kernel->post( 'monitor', 'ast_chcamp', $agent, $anknytning, $kampanjid)
@@ -52,8 +59,11 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID")+" ClientID:"+r.FormValue("clientid"))
 				plog ("Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID")+" ClientID:"+r.FormValue("clientid"),1)
 			} else {
-				
-				code,message:=ast_login_remote(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"),r.FormValue("dest"),r.FormValue("clientid"))
+				inbound:=""
+				if val, ok := r.FormValue("inbound"); ok {
+					inbound	=val
+				}
+				code,message:=ast_login_remote(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"),r.FormValue("dest"),r.FormValue("clientid"),inbound)
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
 			}
@@ -274,10 +284,10 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				}
 
 			}
-		case "peerstatus":
-			code,message:=ast_peerstatus(r.FormValue("peer"))
-			w.WriteHeader(code)
-			fmt.Fprintf(w, message)
+		//case "peerstatus":
+			//code,message:=ast_peerstatus(r.FormValue("peer"))
+			//w.WriteHeader(code)
+			//fmt.Fprintf(w, message)
 		case "peerdelete":
 			code,message:=ast_delete_peercache()
 			w.WriteHeader(code)
