@@ -358,7 +358,7 @@ func ast_join_event(m map[string]string){
 	campaignid:=call_arr[uid]["campaignid"]
 	//none:=1
 	conf:=""
-	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+m["Meetme"]+" "+usernum+" "+context,1)
+	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+m["Meetme"]+" "+m["User"]+" "+" "+usernum+" "+context,1)
 	if context=="default"{
 		if(m["Meetme"]=="8000000") {
 			ans_cnt++
@@ -430,6 +430,7 @@ func ast_join_event(m map[string]string){
 				})
 			}
 		}
+		plog(m["Meetme"][0:2],1)
 		if(m["Meetme"][0:2]=="88") {
 			for key, _ := range agents {
 				if(agents[key]["conf_num"]==conf){
