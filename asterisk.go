@@ -435,6 +435,8 @@ func ast_join_event(m map[string]string){
 			jsonString, _ := json.Marshal(agents)
 			plog("event: "+string(jsonString),1)
 			for key, _ := range agents {
+				jsonString, _ := json.Marshal(agents[key])
+				plog("event: "+string(jsonString),1)
 				if(agents[key]["conf_num"]==conf){
 					plog(m["Meetme"][0:2],1)
 					agents[key]["ownchannel"]=channel
