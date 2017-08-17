@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"github.com/codeskyblue/go-sh"
 	"time"
-	"encoding/json"
+	//"encoding/json"
 	"github.com/bradfitz/gomemcache/memcache"
 )
 func DefaultHandler(m map[string]string) {
@@ -349,85 +349,126 @@ func ast_join_event(m map[string]string){
 	channel:=m["Channel"]
 	uid:=m["Uniqueid"]
 	usernum:=m["Usernum"]
+	context:=m["Context"]
 	//tmpclid:=idarr[uid]
-	jsonString, _ := json.Marshal(m)
-	plog("event: "+string(jsonString),1)
+	//jsonString, _ := json.Marshal(m)
+	//plog("event: "+string(jsonString),1)
 	callee:=call_arr[uid]["callee"]
 	ringcardid:=call_arr[uid]["ringcardid"]
 	campaignid:=call_arr[uid]["campaignid"]
 	//none:=1
 	conf:=""
-	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+m["Meetme"]+" "+usernum,1)
-	if(m["Meetme"]=="8000000"){
-		ans_cnt++
-		ans_cntarr["campaignid"]++
-		//num_queue["campaignid"]--
-		oldwhen:=time.Now().Unix()
-		when:=0
-		nextagent:=0
-		for key, value := range agents {
-			if(value["status"]=="ready" && campaignid==value["campaignid"] &&(value["inbound"] =="" ||  value["inbound"] !="2")){
-				if(nextagent==0){
-					nextagent,_=strconv.Atoi(key)
+	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+m["Meetme"]+" "+usernum+" "+context,1)
+	if context=="default"{
+		if(m["Meetme"]=="8000000") {
+			ans_cnt++
+			ans_cntarr["campaignid"]++
+			//num_queue["campaignid"]--
+			oldwhen := time.Now().Unix()
+			when := 0
+			nextagent := 0
+			for key, value := range agents {
+				if (value["status"] == "ready" && campaignid == value["campaignid"] &&(value["inbound"] == "" || value["inbound"] != "2")) {
+					if (nextagent == 0) {
+						nextagent, _ = strconv.Atoi(key)
+					}
+					when, _ = strconv.Atoi(value["when"])
+					if (int64(when) < oldwhen) {
+						nextagent, _ = strconv.Atoi(key)
+						oldwhen = int64(when)
+					}
 				}
-				when,_=strconv.Atoi(value["when"])
-				if(int64(when)<oldwhen){
-					nextagent,_=strconv.Atoi(key)
-					oldwhen=int64(when)
+				plog("Ast_join: Search agent for call: " + key + " , " + strconv.Itoa(when) + " , " + strconv.FormatInt(oldwhen, 10), 1)
+			}
+			if (nextagent > 0) {
+				agent := strconv.Itoa(nextagent)
+				ext := agents[agent]["ext"]
+				conf = agents[agent]["conf_num"]
+				status := "OK"
+				if (agents[agent][""] == "") {
+					status = ast_get_peer_status(ext)
+				}
+				plog("Found agent " + agent + ", " + ext + ", " + conf + ", campaign id: " + campaignid + " " + status, 1)
+				plog("Redirect:" + channel + ", " + conf, 1)
+				agents[agent]["status"] = "incall"
+				agents[agent]["callee"] = callee
+				agent_cnt[campaignid]--
+				if (agent_cnt[campaignid] < 0) {
+					agent_cnt[campaignid] = 0
+				}
+				db_log("incall", agent, ext, campaignid)
+				agents[agent]["channel"] = channel
+				ast_ratio_down(campaignid)
+				usernum = agents[agent]["usernum"]
+				unmute(conf, usernum, agent)
+				a.Action(map[string]string{"Action": "Redirect",
+					"Channel":        channel,
+					"Context":        "default",
+					"Exten":        conf,
+					"Priority":        "1",
+				})
+				//fmt.Println(result)
+				plog("Ringcard: " + ringcardid + ", " + callee, 1)
+				url := "/dialing/card/" + ringcardid + "?dialnumber=" + callee
+				clientid := agents[agent]["clientid"];
+				mc.Set(&memcache.Item{Key: "redirect_" + clientid + "_" + agent, Value: []byte(url)})
+				db_log_soundfile(ringcardid, campaignid, agent)
+			} else {
+				plog("No agent for call with ringcard: " + ringcardid, 1)
+				plog("Do hangup:" + channel + ", " + conf, 1)
+				//delete(callarr,callee+":"+ringcardid)
+				//delete(callarr2,callee+":"+uid)
+				//delete(idarr,uid)
+				tapp_cnt++
+				tapp_cntarr[campaignid]++
+				ratio_reset(campaignid)
+				db_reg_tapp(ringcardid)
+				a.Action(map[string]string{"Action": "Hangup",
+					"Channel":        channel,
+					"Context":        "default",
+					"Priority":        "1",
+				})
+			}
+		}
+		if(m["Meetme"][0:2]=="88") {
+			for key, _ := range agents {
+				if(agents[key]["conf_num"]==conf){
+					agents[key]["ownchannel"]=channel
+					agents[key]["usernum"]=usernum
+					mute(conf,usernum,key)
+					db_user_connected(key,1)
+					break
 				}
 			}
-			plog("Ast_join: Search agent for call: "+key+" , "+strconv.Itoa(when)+" , "+strconv.FormatInt(oldwhen,10),1)
 		}
-		if(nextagent>0){
-			agent:=strconv.Itoa(nextagent)
-			ext:=agents[agent]["ext"]
-			conf=agents[agent]["conf_num"]
-			status:="OK"
-			if(agents[agent][""] ==""){
-				status=ast_get_peer_status(ext)
+	}else if context=="call-meetme" {
+		for key, _ := range agents {
+			if(agents[key]["conf_num"]==conf){
+				agents[key]["channel"]=channel
+				agents[key]["status"]="incall"
+				agents[key]["ringcardid"]=ringcardid
+				ext:=agents[key]["ext"]
+				db_log("incall",key,ext,campaignid)
+				db_log_soundfile(ringcardid,campaignid,key)
+				call_arr[uid]["agent"]=key
+				url:="/dialing/card/"+ringcardid+"?dialnumber="+callee
+				mc.Set(&memcache.Item{Key: "redirect_"+agents[key]["clientid"]+"_"+key, Value: []byte(url)})
+				break
 			}
-			plog("Found agent "+agent+", "+ext+", "+conf+", campaign id: "+campaignid+" "+status,1)
-			plog("Redirect:"+channel+", "+conf,1)
-			agents[agent]["status"]="incall"
-			agents[agent]["callee"]=callee
-			agent_cnt[campaignid]--
-			if(agent_cnt[campaignid]<0) {
-				agent_cnt[campaignid] = 0
-			}
-			db_log("incall",agent,ext,campaignid)
-			agents[agent]["channel"]=channel
-			ast_ratio_down(campaignid)
-			usernum=agents[agent]["usernum"]
-			unmute(conf,usernum,agent)
-			a.Action(map[string]string{"Action": "Redirect",
-				"Channel":	channel,
-				"Context":	"default",
-				"Exten":	conf,
-				"Priority":	"1",
-			})
-			//fmt.Println(result)
-			plog("Ringcard: "+ringcardid+", "+callee,1)
-			url := "/dialing/card/"+ringcardid+"?dialnumber="+callee
-			clientid:=agents[agent]["clientid"];
-			mc.Set(&memcache.Item{Key: "redirect_"+clientid+"_"+agent, Value: []byte(url)})
-			db_log_soundfile(ringcardid,campaignid,agent)
-		}else{
-			plog("No agent for call with ringcard: "+ringcardid,1)
-			plog("Do hangup:"+channel+", "+conf,1)
-			//delete(callarr,callee+":"+ringcardid)
-			//delete(callarr2,callee+":"+uid)
-			//delete(idarr,uid)
-			tapp_cnt++
-			tapp_cntarr[campaignid]++
-			ratio_reset(campaignid)
-			db_reg_tapp(ringcardid)
-			a.Action(map[string]string{"Action": "Hangup",
-				"Channel":	channel,
-				"Context":	"default",
-				"Priority":	"1",
-			})
 		}
-	}else{
+	}else if context=="ext-remote"{
+
+		for key, _ := range agents {
+			if(agents[key]["conf_num"]==conf && agents[key]["ownchannel"]==""){
+				agents[key]["ownchannel"]=channel
+				agents[key]["usernum"]=usernum
+				//mute(conf,usernum,key)
+				//db_user_connected(key,1)
+				break
+			}
+		}
+	}
+	/*else{
 		conf=m["Meetme"]
 		if _, ok := inbound_arr[channel]; ok {
 			db_inbound_delete(channel)
@@ -468,7 +509,7 @@ func ast_join_event(m map[string]string){
 				}
 			}
 		}
-	}
+	}*/
 
 }
 
@@ -574,9 +615,9 @@ func ast_mdial_trunk(agent string,ext string,dest string,ringcardid string)(int 
 	unmute(conf,usernum,agent)
 	actionID:=dest+":"+ringcardid+":"+campaignid+":"+agent
 	result, _ := a.Action(map[string]string{"Action": "Originate",
-		"Channel": 	"Local/"+conf,
-		"Context": 	"mdialt",
-		"Exten":	"SIP/"+dest,
+		"Channel": 	"Local/"+conf+"@call-meetme",
+		"Context": 	"manual-dial",
+		"Exten":	dest,
 		"Timeout":	strconv.Itoa(dial_timeout),
 		//"Callerid":	callerid,
 		"Async":	"1",
