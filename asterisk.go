@@ -7,6 +7,7 @@ import (
 	"github.com/codeskyblue/go-sh"
 	"time"
 	"github.com/bradfitz/gomemcache/memcache"
+	"reflect"
 )
 func DefaultHandler(m map[string]string) {
 	fmt.Printf("Event received: %v\n\n\n", m)
@@ -854,8 +855,10 @@ func check_numqueue(){
 			if(num_queue[key] > 0){
 				ratio:=calc_ratio(key)
 				if ratio < 1{
-					count, _:=sh.Command("asterisk","-rx","core show channels concise").Command("grep","@selecttrunk").Command("awk","-F","!","$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/").Command("wc","-l").Output()
-					plog ("check_numqueue: call "+count,1);
+					rs, _:=sh.Command("asterisk","-rx","core show channels concise").Command("grep","@selecttrunk").Command("awk","-F","!","$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/").Command("wc","-l").Output()
+					//fmt.Println(reflect.TypeOf(count))
+					count:=strconv.Atoi(string(rs))
+					plog ("check_numqueue: call "+string(rs),1);
 					if ((num_queue[key]-count)>=3*num_queue(key)/10) || count==0{
 						num_queue[key]=count
 						if(count==0 && agent_cnt[key]>0){
