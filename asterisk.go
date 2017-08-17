@@ -254,7 +254,7 @@ func ast_hangup_event(m map[string]string){
 	item,_ := mc.Get("robo_call");
 		count,_:= strconv.Atoi(string(item.Value))
 		count--;
-		mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(strconv.ItoA(count))})
+		mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(strconv.Itoa(count))})
 	}
 
 
@@ -858,7 +858,7 @@ func check_numqueue(){
 					//fmt.Println(reflect.TypeOf(count))
 					count,_:=strconv.Atoi(string(rs))
 					plog ("check_numqueue: call "+string(rs),1);
-					if ((num_queue[key]-count)>=3*num_queue(key)/10) || count==0{
+					if ((num_queue[key]-count)>=3*num_queue[key]/10) || count==0{
 						num_queue[key]=count
 						if(count==0 && agent_cnt[key]>0){
 							ratio=calc_ratio(key)

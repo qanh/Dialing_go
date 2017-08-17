@@ -21,10 +21,11 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID")+" ClientID:"+r.FormValue("clientid"))
 				plog ("Missing argument to login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID")+" ClientID:"+r.FormValue("clientid"),1)
 			} else {
-				inbound:=""
-				if val, ok := r.FormValue("inbound"); ok {
-					inbound	=val
+				inbound:="0"
+				if r.FormValue("inbound")!=""{
+					inbound	=r.FormValue("inbound")
 				}
+
 				plog ("HTTP login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
 
 				code,message:=ast_login(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"),r.FormValue("clientid"),inbound)
@@ -41,10 +42,11 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			} else {
 				
 				plog ("http chcamp Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID"),1)
-				inbound:=""
-				if val, ok := r.FormValue("inbound"); ok {
-					inbound	=val
+				inbound:="0"
+				if r.FormValue("inbound")!=""{
+					inbound	=r.FormValue("inbound")
 				}
+
 				code,message:=ast_chcamp(r.FormValue("agent"),r.FormValue("campaignID"),inbound)
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
@@ -59,10 +61,11 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID")+" ClientID:"+r.FormValue("clientid"))
 				plog ("Missing argument to Login remote Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID")+" ClientID:"+r.FormValue("clientid"),1)
 			} else {
-				inbound:=""
-				if val, ok := r.FormValue("inbound"); ok {
-					inbound	=val
+				inbound:="0"
+				if r.FormValue("inbound")!=""{
+					inbound	=r.FormValue("inbound")
 				}
+
 				code,message:=ast_login_remote(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"),r.FormValue("dest"),r.FormValue("clientid"),inbound)
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
