@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"github.com/codeskyblue/go-sh"
 	"time"
+	"encoding/json"
 	"github.com/bradfitz/gomemcache/memcache"
 )
 func DefaultHandler(m map[string]string) {
@@ -349,7 +350,8 @@ func ast_join_event(m map[string]string){
 	uid:=m["Uniqueid"]
 	usernum:=m["Usernum"]
 	//tmpclid:=idarr[uid]
-	fmt.Println(m)
+	jsonString, err := json.Marshal(m)
+	plog("event: "+jsonString)
 	callee:=call_arr[uid]["callee"]
 	ringcardid:=call_arr[uid]["ringcardid"]
 	campaignid:=call_arr[uid]["campaignid"]
