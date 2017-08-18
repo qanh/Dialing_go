@@ -370,7 +370,6 @@ func ast_join_event(m map[string]string){
 	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+uid2+" "+m["Meetme"]+" "+m["User"]+" "+" "+usernum+" "+context,1)
 	if context=="default"{
 		if(m["Meetme"]=="8000000") {
-			plog("1",1)
 			ans_cnt++
 			ans_cntarr["campaignid"]++
 			//num_queue["campaignid"]--
@@ -440,7 +439,6 @@ func ast_join_event(m map[string]string){
 				})
 			}
 		}else if(m["Meetme"][0:2]=="88") {
-			plog("2",1)
 			jsonString, _ := json.Marshal(agents)
 			plog("event: "+string(jsonString),1)
 			for key, _ := range agents {
@@ -648,6 +646,9 @@ func ast_mdial_trunk(agent string,ext string,dest string,ringcardid string)(int 
 
 
 func ast_leave(m map[string]string){
+	//plog("Ast_leave: $channel,$ext,$agent\n", 5);
+	jsonString, _ := json.Marshal(agents)
+	plog("event: "+string(jsonString),1)
 	channel:=m["Channel"]
 	//usernum:=m["Usernum"]
 	ext:=channel[4:7]
