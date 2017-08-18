@@ -292,6 +292,7 @@ func ast_originate_response(m map[string] string){
 	}
 	call_arr[uid]["callee"]=callee
 	call_arr[uid]["campaignid"]=campaignid
+	call_arr[uid]["channel"]=fromchannel[:len(fromchannel)-2]
 	status:=""
 	//if agent != nil && agent!=""{
 	//	uidarr[agent]=uid
@@ -352,15 +353,21 @@ func ast_join_event(m map[string]string){
 	uid:=m["Uniqueid"]
 	usernum:=m["Usernum"]
 	context:=m["Context"]
+	uid2:=""
+	for key, value := range call_arr {
+		if value["channel"]== channel[:len(channel)-2]{
+			uid2=key
+		}
+	}
 	//tmpclid:=idarr[uid]
 	//jsonString, _ := json.Marshal(m)
 	//plog("event: "+string(jsonString),1)
-	callee:=call_arr[uid]["callee"]
-	ringcardid:=call_arr[uid]["ringcardid"]
-	campaignid:=call_arr[uid]["campaignid"]
+	callee:=call_arr[uid2]["callee"]
+	ringcardid:=call_arr[uid2]["ringcardid"]
+	campaignid:=call_arr[uid2]["campaignid"]
 	//none:=1
 	conf:=""
-	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+m["Meetme"]+" "+m["User"]+" "+" "+usernum+" "+context,1)
+	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+uid2+" "+m["Meetme"]+" "+m["User"]+" "+" "+usernum+" "+context,1)
 	if context=="default"{
 		if(m["Meetme"]=="8000000") {
 			plog("1",1)
@@ -458,7 +465,7 @@ func ast_join_event(m map[string]string){
 				ext:=agents[key]["ext"]
 				db_log("incall",key,ext,campaignid)
 				db_log_soundfile(ringcardid,campaignid,key)
-				call_arr[uid]["agent"]=key
+				call_arr[uid2]["agent"]=key
 				url:="/dialing/card/"+ringcardid+"?dialnumber="+callee
 				mc.Set(&memcache.Item{Key: "redirect_"+agents[key]["clientid"]+"_"+key, Value: []byte(url)})
 				break
