@@ -137,14 +137,16 @@ func init(){
 	a.RegisterHandler("MeetmeJoin",ast_join_event)
 	a.RegisterHandler("MeetmeLeave",ast_leave)
 	a.RegisterHandler("OriginateResponse",ast_originate_response)
-	a.RegisterHandler("PeerStatus",ast_peer_status_event)
-
+	//a.RegisterHandler("PeerStatus",ast_peer_status_event)
+	//delete all status peer cached
+	ast_delete_peercache()
 	//c := make(chan map[string]string, 100)
 	//a.SetEventChannel(c)
-	//listen http request
 
+	//listen http request
 	http.HandleFunc("/user_state", state_check) // set router
 	err = http.ListenAndServe(":"+port, nil) // set listen port
+
 
 	if err != nil {
 		log.Fatalln("ListenAndServe: ", err)

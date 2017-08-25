@@ -169,12 +169,11 @@ func ast_ready(agent string)(int , string){
 	//use websocket to update status call not do yet
 	//flashdata(campaignid)
 	if (status=="standby"){
-		item,_:=mc.Get("peer_"+ext)
-		peer_status:=string(item.Value)
+		peer_status:=true
 		if agents[agent]["remote_num"]=="" {
-			peer_status=ast_get_peer_status(ext)
+			peer_status=ast_check_meetme(ext)
 		}
-		if( peer_status=="OK"){
+		if( peer_status){
 			plog("Agent "+agent+" is ready",1)
 			agents[agent]["status"]="ready"
 			agents[agent]["when"]=strconv.FormatInt(time.Now().Unix(),10)
@@ -353,18 +352,16 @@ func ast_join_event(m map[string]string){
 	uid:=m["Uniqueid"]
 	usernum:=m["Usernum"]
 	context:=m["Context"]
-	uid2:=""
-	for key, value := range call_arr {
-		if value["channel"]== channel[:len(channel)-2]{
-			uid2=key
-		}
-	}
+
 	//tmpclid:=idarr[uid]
 	//jsonString, _ := json.Marshal(m)
 	//plog("event: "+string(jsonString),1)
-	callee:=call_arr[uid2]["callee"]
-	ringcardid:=call_arr[uid2]["ringcardid"]
-	campaignid:=call_arr[uid2]["campaignid"]
+	//event asterisk meetme join maybe happen before originate result use Account Code for information
+	accountCode:=strings.Split(m["AccountCode"],":")
+	callee:=accountCode[0]
+	ringcardid:=accountCode[1]
+	campaignid:=accountCode[2]
+
 	//none:=1
 	conf:=""
 	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+uid2+" "+m["Meetme"]+" "+m["User"]+" "+" "+usernum+" "+context,1)
@@ -455,6 +452,13 @@ func ast_join_event(m map[string]string){
 	}else if context=="call-meetme" {
 		jsonString, _ := json.Marshal(agents)
 		plog("event: "+string(jsonString),1)
+		uid2:=""
+		for key, value := range call_arr {
+			if value["channel"]== channel[:len(channel)-2]{
+				uid2=key
+			}
+		}
+
 		for key, _ := range agents {
 			if(agents[key]["conf_num"]==m["Meetme"]){
 				agents[key]["channel"]=channel
@@ -463,7 +467,12 @@ func ast_join_event(m map[string]string){
 				ext:=agents[key]["ext"]
 				db_log("incall",key,ext,campaignid)
 				db_log_soundfile(ringcardid,campaignid,key)
-				call_arr[uid2]["agent"]=key
+				if(uid2==""){
+					plog("Meetme happen before Originate Result",1)
+				}else{
+					call_arr[uid2]["agent"]=key
+				}
+
 				url:="/dialing/card/"+ringcardid+"?dialnumber="+callee
 				mc.Set(&memcache.Item{Key: "redirect_"+agents[key]["clientid"]+"_"+key, Value: []byte(url)})
 				break
@@ -875,13 +884,13 @@ func ast_get_peer_status(peer string)(string){
 		}
 	}
 	plog("Peer status: "+status,1)
-	mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte(status)})
+	//mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte(status)})
 	return status
 }
-func ast_delete_peercache()(int,string){
-	result, _ := a.Action(map[string]string{"Action": "SIPpeerstatus","ActionID":"allpeers"})
-	if(result["Response"]=="Error"){
-		return 406,result["Message"]
+func ast_delete_peercache(){
+	for i:=1;i<1000;i++ {
+		peer:=fmt.Sprintf("%03d", i)
+		mc.Delete("peer_"+peer)
 	}
 	//cmd:=exec.Command("asterisk","-rx","core show channels concise","wc"," -l")
 
@@ -891,20 +900,26 @@ func ast_delete_peercache()(int,string){
 
 	return 200,"OK"
 }
-func ast_peer_status_event(m map[string]string){
-	if len(m["Peer"])==7 {
-		peer:=m["Peer"][4:]
-		if m["ActionID"]=="allpeers"{
-			//fmt.Println(m["Peer"][4:])
-			mc.Delete("peer_"+peer)
-		}else{
-			if m["Status"]=="Unregistered" || m["Status"]=="Unreachable"{
-				mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte("FAIL")})
-			}
-		}
+
+func ast_check_meetme(peer string)(bool){
+	rs, _:=sh.Command("asterisk","-rx","meetme list 8800"+peer+" concise").Command("grep","SIP/").Command("awk","-F","!","{print $4}").Output()
+	if rs!="" && !strings.Contains(rs,"SIP/MAN"){
+		mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte("OK")})
+		plog("Peer status: OK",1)
+		return true
+	}else{
+		mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte("FAIL")})
+		plog("Peer status: FAIL",1)
+		return false
 	}
 }
-
+func ast_mute_channel(channel string,state string){
+	plog("Mute_channel:"+channel+" "+state,1)
+	a.Action(map[string]string{"Action": "MuteAudio",
+					"Channel": 	channel,
+					"Direction":	"all",
+					"State":	state})
+}
 func check_numqueue(){
 	size:=len(agent_cnt)
 	plog ("check_numqueue: "+strconv.Itoa(size),1);
