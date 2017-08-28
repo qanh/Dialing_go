@@ -17,7 +17,7 @@ import(
 func db_getstate(campaignid string){
 
 	var t_ratio,t_ratio_up,t_ratio_down,t_wait_time,t_campNumber string
-	err := db.QueryRow("SELECT ratio,wait_time, ratio_up, ratio_down ,campNumber from tCampaign where campaignID= ?",campaignid).Scan(&t_ratio,&t_wait_time,&t_ratio_up,&t_ratio_down,&t_campNumber)
+	err := db.QueryRow("select d.dmaxratio as ratio,d.dtry_time as wait_time ,d.dratio_up as ratio_up,d.dratio_down as ratio_down,t.campNumber from tCampaign t left join DialerSetting d on t.Dialer_Setting=d.dID where t.campaignID= ?",campaignid).Scan(&t_ratio,&t_wait_time,&t_ratio_up,&t_ratio_down,&t_campNumber)
 	//if no row -> err !=nil
 	checkErr(err)
 	if(err == nil){
@@ -53,7 +53,7 @@ func db_getstate(campaignid string){
 		plog("Set trunk = " + t_campNumber + " for campaign " + campaignid,1)
 		//}
 	}else{
-		set_default_ratio(campaignid)
+		ast_set_default_ratio(campaignid)
 	}
 
 }
@@ -114,6 +114,7 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 	rc.Update(row)
 	i := 1
 	index:=1
+	callnote_status:="Result_No_Answer"
 	for i < 6 {
 		key:="Phone"+strconv.Itoa(index)
 		if(number==rc.row[key]){
@@ -154,6 +155,7 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 	if(fail==1){
 		plog ("set_num_status: all number fail, update database for ringcard "+ringcardid,1)
 		update_query="UPDATE tCampRingCards Set fail_try=fail_try+1 WHERE rID="+ringcardid
+		callnote_status="Result_Connection_Failure"
 	}else if(called==1){
 		i:=1
 		for i < 6 {
@@ -197,6 +199,7 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 			update_query +="no_try = no_try + 1,"+status_key+"="+strconv.Itoa(real_status)+" WHERE rID="+ringcardid
 		}
 	}
+	db_callnote_fail(campaignid,ringcardid,number,callnote_status,"0")
 	_, err = db.Exec(update_query)
 	checkErr(err)
 
@@ -422,6 +425,21 @@ func db_get_file(fileid string)(int,string){
 	}
 	return 200,"OK"
 }
+
+func db_user_wrapup(userid string){
+	_,err:=db.Exec("UPDATE tUsers SET status ='Wrapup' where userID="+userid)
+	checkErr(err)
+}
+
+func db_callnote_fail(campaignid string, ringcardid string, number string,status string,userid string){
+	if(userid==""){
+		userid="0"
+	}
+	callnote:="{\"status\":\""+status+"\",\"phone\":\""+number+"\"}"
+	_,err:=db.Exec("INSERT INTO tCampRingCards_callnote set campaignid ="+campaignid+", cardid = "+ringcardid+", userid = "+userid+", time=NOW(), callnote = '"+callnote+"',action = 'perlapp', operator = 'perlapp'")
+	checkErr(err)
+}
+//chua lam robocaller
 /**
   using a map
 */

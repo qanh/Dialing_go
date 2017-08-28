@@ -135,8 +135,8 @@ func init(){
 	//a.RegisterDefaultHandler(DefaultHandler)
 	a.RegisterHandler("Hangup",ast_hangup_event)
 	a.RegisterHandler("MeetmeJoin",ast_join_event)
-	a.RegisterHandler("MeetmeLeave",ast_leave)
-	a.RegisterHandler("OriginateResponse",ast_originate_response)
+	a.RegisterHandler("MeetmeLeave",ast_leave_event)
+	a.RegisterHandler("OriginateResponse",ast_originate_response_event)
 	//a.RegisterHandler("PeerStatus",ast_peer_status_event)
 	//delete all status peer cached
 	ast_delete_peercache()

@@ -117,7 +117,7 @@ func ast_hangup(agent string)(int , string){
 			agents[agent]["status"]="standby"
 			agents[agent]["ringcardid"]=""
 			usernum:=agents[agent]["usernum"]
-			mute(conf,usernum,agent)
+			ast_mute(conf,usernum,agent)
 			db_log("standby",agent,ext,campaignid)
 			agents[agent]["channel"]=""
 			agents[agent]["callee"]=""
@@ -234,21 +234,30 @@ func ast_standby(agent string)(int , string){
 func ast_hangup_event(m map[string]string){
 
 	plog("Hangup!  "+m["Channel"]+" "+ m["Uniqueid"]+" " + m["Callerid"],1)
-	var agent=call_arr[m["Uniqueid"]]["agent"]
+	channel:=m["Channel"]
+	//var agent=call_arr[channel]["agent"]
 	//var channel=strings.Split(m["Channel"],"@")[0]
 
 	delete(inbound_arr,m["Channel"])
-	delete(call_arr,m["Uniqueid"])
+	//delete(call_arr,channel)
 	for key, _ := range agents {
-		if agents[key]["ownchannel"] == m["Channel"]{
-			mc.Set(&memcache.Item{Key: "peer_"+agents[key]["ext"], Value: []byte("FAIL")})
+		if agents[key]["ownchannel"] == channel{
+			//mc.Set(&memcache.Item{Key: "peer_"+agents[key]["ext"], Value: []byte("FAIL")})
+			mc.Delete("peer_"+agents[key]["ext"])
+		}
+		if agents[key]["channel"] == channel{
+			plog("Wrapup! "+key,1)
+			db_user_wrapup(key)
+			usernum := agents[key]["usernum"]
+			conf_num := agents[key]["conf_num"]
+			ast_mute(conf_num, usernum, agent)
 		}
 	}
-	if(agent !="") {
+	/*if(agent !="") {
 		usernum := agents[agent]["usernum"]
 		conf_num := agents[agent]["conf_num"]
-		mute(conf_num, usernum, agent)
-	}
+		ast_mute(conf_num, usernum, agent)
+	}*/
 	//process robocall
 	if(m["Context"] == "robo-play") {
 	item,_ := mc.Get("robo_call");
@@ -261,20 +270,22 @@ func ast_hangup_event(m map[string]string){
 }
 //check lai trang thai cua reason code
 //
-func ast_originate_response(m map[string] string){
+func ast_originate_response_event(m map[string] string){
 	var agent string
-	actionID:=strings.Split(m["ActionID"],":")
+	accountCode:=strings.Split(m["AccountCode"],":")
 	jsonString, _ := json.Marshal(m)
 	plog("event: "+string(jsonString),1)
-	callee:=actionID[0]
-	ringcardid:=actionID[1]
-	campaignid:=actionID[2]
-	if(len(actionID)>3) {
-		agent = actionID[3]
-	}
-	uid:=m["Uniqueid"]
+	callee:=accountCode[0]
+	ringcardid:=accountCode[1]
+	campaignid:=accountCode[2]
+	//if(len(actionID)>3) {
+	//	agent = actionID[3]
+	//}
+	//m["Uniqueid"]
+
 	reason,_:=strconv.Atoi(m["Reason"])
 	fromchannel:=m["Channel"]
+	//uid:=fromchannel[:len(channel)-2]
 	if(strings.Contains(fromchannel,"selecttrunk")){
 		num_queue[campaignid]--
 		if(num_queue[campaignid]<1){
@@ -282,7 +293,7 @@ func ast_originate_response(m map[string] string){
 		}
 	}
 	//create call_arr store call infomation by unique id of channel
-	if(call_arr[uid]== nil) {
+	/*if(call_arr[uid]== nil) {
 		call_arr[uid] = make(map[string]string)
 	}
 	call_arr[uid]["ringcardid"]=ringcardid
@@ -291,7 +302,8 @@ func ast_originate_response(m map[string] string){
 	}
 	call_arr[uid]["callee"]=callee
 	call_arr[uid]["campaignid"]=campaignid
-	call_arr[uid]["channel"]=fromchannel[:len(fromchannel)-2]
+	//call_arr[uid]["channel"]=fromchannel[:len(fromchannel)-2]
+	*/
 	status:=""
 	//if agent != nil && agent!=""{
 	//	uidarr[agent]=uid
@@ -310,7 +322,7 @@ func ast_originate_response(m map[string] string){
 	default:
 		status="Unknown fail" //Odefinierat fel
 	}
-	plog("Originate result: "+callee+", "+uid+", "+strconv.Itoa(reason)+", "+status+", "+agent,1)
+	plog("Originate result: "+callee+", "+m["Uniqueid"]+", "+strconv.Itoa(reason)+", "+status+", "+agent,1)
 	//Use socket to control reatime status of call
 	// /flashdata(campaignid)
 	if(m["Response"]!="Success") {
@@ -338,7 +350,7 @@ func ast_originate_response(m map[string] string){
 					ratio := calc_ratio(campaignid)
 					num_queue[campaignid] += ratio
 					if (ratio > 0) {
-						db_dial(ratio, campaignid)
+						go db_dial(ratio, campaignid)
 					}
 					break
 				}
@@ -367,6 +379,7 @@ func ast_join_event(m map[string]string){
 	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+uid2+" "+m["Meetme"]+" "+m["User"]+" "+" "+usernum+" "+context,1)
 	if context=="default"{
 		if(m["Meetme"]=="8000000") {
+			ast_mute_channel(channel,"on")
 			ans_cnt++
 			ans_cntarr["campaignid"]++
 			//num_queue["campaignid"]--
@@ -406,7 +419,7 @@ func ast_join_event(m map[string]string){
 				agents[agent]["channel"] = channel
 				ast_ratio_down(campaignid)
 				usernum = agents[agent]["usernum"]
-				unmute(conf, usernum, agent)
+				ast_unmute(conf, usernum, agent)
 				a.Action(map[string]string{"Action": "Redirect",
 					"Channel":        channel,
 					"Context":        "call-meetme",
@@ -427,7 +440,7 @@ func ast_join_event(m map[string]string){
 				//delete(idarr,uid)
 				tapp_cnt++
 				tapp_cntarr[campaignid]++
-				ratio_reset(campaignid)
+				ast_ratio_reset(campaignid)
 				db_reg_tapp(ringcardid)
 				a.Action(map[string]string{"Action": "Hangup",
 					"Channel":        channel,
@@ -436,28 +449,26 @@ func ast_join_event(m map[string]string){
 				})
 			}
 		}else if(m["Meetme"][0:2]=="88") {
-			jsonString, _ := json.Marshal(agents)
-			plog("event: "+string(jsonString),1)
+			//jsonString, _ := json.Marshal(agents)
+			//plog("event: "+string(jsonString),1)
 			for key, _ := range agents {
 				if(agents[key]["conf_num"]==m["Meetme"]){
 					plog(m["Meetme"][0:2],1)
 					agents[key]["ownchannel"]=channel
 					agents[key]["usernum"]=usernum
-					mute(conf,usernum,key)
+					ast_mute(conf,usernum,key)
 					db_user_connected(key,1)
 					break
 				}
 			}
 		}
 	}else if context=="call-meetme" {
-		jsonString, _ := json.Marshal(agents)
-		plog("event: "+string(jsonString),1)
-		uid2:=""
-		for key, value := range call_arr {
-			if value["channel"]== channel[:len(channel)-2]{
-				uid2=key
-			}
-		}
+		//jsonString, _ := json.Marshal(agents)
+		//plog("event: "+string(jsonString),1)
+		go func(channel string) {
+			time.Sleep(time.Second * 1)
+			ast_mute_channel(channel,"off")
+		}(channel)
 
 		for key, _ := range agents {
 			if(agents[key]["conf_num"]==m["Meetme"]){
@@ -467,12 +478,12 @@ func ast_join_event(m map[string]string){
 				ext:=agents[key]["ext"]
 				db_log("incall",key,ext,campaignid)
 				db_log_soundfile(ringcardid,campaignid,key)
-				if(uid2==""){
+				/*if val, ok := call_arr[channel[:len(channel)-2]]; ok {
 					plog("Meetme happen before Originate Result",1)
 				}else{
-					call_arr[uid2]["agent"]=key
+					val["agent"]=key
 				}
-
+				*/
 				url:="/dialing/card/"+ringcardid+"?dialnumber="+callee
 				mc.Set(&memcache.Item{Key: "redirect_"+agents[key]["clientid"]+"_"+key, Value: []byte(url)})
 				break
@@ -603,6 +614,7 @@ func ast_dial(dest string,ringcardid string,campaignid string )(int , string){
 		"Timeout":	strconv.Itoa(dial_timeout),
 		"Callerid":	callerid,
 		"Async":	"1",
+		"Account":	actionID,
 		"ActionID":	actionID,
 		"Variable":	"__myactionid="+actionID+",__TRUNKNAME="+trunkname,
 		"Priority":	"1"	})
@@ -611,7 +623,7 @@ func ast_dial(dest string,ringcardid string,campaignid string )(int , string){
 	}
 	return 200,"OK"
 }
-func ast_mdial_trunk(agent string,ext string,dest string,ringcardid string)(int , string){
+func ast_mdial(agent string,ext string,dest string,ringcardid string)(int , string){
 	ext=agents[agent]["ext"]
 	conf:="8800"+ext
 	//callarr[dest+":"+ringcardid]=ringcardid
@@ -634,7 +646,7 @@ func ast_mdial_trunk(agent string,ext string,dest string,ringcardid string)(int 
 	//camparr[dest]=campaignid
 	plog("Mdial "+conf+" to :"+dest+" Ringcard: "+ringcardid+" Campaign: "+campaignid ,1)
 	usernum:=agents[agent]["usernum"]
-	unmute(conf,usernum,agent)
+	ast_unmute(conf,usernum,agent)
 	actionID:=dest+":"+ringcardid+":"+campaignid+":"+agent
 	result, _ := a.Action(map[string]string{"Action": "Originate",
 		"Channel": 	"Local/"+conf+"@call-meetme",
@@ -643,6 +655,7 @@ func ast_mdial_trunk(agent string,ext string,dest string,ringcardid string)(int 
 		"Timeout":	strconv.Itoa(dial_timeout),
 		//"Callerid":	callerid,
 		"Async":	"1",
+		"Account":	actionID,
 		"ActionID":	actionID,
 		"Variable":	"__myactionid="+actionID+",__TRUNKNAME="+trunkname,
 		//"Variable":	"__TRUNKNAME="+trunkname,
@@ -654,7 +667,7 @@ func ast_mdial_trunk(agent string,ext string,dest string,ringcardid string)(int 
 }
 
 
-func ast_leave(m map[string]string){
+func ast_leave_event(m map[string]string){
 	//plog("Ast_leave: $channel,$ext,$agent\n", 5);
 	jsonString, _ := json.Marshal(agents)
 	plog("event: "+string(jsonString),1)
@@ -680,13 +693,13 @@ func ast_leave(m map[string]string){
 
 }
 
-func mute(conf_num string ,user string,agent string){
+func ast_mute(conf_num string ,user string,agent string){
 	_, err := a.Action(map[string]string{"Action": "MeetmeMute", "Meetme": conf_num,"Usernum":user})
 	//fmt.Println(result, err)
 	checkErr(err)
 	plog("User "+user+" in conference "+conf_num+" MUTE",1)
 }
-func unmute(conf_num string ,user string,agent string){
+func ast_unmute(conf_num string ,user string,agent string){
 	_, err := a.Action(map[string]string{"Action": "MeetmeUnMute", "Meetme": conf_num,"Usernum":user})
 	//fmt.Println(result, err)
 	checkErr(err)
@@ -736,7 +749,7 @@ func ast_ratio_down(campaignid string){
 	}
 }
 //Reset ratio
-func ratio_reset(campaignid string){
+func ast_ratio_reset(campaignid string){
 	if(db_ratio[campaignid]==0){
 		db_ratio[campaignid]=default_ratio
 	}
@@ -774,7 +787,7 @@ func flashdata(campaignid string){
 }
 */
 // Set default ratio
-func set_default_ratio(campaignid string){
+func ast_set_default_ratio(campaignid string){
 	if(db_ratio[campaignid]==0){
 		db_ratio[campaignid]=default_ratio
 	}
@@ -793,7 +806,7 @@ func ast_idial(agent string,ext string,dest string,ringcard string, channel stri
 	usernum:=agents[agent]["usernum"]
 	campaignid:=agents[agent]["campaignid"]
 	conf:="8800"+ext
-	unmute(conf,usernum,agent)
+	ast_unmute(conf,usernum,agent)
 	dial_cnt++
 	dial_cntarr[campaignid]++
 	agents[agent]["channel"]=channel
@@ -825,8 +838,8 @@ func ast_transfer(agent string,toagent string, phonenum string)(int , string){
 	agents[agent]["ringcardid"]=""
 	agents[agent]["channel"]=""
 	agents[agent]["callee"]=""
-	mute(cur_conf,usernum,agent)
-	unmute(conf, agents[toagent]["usernum"],toagent)
+	ast_mute(cur_conf,usernum,agent)
+	ast_unmute(conf, agents[toagent]["usernum"],toagent)
 	plog("Transfer call from "+agent+" , "+campaignid+" , "+phonenum+" , "+ringcardid+" , "+channel+" to "+toagent,1)
 	db_user_connected(agent,0)
 	result, _:=a.Action(map[string]string{"Action": "Redirect",
@@ -920,7 +933,7 @@ func ast_mute_channel(channel string,state string){
 					"Direction":	"all",
 					"State":	state})
 }
-func check_numqueue(){
+func ast_check_numqueue(){
 	size:=len(agent_cnt)
 	plog ("check_numqueue: "+strconv.Itoa(size),1);
 	if size>0 {
