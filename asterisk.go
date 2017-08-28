@@ -366,10 +366,11 @@ func ast_join_event(m map[string]string){
 	context:=m["Context"]
 
 	//tmpclid:=idarr[uid]
-	//jsonString, _ := json.Marshal(m)
-	//plog("event: "+string(jsonString),1)
+	jsonString, _ := json.Marshal(m)
+	plog("event: "+string(jsonString),1)
 	//event asterisk meetme join maybe happen before originate result use Account Code for information
 	accountCode:=strings.Split(m["AccountCode"],":")
+	//fmt.Println()
 	callee:=accountCode[0]
 	ringcardid:=accountCode[1]
 	campaignid:=accountCode[2]
