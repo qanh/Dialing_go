@@ -287,7 +287,8 @@ func ast_originate_response_event(m map[string] string){
 	reason,_:=strconv.Atoi(m["Reason"])
 	fromchannel:=m["Channel"]
 	//uid:=fromchannel[:len(channel)-2]
-	if(strings.Contains(fromchannel,"selecttrunk")){
+	if(strings.Contains(fromchannel,"auto-dial")){
+		fmt.Println("decrease num queue")
 		num_queue[campaignid]--
 		if(num_queue[campaignid]<1){
 			num_queue[campaignid]=0
