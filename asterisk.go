@@ -271,13 +271,14 @@ func ast_hangup_event(m map[string]string){
 //check lai trang thai cua reason code
 //
 func ast_originate_response_event(m map[string] string){
-	var agent string
-	accountCode:=strings.Split(m["AccountCode"],":")
+	//var agent string
+	actionID:=strings.Split(m["ActionID"],":")
 	jsonString, _ := json.Marshal(m)
 	plog("event: "+string(jsonString),1)
-	callee:=accountCode[0]
-	ringcardid:=accountCode[1]
-	campaignid:=accountCode[2]
+
+	callee:=actionID[0]
+	ringcardid:=actionID[1]
+	campaignid:=actionID[2]
 	//if(len(actionID)>3) {
 	//	agent = actionID[3]
 	//}
@@ -322,7 +323,7 @@ func ast_originate_response_event(m map[string] string){
 	default:
 		status="Unknown fail" //Odefinierat fel
 	}
-	plog("Originate result: "+callee+", "+m["Uniqueid"]+", "+strconv.Itoa(reason)+", "+status+", "+agent,1)
+	plog("Originate result: "+callee+", "+m["Uniqueid"]+", "+strconv.Itoa(reason)+", "+status,1)
 	//Use socket to control reatime status of call
 	// /flashdata(campaignid)
 	if(m["Response"]!="Success") {
