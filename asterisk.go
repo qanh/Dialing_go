@@ -364,16 +364,19 @@ func ast_join_event(m map[string]string){
 	uid:=m["Uniqueid"]
 	usernum:=m["Usernum"]
 	context:=m["Context"]
-
+	var callee,ringcardid,campaignid string
 	//tmpclid:=idarr[uid]
 	jsonString, _ := json.Marshal(m)
 	plog("event: "+string(jsonString),1)
 	//event asterisk meetme join maybe happen before originate result use Account Code for information
-	accountCode:=strings.Split(m["AccountCode"],":")
-	//fmt.Println()
-	callee:=accountCode[0]
-	ringcardid:=accountCode[1]
-	campaignid:=accountCode[2]
+	if(m["AccountCode"]!=""){
+		accountCode:=strings.Split(m["AccountCode"],":")
+		//fmt.Println()
+		callee=accountCode[0]
+		ringcardid=accountCode[1]
+		campaignid=accountCode[2]
+	}
+
 
 	//none:=1
 	conf:=""
