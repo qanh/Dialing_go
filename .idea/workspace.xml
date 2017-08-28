@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f7c1f2cd-2bdd-4862-9012-3140ec844fde" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asterisk.go" afterPath="$PROJECT_DIR$/asterisk.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -335,14 +334,7 @@
       <workItem from="1502680767599" duration="38113000" />
       <workItem from="1503635000825" duration="7840000" />
       <workItem from="1503649313556" duration="4019000" />
-      <workItem from="1503892621850" duration="10358000" />
-    </task>
-    <task id="LOCAL-00184" summary="fix bug">
-      <created>1502272135110</created>
-      <option name="number" value="00184" />
-      <option name="presentableId" value="LOCAL-00184" />
-      <option name="project" value="LOCAL" />
-      <updated>1502272135110</updated>
+      <workItem from="1503892621850" duration="10434000" />
     </task>
     <task id="LOCAL-00185" summary="fix bug">
       <created>1502272175038</created>
@@ -680,11 +672,18 @@
       <option name="project" value="LOCAL" />
       <updated>1503910234454</updated>
     </task>
-    <option name="localTasksCounter" value="233" />
+    <task id="LOCAL-00233" summary="fix bug">
+      <created>1503910720106</created>
+      <option name="number" value="00233" />
+      <option name="presentableId" value="LOCAL-00233" />
+      <option name="project" value="LOCAL" />
+      <updated>1503910720106</updated>
+    </task>
+    <option name="localTasksCounter" value="234" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="300280000" />
+    <option name="totallyTimeSpent" value="300356000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-16" width="1936" height="1056" extended-state="6" />
