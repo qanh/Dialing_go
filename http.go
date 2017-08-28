@@ -90,7 +90,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				plog ("Missing argument to manual trunk dial Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" RingcardID:"+r.FormValue("ringkort"),1)
 			} else {
 				
-				code,message:=ast_mdial_trunk(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("dest"),r.FormValue("ringkort"))
+				code,message:=ast_mdial(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("dest"),r.FormValue("ringkort"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
 			}

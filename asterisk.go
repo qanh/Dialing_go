@@ -250,7 +250,7 @@ func ast_hangup_event(m map[string]string){
 			db_user_wrapup(key)
 			usernum := agents[key]["usernum"]
 			conf_num := agents[key]["conf_num"]
-			ast_mute(conf_num, usernum, agent)
+			ast_mute(conf_num, usernum, key)
 		}
 	}
 	/*if(agent !="") {
@@ -376,7 +376,7 @@ func ast_join_event(m map[string]string){
 
 	//none:=1
 	conf:=""
-	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+uid2+" "+m["Meetme"]+" "+m["User"]+" "+" "+usernum+" "+context,1)
+	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+m["Meetme"]+" "+m["User"]+" "+" "+usernum+" "+context,1)
 	if context=="default"{
 		if(m["Meetme"]=="8000000") {
 			ast_mute_channel(channel,"on")
@@ -900,7 +900,7 @@ func ast_get_peer_status(peer string)(string){
 	//mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte(status)})
 	return status
 }
-func ast_delete_peercache(){
+func ast_delete_peercache()(int,string){
 	for i:=1;i<1000;i++ {
 		peer:=fmt.Sprintf("%03d", i)
 		mc.Delete("peer_"+peer)
@@ -916,7 +916,8 @@ func ast_delete_peercache(){
 
 func ast_check_meetme(peer string)(bool){
 	rs, _:=sh.Command("asterisk","-rx","meetme list 8800"+peer+" concise").Command("grep","SIP/").Command("awk","-F","!","{print $4}").Output()
-	if rs!="" && !strings.Contains(rs,"SIP/MAN"){
+	result:=string(rs)
+	if result!="" && !strings.Contains(result,"SIP/MAN"){
 		mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte("OK")})
 		plog("Peer status: OK",1)
 		return true
