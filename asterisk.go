@@ -123,9 +123,9 @@ func ast_hangup(agent string)(int , string){
 			agents[agent]["callee"]=""
 			result, _ := a.Action(map[string]string{"Action": "Hangup",
 				"Channel":	channel,
-				"Context":	"default",
-				"Exten":	conf,
-				"Priority":	"1",
+				//"Context":	"default",
+				//"Exten":	conf,
+				//"Priority":	"1",
 			})
 			if(result["Response"]=="Error"){
 				return 406,result["Message"]
@@ -437,7 +437,7 @@ func ast_join_event(m map[string]string){
 				url := "/dialing/card/" + ringcardid + "?dialnumber=" + callee
 				clientid := agents[agent]["clientid"];
 				mc.Set(&memcache.Item{Key: "redirect_" + clientid + "_" + agent, Value: []byte(url)})
-				db_log_soundfile(ringcardid, campaignid, agent)
+				db_log_soundfile(ringcardid, campaignid, agent,clientid)
 			} else {
 				plog("No agent for call with ringcard: " + ringcardid, 1)
 				plog("Do hangup:" + channel + ", " + conf, 1)
@@ -482,7 +482,7 @@ func ast_join_event(m map[string]string){
 				agents[key]["ringcardid"]=ringcardid
 				ext:=agents[key]["ext"]
 				db_log("incall",key,ext,campaignid)
-				db_log_soundfile(ringcardid,campaignid,key)
+				db_log_soundfile(ringcardid,campaignid,key,agents[key]["clientid"])
 				/*if val, ok := call_arr[channel[:len(channel)-2]]; ok {
 					plog("Meetme happen before Originate Result",1)
 				}else{
@@ -505,6 +505,11 @@ func ast_join_event(m map[string]string){
 				break
 			}
 		}
+	}else if context== "autocall-meetme"{
+		go func(channel string) {
+			time.Sleep(time.Second * 1)
+			ast_mute_channel(channel,"off")
+		}(channel)
 	}
 	/*else{
 		conf=m["Meetme"]

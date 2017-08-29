@@ -356,11 +356,11 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 		}
 	}
 }
-func db_log_soundfile(ringcardid string ,campaignid string ,agent string){
-	var clientid string
-	select_query := "SELECT clientID from tCampaign where campaignID="+campaignid
-	err:=db.QueryRow(select_query).Scan(&clientid)
-	if(err==nil){
+func db_log_soundfile(ringcardid string ,campaignid string ,agent string,clientid string){
+	//var clientid string
+	//select_query := "SELECT clientID from tCampaign where campaignID="+campaignid
+	//err:=db.QueryRow(select_query).Scan(&clientid)
+	//if(err==nil){
 		host,_:=os.Hostname()
 		now := time.Now()
 		datestring:=now.Format("20060102_030405")
@@ -369,7 +369,7 @@ func db_log_soundfile(ringcardid string ,campaignid string ,agent string){
 		go ast_rec_start(agent,recname,clientid)
 		db.Exec("INSERT INTO soundfile set rid = "+ringcardid+", userid = "+agent+", campaignid = "+campaignid+", clientid = "+clientid+", originfilename = "+recname+", filename = "+recname+", closed = 0, converted = 0, cut = 0, start = NOW(),asterisk_ip="+host)
 		plog("poe_kernel->post( monitor,ast_rec_start_mix, "+agent+", "+recname+","+clientid+")", 1 )
-	}
+	//}
 }
 
 func db_reg_tapp(ringcardid string){
