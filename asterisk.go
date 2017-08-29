@@ -554,6 +554,7 @@ func ast_join_event(m map[string]string){
 
 //Start record call
 func ast_rec_start(agent string,filename string, clientid string) (int , string){
+
 	if val, ok := agents[agent]; ok {
 		if(val["status"]=="incall"){
 			agents[agent]["clientid"]=clientid
