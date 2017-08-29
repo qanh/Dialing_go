@@ -428,7 +428,7 @@ func ast_join_event(m map[string]string){
 				ast_unmute(conf, usernum, agent)
 				a.Action(map[string]string{"Action": "Redirect",
 					"Channel":        channel,
-					"Context":        "call-meetme",
+					"Context":        "autocall-meetme",
 					"Exten":        conf,
 					"Priority":        "1",
 				})
@@ -467,7 +467,7 @@ func ast_join_event(m map[string]string){
 				}
 			}
 		}
-	}else if context=="call-meetme" {
+	}else if context=="manualcall-meetme" {
 		//jsonString, _ := json.Marshal(agents)
 		//plog("event: "+string(jsonString),1)
 		go func(channel string) {
@@ -655,7 +655,7 @@ func ast_mdial(agent string,ext string,dest string,ringcardid string)(int , stri
 	ast_unmute(conf,usernum,agent)
 	actionID:=dest+":"+ringcardid+":"+campaignid+":"+agent
 	result, _ := a.Action(map[string]string{"Action": "Originate",
-		"Channel": 	"Local/"+conf+"@call-meetme",
+		"Channel": 	"Local/"+conf+"@manualcall-meetme",
 		"Context": 	"manual-dial",
 		"Exten":	dest,
 		"Timeout":	strconv.Itoa(dial_timeout),
