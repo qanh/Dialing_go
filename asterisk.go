@@ -364,7 +364,7 @@ func ast_originate_response_event(m map[string] string){
 func ast_join_event(m map[string]string){
 	channel:=m["Channel"]
 	uid:=m["Uniqueid"]
-	usernum:=m["Usernum"]
+	usernum:=m["User"] //asterisk 1.8 m["Usernum"]
 	context:=m["Context"]
 	var callee,ringcardid,campaignid string
 	//tmpclid:=idarr[uid]
