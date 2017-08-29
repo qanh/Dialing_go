@@ -288,7 +288,7 @@ func ast_originate_response_event(m map[string] string){
 	fromchannel:=m["Channel"]
 	//uid:=fromchannel[:len(channel)-2]
 	if(strings.Contains(fromchannel,"auto-dial")){
-		fmt.Println("decrease num queue")
+		//fmt.Println("decrease num queue")
 		num_queue[campaignid]--
 		if(num_queue[campaignid]<1){
 			num_queue[campaignid]=0
@@ -459,7 +459,6 @@ func ast_join_event(m map[string]string){
 			//plog("event: "+string(jsonString),1)
 			for key, _ := range agents {
 				if(agents[key]["conf_num"]==m["Meetme"]){
-					plog(m["Meetme"][0:2],1)
 					agents[key]["ownchannel"]=channel
 					agents[key]["usernum"]=usernum
 					ast_mute(conf,usernum,key)
