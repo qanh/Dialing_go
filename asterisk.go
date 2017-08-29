@@ -967,7 +967,7 @@ func ast_check_numqueue(){
 			}
 		}
 	}
-	time.Sleep(3 * time.Second)
+	time.Sleep(300 * time.Second)
 	go ast_check_numqueue()
 
 }
