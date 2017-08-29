@@ -139,10 +139,10 @@ func init(){
 	a.RegisterHandler("OriginateResponse",ast_originate_response_event)
 	//a.RegisterHandler("PeerStatus",ast_peer_status_event)
 	//delete all status peer cached
-	ast_delete_peercache()
+	go ast_delete_peercache()
 	//c := make(chan map[string]string, 100)
 	//a.SetEventChannel(c)
-
+	go ast_check_numqueue()
 	//listen http request
 	http.HandleFunc("/user_state", state_check) // set router
 	err = http.ListenAndServe(":"+port, nil) // set listen port
