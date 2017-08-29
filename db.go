@@ -360,7 +360,7 @@ func db_log_soundfile(ringcardid string ,campaignid string ,agent string){
 	var clientid string
 	select_query := "SELECT clientID from tCampaign where campaignID="+campaignid
 	err:=db.QueryRow(select_query).Scan(&clientid)
-	if(err!=nil){
+	if(err==nil){
 		host,_:=os.Hostname()
 		now := time.Now()
 		datestring:=now.Format("20060102_030405")
@@ -405,7 +405,7 @@ func db_get_file(fileid string)(int,string){
 	var path_sql string
 	select_query := "select host_name,path from dialplan_voicefiles where id=="+fileid
 	err:=db.QueryRow(select_query).Scan(&host_name,&path_sql)
-	if(err!=nil){
+	if(err==nil){
 		ext := filepath.Ext(path_sql)
 		path_sql=strings.Replace(path_sql,ext,".wav",-1)
 		filename := path.Base(path_sql)
