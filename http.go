@@ -65,7 +65,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				if r.FormValue("inbound")!=""{
 					inbound	=r.FormValue("inbound")
 				}
-
+				plog ("HTTP login Agent:"+ r.FormValue("agent")+" Ext:"+r.FormValue("anknytning")+" CampaignID:"+r.FormValue("campaignID")+" Phone:"+r.FormValue("dest"),1)
 				code,message:=ast_login_remote(r.FormValue("agent"),r.FormValue("anknytning"),r.FormValue("campaignID"),r.FormValue("dest"),r.FormValue("clientid"),inbound)
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
@@ -125,7 +125,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				fmt.Fprintf(w, "Missing argument to start record file sound Agent:"+ r.FormValue("agent")+" Record file name:"+r.FormValue("recname"))
 				plog ("Missing argument to start record file sound Agent:"+ r.FormValue("agent")+" Record file name:"+r.FormValue("recname"),1)
 			} else {
-				
+				plog ("HTTP rec_start Agent:"+ r.FormValue("agent")+" Rec File:"+r.FormValue("recname"),1)
 				listfile[r.FormValue("agent")]=r.FormValue("recname")
 				code,message:=ast_rec_start(r.FormValue("agent"),r.FormValue("recname"),r.FormValue("clientid"))
 				w.WriteHeader(code)
@@ -134,7 +134,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 		case "rec_stop":
 			//http://dialern.televinken.se/user_state?agent=4711&recname=fghdfg&action=rec_stop
 			var recname string
-			if(len(r.FormValue("agent"))<2) {
+			if(len(r.FormValue("recname"))<2) {
 				recname = listfile[r.FormValue("agent")]
 			}
 			if ((r.FormValue("agent")=="") || len(recname)<2) {
@@ -144,6 +144,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			} else {
 				
 				listfile[r.FormValue("agent")]=recname
+				plog ("HTTP rec_stop Agent:"+ r.FormValue("agent")+" Rec File:"+r.FormValue("recname"),1)
 				code,message:=ast_rec_stop(r.FormValue("agent"),r.FormValue("recname"))
 				w.WriteHeader(code)
 				fmt.Fprintf(w, message)
