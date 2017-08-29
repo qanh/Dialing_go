@@ -366,7 +366,7 @@ func db_log_soundfile(ringcardid string ,campaignid string ,agent string){
 		datestring:=now.Format("20060102_030405")
 		recname := "LOGG_"+datestring+"_u"+agent+"_c"+campaignid+"_"+ringcardid+"_"+clientid+".wav"
 		plog("poe_kernel->post( monitor,ast_rec_start_mix, "+agent+", "+recname+","+clientid+")", 1 )
-		ast_rec_start(agent,recname,clientid)
+		go ast_rec_start(agent,recname,clientid)
 		db.Exec("INSERT INTO soundfile set rid = "+ringcardid+", userid = "+agent+", campaignid = "+campaignid+", clientid = "+clientid+", originfilename = "+recname+", filename = "+recname+", closed = 0, converted = 0, cut = 0, start = NOW(),asterisk_ip="+host)
 	}
 }
