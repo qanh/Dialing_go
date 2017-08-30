@@ -928,13 +928,15 @@ func ast_delete_peercache()(int,string){
 func ast_check_meetme(peer string)(bool){
 	rs, _:=sh.Command("asterisk","-rx","meetme list 8800"+peer+" concise").Command("grep","SIP/").Command("awk","-F","!","{print $4}").Output()
 	result:=string(rs)
+	plog(result,1)
 	if result!="" && !strings.Contains(result,"SIP/MAN"){
 		mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte("OK")})
-		plog("Peer status: OK",1)
+		mc.Set(&memcache.Item{Key: "redirect_" + clientid + "_" + agent, Value: []byte(url)})
+		plog("Meetme status: OK",1)
 		return true
 	}else{
 		mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte("FAIL")})
-		plog("Peer status: FAIL",1)
+		plog("Meetme status: FAIL",1)
 		return false
 	}
 }

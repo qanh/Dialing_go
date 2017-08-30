@@ -215,6 +215,7 @@ func db_dial(ratio int ,campaignid string ){
 
 		if(err!=nil){
 			checkErr(err)
+			row.Close()
 			ast_eon(campaignid)
 		}else{
 			db_dial_res(row,campaignid)
