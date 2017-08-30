@@ -53,8 +53,6 @@ var dial_cntarr =make(map [string]int)
 //var mdialarr =make(map [string]string)
 var inbound_arr =make(map [string]int)
 var ans_cntarr =make(map [string]int)
-// store infomation of call by uniqueid
-var call_arr  =make(map [string]map[string]string)
 //var idarr =make(map [string]string)
 var tapp_cntarr  =make(map [string]int)
 //unknown what it is

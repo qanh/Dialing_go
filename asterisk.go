@@ -79,8 +79,8 @@ func ast_login_remote(agent string, ext string , campaignid string,dest string,c
 	if(result["Response"]=="Error"){
 		return 406,result["Message"]
 	}
-	db_log("standby",agent,ext,campaignid)
-	db_getstate(campaignid)
+	go db_log("standby",agent,ext,campaignid)
+	go db_getstate(campaignid)
 	_,check:=cur_ratio[campaignid]
 	if(!check){
 		cur_ratio[campaignid]=1.0
@@ -96,7 +96,7 @@ func ast_logout(agent string)(int , string){
 		if(result["Response"]=="Error"){
 			return 406,result["Message"]
 		}
-		db_log("logout",agent,val["ext"],val["campaignid"])
+		go db_log("logout",agent,val["ext"],val["campaignid"])
 		mc.Delete("peer_"+val["ext"])
 		delete(agents,agent)
 
@@ -117,8 +117,8 @@ func ast_hangup(agent string)(int , string){
 			agents[agent]["status"]="standby"
 			agents[agent]["ringcardid"]=""
 			usernum:=agents[agent]["usernum"]
-			ast_mute(conf,usernum,agent)
-			db_log("standby",agent,ext,campaignid)
+			go ast_mute(conf,usernum,agent)
+			go db_log("standby",agent,ext,campaignid)
 			agents[agent]["channel"]=""
 			agents[agent]["callee"]=""
 			result, _ := a.Action(map[string]string{"Action": "Hangup",
@@ -145,8 +145,8 @@ func ast_chcamp(agent string,  campaignid string,inbound string)(int , string){
 		agents[agent]["campaignid"]=campaignid
 		agents[agent]["inbound"] = inbound
 		plog( "ast_chcamp changing campaign for ["+agent+"] to campaign ["+campaignid+"]",1)
-		db_log(status,agent,agents[agent]["ext"],campaignid)
-		db_getstate(campaignid)
+		go db_log(status,agent,agents[agent]["ext"],campaignid)
+		go db_getstate(campaignid)
 	}else{
 		plog("ast_chcamp "+agent+" is not logged in",1)
 		return 400,"Agent is not logged in"
@@ -181,7 +181,7 @@ func ast_ready(agent string)(int , string){
 			ratio= calc_ratio(campaignid)
 			plog("Ratio:"+strconv.Itoa(ratio),1)
 			plog("ast_ready "+agent+", "+ext+", "+conf_num,1)
-			db_log("ready",agent,ext,campaignid)
+			go db_log("ready",agent,ext,campaignid)
 			if(ratio==0){
 				plog("No need to call",1)
 			}else {
@@ -203,7 +203,7 @@ func ast_standby(agent string)(int , string){
 		conf_num:=agents[agent]["conf_num"]
 		campaignid:=agents[agent]["campaignid"]
 		channel:=agents[agent]["channel"]
-		db_log("standby",agent,ext,campaignid)
+		go db_log("standby",agent,ext,campaignid)
 		plog("ast_standby "+agent+", "+ext+", "+conf_num,1)
 		if(val["status"]=="ready" && val["inbound"]!="2" ){
 			agent_cnt[campaignid]--
@@ -247,10 +247,10 @@ func ast_hangup_event(m map[string]string){
 		}
 		if agents[key]["channel"] == channel{
 			plog("Wrapup! "+key,1)
-			db_user_wrapup(key)
+			go db_user_wrapup(key)
 			usernum := agents[key]["usernum"]
 			conf_num := agents[key]["conf_num"]
-			ast_mute(conf_num, usernum, key)
+			go ast_mute(conf_num, usernum, key)
 		}
 	}
 	/*if(agent !="") {
@@ -336,7 +336,7 @@ func ast_originate_response_event(m map[string] string){
 		if (reason == 1 || reason == 8) {
 			failtext = "trasigt"
 		}
-		db_set_num_status(campaignid, ringcardid, failtext, callee)
+		go db_set_num_status(campaignid, ringcardid, failtext, callee)
 		plog("To DB ringcard id:" + ringcardid + " number:" + callee + " Campaign ID:" + campaignid, 1)
 		if (fromchannel[0:10] != "Local/8800") {
 			//num_queue[campaignid]--
@@ -385,7 +385,7 @@ func ast_join_event(m map[string]string){
 	plog("Meetme Join!, "+callee+","+channel+" "+uid+" "+m["Meetme"]+" "+m["User"]+" "+" "+usernum+" "+context,1)
 	if context=="default"{
 		if(m["Meetme"]=="8000000") {
-			ast_mute_channel(channel,"on")
+			go ast_mute_channel(channel,"on")
 			ans_cnt++
 			ans_cntarr["campaignid"]++
 			//num_queue["campaignid"]--
@@ -421,11 +421,11 @@ func ast_join_event(m map[string]string){
 				if (agent_cnt[campaignid] < 0) {
 					agent_cnt[campaignid] = 0
 				}
-				db_log("incall", agent, ext, campaignid)
+				go db_log("incall", agent, ext, campaignid)
 				agents[agent]["channel"] = channel
 				ast_ratio_down(campaignid)
 				usernum = agents[agent]["usernum"]
-				ast_unmute(conf, usernum, agent)
+				go ast_unmute(conf, usernum, agent)
 				a.Action(map[string]string{"Action": "Redirect",
 					"Channel":        channel,
 					"Context":        "autocall-meetme",
@@ -437,7 +437,7 @@ func ast_join_event(m map[string]string){
 				url := "/dialing/card/" + ringcardid + "?dialnumber=" + callee
 				clientid := agents[agent]["clientid"];
 				mc.Set(&memcache.Item{Key: "redirect_" + clientid + "_" + agent, Value: []byte(url)})
-				db_log_soundfile(ringcardid, campaignid, agent,clientid)
+				go db_log_soundfile(ringcardid, campaignid, agent,clientid)
 			} else {
 				plog("No agent for call with ringcard: " + ringcardid, 1)
 				plog("Do hangup:" + channel + ", " + conf, 1)
@@ -447,7 +447,7 @@ func ast_join_event(m map[string]string){
 				tapp_cnt++
 				tapp_cntarr[campaignid]++
 				ast_ratio_reset(campaignid)
-				db_reg_tapp(ringcardid)
+				go db_reg_tapp(ringcardid)
 				a.Action(map[string]string{"Action": "Hangup",
 					"Channel":        channel,
 					"Context":        "call-meetme",
@@ -461,8 +461,8 @@ func ast_join_event(m map[string]string){
 				if(agents[key]["conf_num"]==m["Meetme"]){
 					agents[key]["ownchannel"]=channel
 					agents[key]["usernum"]=usernum
-					ast_mute(conf,usernum,key)
-					db_user_connected(key,1)
+					go ast_mute(conf,usernum,key)
+					go db_user_connected(key,1)
 					break
 				}
 			}
@@ -472,7 +472,7 @@ func ast_join_event(m map[string]string){
 		//plog("event: "+string(jsonString),1)
 		go func(channel string) {
 			time.Sleep(time.Second * 1)
-			ast_mute_channel(channel,"off")
+			go ast_mute_channel(channel,"off")
 		}(channel)
 
 		for key, _ := range agents {
@@ -481,8 +481,8 @@ func ast_join_event(m map[string]string){
 				agents[key]["status"]="incall"
 				agents[key]["ringcardid"]=ringcardid
 				ext:=agents[key]["ext"]
-				db_log("incall",key,ext,campaignid)
-				db_log_soundfile(ringcardid,campaignid,key,agents[key]["clientid"])
+				go db_log("incall",key,ext,campaignid)
+				go db_log_soundfile(ringcardid,campaignid,key,agents[key]["clientid"])
 				/*if val, ok := call_arr[channel[:len(channel)-2]]; ok {
 					plog("Meetme happen before Originate Result",1)
 				}else{
@@ -508,7 +508,7 @@ func ast_join_event(m map[string]string){
 	}else if context== "autocall-meetme"{
 		go func(channel string) {
 			time.Sleep(time.Second * 1)
-			ast_mute_channel(channel,"off")
+			go ast_mute_channel(channel,"off")
 		}(channel)
 	}
 	/*else{
@@ -566,7 +566,7 @@ func ast_rec_start(agent string,filename string, clientid string) (int , string)
 			agents[agent]["logfile"]=filename
 			agents[agent]["timestart"]=strconv.FormatInt(time.Now().Unix(),10)
 			agents[agent]["recstatus"]="recording"
-			db_log("recon",agent,val["ext"],val["campaignid"])
+			go db_log("recon",agent,val["ext"],val["campaignid"])
 			result, _ := a.Action(map[string]string{"Action": "COMMAND", "COMMAND": "mixmonitor start "+val["channel"]+" "+filename})
 			if(result["Response"]=="Error"){
 				return 406,result["Message"]
@@ -583,13 +583,13 @@ func ast_rec_stop(agent string, filename string)(int , string){
 	plog("Stop record call for agent : "+agent+" with "+filename,1)
 	if val, ok := agents[agent]; ok {
 		if(val["status"]=="incall"){
-			db_log("recoff",agent,val["ext"],val["campaignid"])
+			go db_log("recoff",agent,val["ext"],val["campaignid"])
 			result, _ := a.Action(map[string]string{"Action": "COMMAND", "COMMAND": "mixmonitor stop "+val["channel"]})
 			if(result["Response"]=="Error"){
 				return 406,result["Message"]
 			}
 
-			db_log_rec(val["campaignid"],val["clientid"],val["logfile"],0)
+			go db_log_rec(val["campaignid"],val["clientid"],val["logfile"],0)
 			agents[agent]["timestart"]=""
 			agents[agent]["acceptfile"]=""
 			agents[agent]["acceptstart"]=""
@@ -657,7 +657,7 @@ func ast_mdial(agent string,ext string,dest string,ringcardid string)(int , stri
 	//camparr[dest]=campaignid
 	plog("Mdial "+conf+" to :"+dest+" Ringcard: "+ringcardid+" Campaign: "+campaignid ,1)
 	usernum:=agents[agent]["usernum"]
-	ast_unmute(conf,usernum,agent)
+	go ast_unmute(conf,usernum,agent)
 	actionID:=dest+":"+ringcardid+":"+campaignid+":"+agent
 	result, _ := a.Action(map[string]string{"Action": "Originate",
 		"Channel": 	"Local/"+conf+"@manualcall-meetme",
@@ -692,7 +692,7 @@ func ast_leave_event(m map[string]string){
 			agent=key
 			status:=value["status"]
 			current_channel:=value["channel"]
-			db_user_connected(agent,0)
+			go db_user_connected(agent,0)
 			agents[agent]["status"]="standby"
 			if(status=="incall") {
 				a.Action(map[string]string{"Action": "Hangup",
@@ -817,7 +817,7 @@ func ast_idial(agent string,ext string,dest string,ringcard string, channel stri
 	usernum:=agents[agent]["usernum"]
 	campaignid:=agents[agent]["campaignid"]
 	conf:="8800"+ext
-	ast_unmute(conf,usernum,agent)
+	go ast_unmute(conf,usernum,agent)
 	dial_cnt++
 	dial_cntarr[campaignid]++
 	agents[agent]["channel"]=channel
@@ -840,19 +840,19 @@ func ast_transfer(agent string,toagent string, phonenum string)(int , string){
 	campaignid:=agents[agent]["campaignid"]
 	usernum:=agents[agent]["usernum"]
 	agents[agent]["logging"]="off"
-	db_log("recoff",agent,agents[agent]["ext"],campaignid)
+	go db_log("recoff",agent,agents[agent]["ext"],campaignid)
 	a.Action(map[string]string{"Action": "COMMAND",
 		"Command":"mixmonitor stop "+channel	})
 	//plog("standby: Agent "+agent+" is standby",1)
 	agents[agent]["status"]="standby"
-	db_log("standby",agent,agents[agent]["ext"],campaignid)
+	go db_log("standby",agent,agents[agent]["ext"],campaignid)
 	agents[agent]["ringcardid"]=""
 	agents[agent]["channel"]=""
 	agents[agent]["callee"]=""
-	ast_mute(cur_conf,usernum,agent)
-	ast_unmute(conf, agents[toagent]["usernum"],toagent)
+	go ast_mute(cur_conf,usernum,agent)
+	go ast_unmute(conf, agents[toagent]["usernum"],toagent)
 	plog("Transfer call from "+agent+" , "+campaignid+" , "+phonenum+" , "+ringcardid+" , "+channel+" to "+toagent,1)
-	db_user_connected(agent,0)
+	go db_user_connected(agent,0)
 	result, _:=a.Action(map[string]string{"Action": "Redirect",
 		"Channel":channel,
 		"Context":"default",
@@ -953,7 +953,7 @@ func ast_check_numqueue(){
 			if(num_queue[key] > 0){
 				ratio:=calc_ratio(key)
 				if ratio < 1{
-					rs, _:=sh.Command("asterisk","-rx","core show channels concise").Command("grep","@selecttrunk").Command("awk","-F","!","$2 ~ /dial-out/ && $5 ~ /Ring/ && $9 ~ /"+"1133"+":/").Command("wc","-l").Output()
+					rs, _:=sh.Command("asterisk","-rx","core show channels concise").Command("grep","@auto-dial").Command("awk","-F","!","$2 ~ /auto-dial/ && $5 ~ /Ring/ && $9 ~ /"+key+":/").Command("wc","-l").Output()
 					//fmt.Println(reflect.TypeOf(count))
 					count,_:=strconv.Atoi(string(rs))
 					plog ("check_numqueue: call "+string(rs),1);
@@ -975,4 +975,17 @@ func ast_check_numqueue(){
 	time.Sleep(300 * time.Second)
 	go ast_check_numqueue()
 
+}
+
+func ast_robo_call(phonenumber string, soundfile string,trunk string){
+	a.Action(map[string]string{"Action": "Originate",
+		"Channel": 	"Local/"+phonenumber+"@robo-callout",
+		"Context":	"robo-play",
+		"Exten":	"s",
+		"Timeout":	dial_timeout,
+		"":		"1",
+		"":		"robo_"+phonenumber,
+		"Variable":	"__soundfile="+soundfile+",__TRUNKNAME="+trunk,
+		"Priority":	"1",
+	})
 }
