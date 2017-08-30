@@ -454,7 +454,7 @@ func db_robo_call(id string, maxcall string , percent string){
 	rc := NewMapStringScan(columnNames)
 	row.Next()
 	rc.Update(row)
-	rơ.Close()
+	row.Close()
 	//convert field voice (JSON string) to array maps
 	var voices []map[string]string
 	json.Unmarshal([]byte(rc.row["voices"]), &voices)
