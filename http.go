@@ -11,7 +11,7 @@ var listfile map[string]string
 func state_check(w http.ResponseWriter, r *http.Request){
 //fmt.Println("http request")
 	r.ParseForm()
-	fmt.Println(r)
+	//fmt.Println(r)
 	switch action:=r.FormValue("action"); action{
 		//call to agent anknytning then join it to room
 		case "login":

@@ -931,7 +931,6 @@ func ast_check_meetme(peer string)(bool){
 	plog(result,1)
 	if result!="" && !strings.Contains(result,"SIP/MAN"){
 		mc.Set(&memcache.Item{Key: "peer_"+peer, Value: []byte("OK")})
-		mc.Set(&memcache.Item{Key: "redirect_" + clientid + "_" + agent, Value: []byte(url)})
 		plog("Meetme status: OK",1)
 		return true
 	}else{
