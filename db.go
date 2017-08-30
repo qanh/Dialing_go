@@ -70,7 +70,7 @@ func db_log(status string, agent string, ext string, campaignid string){
 func db_setstate(ringcardid string){
 	stmt, err := db.Prepare("UPDATE tCampRingCards SET tapp = tapp + 1 where rID=?")
 	checkErr(err)
-
+	defer stmt.Close()
 	_, err = stmt.Exec( ringcardid)
 	checkErr(err)
 }
@@ -113,6 +113,7 @@ func db_set_num_status(campaignid string , ringcardid string,reason string, numb
 	rc := NewMapStringScan(columnNames)
 	row.Next()
 	rc.Update(row)
+	row.Close()
 	i := 1
 	index:=1
 	callnote_status:="Result_No_Answer"
@@ -211,7 +212,7 @@ func db_dial(ratio int ,campaignid string ){
 	query:="call PTakeActiveRingCard("+campaignid+","+strconv.Itoa(tidsperiod)+")"
 	if(ratio>0){
 		row, err := db.Query(query)
-		//defer row.Close()
+
 		if(err!=nil){
 			checkErr(err)
 			ast_eon(campaignid)
@@ -237,6 +238,7 @@ func db_dial_res(row *sql.Rows,campaignid string ){
 		ast_eon(campaignid)
 	}else {
 		rc.Update(row)
+		row.Close()
 		ringcardid := rc.row["rID"]
 		status1, _ := strconv.Atoi(rc.row["status1"])
 		status2, _ := strconv.Atoi(rc.row["status2"])
@@ -452,6 +454,7 @@ func db_robo_call(id string, maxcall string , percent string){
 	rc := NewMapStringScan(columnNames)
 	row.Next()
 	rc.Update(row)
+	rơ.Close()
 	//convert field voice (JSON string) to array maps
 	var voices []map[string]string
 	json.Unmarshal([]byte(rc.row["voices"]), &voices)
