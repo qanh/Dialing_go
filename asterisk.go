@@ -984,8 +984,8 @@ func ast_robo_call(phonenumber string, soundfile string,trunk string ,taskid str
 		"Context":	"robo-play",
 		"Exten":	"s",
 		"Timeout":	strconv.Itoa(dial_timeout),
-		"":		"1",
-		"":		"robo_"+phonenumber,
+		"Async":		"1",
+		"ActionID":		"robo_"+phonenumber,
 		"Variable":	"__soundfile="+soundfile+",__TRUNKNAME="+trunk+",__phonenum="+phonenumber+",__percent="+percent+",__taskID="+taskid+",__cardID="+rid,
 		"Priority":	"1",
 	})

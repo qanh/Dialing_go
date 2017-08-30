@@ -13,6 +13,7 @@ import(
 	"path"
 	"path/filepath"
 	"strings"
+	"encoding/json"
 )
 func db_getstate(campaignid string){
 
