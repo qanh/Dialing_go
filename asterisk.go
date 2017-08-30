@@ -461,6 +461,7 @@ func ast_join_event(m map[string]string){
 				if(agents[key]["conf_num"]==m["Meetme"]){
 					agents[key]["ownchannel"]=channel
 					agents[key]["usernum"]=usernum
+					mc.Set(&memcache.Item{Key: "peer_"+agents[key]["ext"], Value: []byte("OK")})
 					go ast_mute(conf,usernum,key)
 					go db_user_connected(key,1)
 					break
