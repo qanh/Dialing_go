@@ -259,7 +259,7 @@ func ast_hangup_event(m map[string]string){
 		ast_mute(conf_num, usernum, agent)
 	}*/
 	//process robocall
-	if(m["Context"] == "robo-callout" && channel[-2]==";1") {
+	if(m["Context"] == "robo-callout" && channel[len(channel)-2:]==";1") {
 	item,_ := mc.Get("robo_call");
 		count,_:= strconv.Atoi(string(item.Value))
 		count--;
@@ -983,7 +983,7 @@ func ast_robo_call(phonenumber string, soundfile string,trunk string ,taskid str
 		"Channel": 	"Local/s@robo-callout",
 		"Context":	"robo-play",
 		"Exten":	"s",
-		"Timeout":	dial_timeout,
+		"Timeout":	strconv.Itoa(dial_timeout),
 		"":		"1",
 		"":		"robo_"+phonenumber,
 		"Variable":	"__soundfile="+soundfile+",__TRUNKNAME="+trunk+",__phonenum="+phonenumber+",__percent="+percent+",__taskID="+taskid+",__cardID="+rid,
