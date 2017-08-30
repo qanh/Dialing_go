@@ -259,7 +259,7 @@ func ast_hangup_event(m map[string]string){
 		ast_mute(conf_num, usernum, agent)
 	}*/
 	//process robocall
-	if(m["Context"] == "robo-play") {
+	if(m["Context"] == "robo-callout" && channel[-2]==";1") {
 	item,_ := mc.Get("robo_call");
 		count,_:= strconv.Atoi(string(item.Value))
 		count--;
@@ -977,15 +977,16 @@ func ast_check_numqueue(){
 
 }
 
-func ast_robo_call(phonenumber string, soundfile string,trunk string){
+func ast_robo_call(phonenumber string, soundfile string,trunk string ,taskid string,rid string, percent string){
+	trunk="tr"+phonenumber
 	a.Action(map[string]string{"Action": "Originate",
-		"Channel": 	"Local/"+phonenumber+"@robo-callout",
+		"Channel": 	"Local/s@robo-callout",
 		"Context":	"robo-play",
 		"Exten":	"s",
 		"Timeout":	dial_timeout,
 		"":		"1",
 		"":		"robo_"+phonenumber,
-		"Variable":	"__soundfile="+soundfile+",__TRUNKNAME="+trunk,
+		"Variable":	"__soundfile="+soundfile+",__TRUNKNAME="+trunk+",__phonenum="+phonenumber+",__percent="+percent+",__taskID="+taskid+",__cardID="+rid,
 		"Priority":	"1",
 	})
 }

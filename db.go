@@ -210,7 +210,7 @@ func db_dial(ratio int ,campaignid string ){
 	query:="call PTakeActiveRingCard("+campaignid+","+strconv.Itoa(tidsperiod)+")"
 	if(ratio>0){
 		row, err := db.Query(query)
-		defer row.Close()
+		//defer row.Close()
 		if(err!=nil){
 			checkErr(err)
 			ast_eon(campaignid)
@@ -442,6 +442,36 @@ func db_callnote_fail(campaignid string, ringcardid string, number string,status
 	checkErr(err)
 }
 //chua lam robocaller
+
+func db_robo_call(id string, maxcall string , percent string){
+	select_query:="select r.campaign_id,r.segments,r.voices,t.campNumber from robocaller r inner join tCampaign t on r.campaign_id=t.campaignID where r.id="+id+" and r.status=1"
+	row,err := db.Query(select_query)
+	checkErr(err)
+	columnNames, _ := row.Columns()
+	rc := NewMapStringScan(columnNames)
+	row.Next()
+	rc.Update(row)
+	//convert field voice (JSON string) to array maps
+	var voices []map[string]string
+	json.Unmarshal([]byte(rc.row["voices"]), &voices)
+	for i:=0;i<len(voices);i++ {
+		where:=""
+		if voices[i]["segmentid"] !=""{
+			where +="and t.segmentID in ("+voices[i]["segmentid"]+")"
+		}
+		if voices[i]["statusid"] !=""{
+			where +="and t.statusID in ("+voices[i]["statusid"]+")"
+		}
+		if voices[i]["subid"] !=""{
+			where +="and t.subID in ("+voices[i]["subid"]+")"
+		}
+
+	}
+
+}
+//func db_robo_call_process(row []map[string]string ,maxcall int, percent string, taskid string, trunk string, campaignid string,index int){
+//	for i
+//}
 /**
   using a map
 */
