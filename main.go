@@ -112,6 +112,7 @@ func init(){
 	// assign it to the standard logger
 	log.SetOutput(file)
 	db, err = sql.Open("mysql", db_string)
+	db.SetMaxOpenConns(0)
 	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
 	if err != nil {
 		plog("DB error",1)
