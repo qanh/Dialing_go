@@ -136,7 +136,7 @@ func init(){
 	a.RegisterHandler("MeetmeJoin",ast_join_event)
 	a.RegisterHandler("MeetmeLeave",ast_leave_event)
 	a.RegisterHandler("OriginateResponse",ast_originate_response_event)
-	//a.RegisterHandler("PeerStatus",ast_peer_status_event)
+	a.RegisterHandler("mdial",ast_mdial_event)
 	//delete all status peer cached
 	go ast_delete_peercache()
 	//c := make(chan map[string]string, 100)
@@ -175,13 +175,13 @@ func main() {
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
 	checkErr(err)
-	/*if len(os.Args) > 1 {
+	if len(os.Args) > 1 {
 		err = service.Control(s, os.Args[1])
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
-	}*/
+	}
 	//logger, err = s.Logger(nil)
 	//checkErr(err)
 	err = s.Run()

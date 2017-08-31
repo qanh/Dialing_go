@@ -704,7 +704,23 @@ func ast_leave_event(m map[string]string){
 	}
 
 }
-
+func ast_mdial_event(m map[string]string){
+	accountCode:=strings.Split(m["AccountCode"],":")
+	//fmt.Println()
+	callee:=accountCode[0]
+	ringcardid:=accountCode[1]
+	campaignid:=accountCode[2]
+	agent:=accountCode[3]
+	call_status:=m["Dialstatus"]
+	if call_status!="ANSWER"{
+		if(call_status !="NOANSWER") {
+			call_status ="Connection_Failure"
+		}else{
+			call_status="No_Answer"
+		}
+		db_callnote_fail(campaignid,ringcardid,callee,call_status,agent)
+	}
+}
 func ast_mute(conf_num string ,user string,agent string){
 	_, err := a.Action(map[string]string{"Action": "MeetmeMute", "Meetme": conf_num,"Usernum":user})
 	//fmt.Println(result, err)

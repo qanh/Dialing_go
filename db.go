@@ -470,13 +470,15 @@ func db_robo_call(id string, maxcall string , percent string){
 		if voices[i]["subid"] !=""{
 			where +="and t.subID in ("+voices[i]["subid"]+")"
 		}
-
+		select_query="select t.rID,t.Phone1,t.Phone2,t.Phone3,t.Phone4,t.Phone5,t.statusID,t.subID,d.path from tCampRingCards t inner join dialplan_voicefiles d on d.id="+voices[i]["soundid"]+" where t.campaignID="+rc.row["campaign_id"]+" "+where
 	}
 
 }
-//func db_robo_call_process(row []map[string]string ,maxcall int, percent string, taskid string, trunk string, campaignid string,index int){
-//	for i
-//}
+func db_robo_call_process(row []map[string]string ,maxcall int, percent string, taskid string, trunk string, campaignid string,index int){
+	for i:=0;i<len(row);i++{
+
+	}
+}
 /**
   using a map
 */
