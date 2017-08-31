@@ -9,6 +9,8 @@ import (
 	"github.com/ivahaev/amigo"
 	"github.com/kardianos/service"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/ziutek/mymysql/mysql"
+	_ "github.com/ziutek/mymysql/thrsafe"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/spf13/viper"
 )
