@@ -259,11 +259,12 @@ func ast_hangup_event(m map[string]string){
 		ast_mute(conf_num, usernum, agent)
 	}*/
 	//process robocall
-	if(m["Context"] == "robo-callout") {
+	if(m["Context"] == "robo-callout" && channel[len(channel)-2:]==";1") {
 	item,_ := mc.Get("robo_call");
 		count,_:= strconv.Atoi(string(item.Value))
 		count--;
 		mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(strconv.Itoa(count))})
+		fmt.Println("Hangup:"+strconv.Itoa(count))
 	}
 
 
@@ -1014,8 +1015,8 @@ func ast_user_event(m map[string]string){
 	}
 }
 func ast_robo_call_event(m map[string]string){
-	jsonString, _ := json.Marshal(m)
-	plog ("ast_robo_call_event: "+string(jsonString),1);
+	//jsonString, _ := json.Marshal(m)
+	plog ("ast_robo_call_event ",1);
 	query:="insert into  robocaller_log set `taskid`="+m["TaskID"]+" ,`rid` = "+m["CardID"]+",`status`='"+m["Status"]+"', `reason`='"+m["Reason"]+"' "
 	if(m["Length"]!=""){
 		query+=" ,`voice_length` ="+m["Length"]
