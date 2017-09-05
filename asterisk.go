@@ -233,7 +233,7 @@ func ast_standby(agent string)(int , string){
 //Process hang up event
 func ast_hangup_event(m map[string]string){
 
-	plog("Hangup!  "+m["Channel"]+" "+ m["Uniqueid"]+" " + m["Callerid"],1)
+	plog("Hangup!  "+m["Channel"]+" "+ m["Uniqueid"]+" " + m["Callerid"]+" " + m["Context"],1)
 	channel:=m["Channel"]
 	//var agent=call_arr[channel]["agent"]
 	//var channel=strings.Split(m["Channel"],"@")[0]
