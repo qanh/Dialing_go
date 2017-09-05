@@ -485,7 +485,10 @@ func db_robo_call_process(rows *sql.Rows ,maxcall int, percent string, taskid st
 	rc := NewMapStringScan(columnNames)
 	for rows.Next() {
 		item,_ := mc.Get("robo_call");
-		count,_:= strconv.Atoi(string(item.Value))
+		count:=0
+		if(item!=nil) {
+			count, _ = strconv.Atoi(string(item.Value))
+		}
 		rc.Update(rows)
 		for count> maxcall{
 			time.Sleep(time.Second * 20)
