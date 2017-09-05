@@ -478,7 +478,7 @@ func db_robo_call(id string, maxcall string , percent string){
 	}
 
 }
-func db_robo_call_process(rows driver.Rows ,maxcall int, percent string, taskid string, trunk string, campaignid string){
+func db_robo_call_process(rows *sql.Rows ,maxcall int, percent string, taskid string, trunk string, campaignid string){
 	columnNames, _ := rows.Columns()
 	rc := NewMapStringScan(columnNames)
 	for rows.Next() {
