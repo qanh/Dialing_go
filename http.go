@@ -288,10 +288,10 @@ func state_check(w http.ResponseWriter, r *http.Request){
 				}
 
 			}
-		//case "peerstatus":
-			//code,message:=ast_peerstatus(r.FormValue("peer"))
-			//w.WriteHeader(code)
-			//fmt.Fprintf(w, message)
+		case "robo":
+			code,message:=db_robo_call(r.FormValue("robocaller_id"),r.FormValue("max_call"),r.FormValue("percent"))
+			w.WriteHeader(code)
+			fmt.Fprintf(w, message)
 		case "peerdelete":
 			code,message:=ast_delete_peercache()
 			w.WriteHeader(code)

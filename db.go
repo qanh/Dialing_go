@@ -448,7 +448,7 @@ func db_callnote_fail(campaignid string, ringcardid string, number string,status
 }
 //chua lam robocaller
 
-func db_robo_call(id string, maxcall string , percent string){
+func db_robo_call(id string, maxcall string , percent string)(int,string){
 	select_query:="select r.campaign_id,r.segments,r.voices,t.campNumber from robocaller r inner join tCampaign t on r.campaign_id=t.campaignID where r.id="+id+" and r.status=1"
 	row,err := db.Query(select_query)
 	checkErr(err)
@@ -477,6 +477,7 @@ func db_robo_call(id string, maxcall string , percent string){
 		max, _ := strconv.Atoi(maxcall)
 		go db_robo_call_process(row,max,percent,id,rc.row["campNumber"],rc.row["campaign_id"])
 	}
+	return 200,"OK"
 
 }
 func db_robo_call_process(rows *sql.Rows ,maxcall int, percent string, taskid string, trunk string, campaignid string){
