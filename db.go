@@ -512,6 +512,23 @@ func db_robo_callnote(campaignid string, ringcardid string){
 	_,err:=db.Exec("INSERT INTO tCampRingCards_callnote set campaignid ="+campaignid+", cardid = "+ringcardid+", userid = 0, time=NOW(), callnote = '"+callnote+"',type = 0, operator = 'perlapp'")
 	checkErr(err)
 }
+
+func db_robo_call_status(m map[string]string){
+	//jsonString, _ := json.Marshal(m)
+	plog ("ast_robo_call_event ",1);
+	query:="insert into  robocaller_log set `taskid`="+m["TaskID"]+" ,`rid` = "+m["CardID"]+",`status`='"+m["Status"]+"', `reason`='"+m["Reason"]+"' "
+	if(m["Length"]!=""){
+		query+=" ,`voice_length` ="+m["Length"]
+	}
+	if(m["Duration"]!=""){
+		query+=" ,`duration` ="+m["Duration"]
+	}
+	if(m["Phone"]!=""){
+		query+=" ,`phone` ="+m["Phone"]
+	}
+	_,err:=db.Exec(query)
+	checkErr(err)
+}
 /**
   using a map
 */
