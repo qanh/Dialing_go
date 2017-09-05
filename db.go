@@ -491,7 +491,7 @@ func db_robo_call_process(rows *sql.Rows ,maxcall int, percent string, taskid st
 
 		fmt.Println(count)
 		rc.Update(rows)
-		for count> maxcall{
+		for count>= maxcall{
 			time.Sleep(time.Second * 20)
 			item,_ = mc.Get("robo_call");
 			count,_= strconv.Atoi(string(item.Value))
