@@ -1008,3 +1008,17 @@ func ast_robo_call(phonenumber string, soundfile string,trunk string ,taskid str
 		"Priority":	"1",
 	})
 }
+func ast_robo_call_event(m map[string]string){
+	query:="insert into  robocaller_log set `taskid`="+m["TaskID"]+" ,`rid` = "+m["CardID"]+",`status`='"+m["Status"]+"', `reason`='"+m["Reason"]+"' "
+	if(m["Length"]!=""){
+		query+=" ,`voice_length` ="+m["Length"]
+	}
+	if(m["Duration"]!=""){
+		query+=" ,`duration` ="+m["Duration"]
+	}
+	if(m["Phone"]!=""){
+		query+=" ,`phone` ="+m["Phone"]
+	}
+	_,err:=db.Exec(query)
+	checkErr(err)
+}

@@ -137,6 +137,7 @@ func init(){
 	a.RegisterHandler("MeetmeLeave",ast_leave_event)
 	a.RegisterHandler("OriginateResponse",ast_originate_response_event)
 	a.RegisterHandler("mdial",ast_mdial_event)
+	a.RegisterHandler("robocaller_status",ast_robo_call_event)
 	//delete all status peer cached
 	go ast_delete_peercache()
 	//c := make(chan map[string]string, 100)

@@ -1,6 +1,7 @@
 package main
 import(
 	"database/sql"
+	"database/sql/driver"
 	//_ "github.com/go-sql-driver/mysql"
 	//"github.com/ziutek/mymysql/mysql"
 	//_ "github.com/ziutek/mymysql/native"
@@ -471,13 +472,39 @@ func db_robo_call(id string, maxcall string , percent string){
 			where +="and t.subID in ("+voices[i]["subid"]+")"
 		}
 		select_query="select t.rID,t.Phone1,t.Phone2,t.Phone3,t.Phone4,t.Phone5,t.statusID,t.subID,d.path from tCampRingCards t inner join dialplan_voicefiles d on d.id="+voices[i]["soundid"]+" where t.campaignID="+rc.row["campaign_id"]+" "+where
+		row,err = db.Query(select_query)
+		checkErr(err)
+		go db_robo_call_process(row,maxcall,percent,id,rc.row["campNumber"],rc.row["campaign_id"])
 	}
 
 }
-func db_robo_call_process(row []map[string]string ,maxcall int, percent string, taskid string, trunk string, campaignid string,index int){
-	for i:=0;i<len(row);i++{
-
+func db_robo_call_process(rows driver.Rows ,maxcall int, percent string, taskid string, trunk string, campaignid string){
+	columnNames, _ := rows.Columns()
+	rc := NewMapStringScan(columnNames)
+	for rows.Next() {
+		item,_ := mc.Get("robo_call");
+		count,_:= strconv.Atoi(string(item.Value))
+		rc.Update(rows)
+		for count> maxcall{
+			time.Sleep(time.Second * 20)
+			item,_ = mc.Get("robo_call");
+			count,_= strconv.Atoi(string(item.Value))
+		}
+		count++
+		mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(strconv.Itoa(count))})
+		phonenum:=rc.row["Phone1"]+":"+rc.row["Phone2"]+":"+rc.row["Phone3"]+":"+rc.row["Phone4"]+":"+rc.row["Phone5"]
+		fName := filepath.Base(rc.row["path"])
+		extName := filepath.Ext(rc.row["path"])
+		bName := fName[:len(fName)-len(extName)]
+		db_robo_callnote(campaignid,rc.row["rID"])
+		ast_robo_call(phonenum,bName,trunk,taskid,rc.row["rID"],percent)
 	}
+}
+
+func db_robo_callnote(campaignid string, ringcardid string){
+	callnote:="Robocaller has called this card"
+	_,err:=db.Exec("INSERT INTO tCampRingCards_callnote set campaignid ="+campaignid+", cardid = "+ringcardid+", userid = 0, time=NOW(), callnote = '"+callnote+"',type = 0, operator = 'perlapp'")
+	checkErr(err)
 }
 /**
   using a map
