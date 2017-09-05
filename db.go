@@ -460,6 +460,7 @@ func db_robo_call(id string, maxcall string , percent string)(int,string){
 	//convert field voice (JSON string) to array maps
 	var voices []map[string]string
 	json.Unmarshal([]byte(rc.row["voices"]), &voices)
+	fmt.Println(voices)
 	for i:=0;i<len(voices);i++ {
 		where:=""
 		if voices[i]["segmentid"] !=""{
@@ -489,6 +490,7 @@ func db_robo_call_process(rows *sql.Rows ,maxcall int, percent string, taskid st
 		if(item!=nil) {
 			count, _ = strconv.Atoi(string(item.Value))
 		}
+		fmt.Println(count)
 		rc.Update(rows)
 		for count> maxcall{
 			time.Sleep(time.Second * 20)
@@ -501,8 +503,8 @@ func db_robo_call_process(rows *sql.Rows ,maxcall int, percent string, taskid st
 		fName := filepath.Base(rc.row["path"])
 		extName := filepath.Ext(rc.row["path"])
 		bName := fName[:len(fName)-len(extName)]
-		db_robo_callnote(campaignid,rc.row["rID"])
-		ast_robo_call(phonenum,bName,trunk,taskid,rc.row["rID"],percent)
+		go db_robo_callnote(campaignid,rc.row["rID"])
+		go ast_robo_call(phonenum,bName,trunk,taskid,rc.row["rID"],percent)
 	}
 }
 

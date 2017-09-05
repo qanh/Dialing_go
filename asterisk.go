@@ -1009,6 +1009,8 @@ func ast_robo_call(phonenumber string, soundfile string,trunk string ,taskid str
 	})
 }
 func ast_robo_call_event(m map[string]string){
+	jsonString, _ := json.Marshal(m)
+	plog ("ast_robo_call_event: "+jsonString,1);
 	query:="insert into  robocaller_log set `taskid`="+m["TaskID"]+" ,`rid` = "+m["CardID"]+",`status`='"+m["Status"]+"', `reason`='"+m["Reason"]+"' "
 	if(m["Length"]!=""){
 		query+=" ,`voice_length` ="+m["Length"]
