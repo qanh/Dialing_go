@@ -15,6 +15,7 @@ import(
 	"path/filepath"
 	"strings"
 	"encoding/json"
+	"github.com/bradfitz/gomemcache/memcache"
 )
 func db_getstate(campaignid string){
 
