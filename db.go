@@ -461,6 +461,7 @@ func db_robo_call(id string, maxcall string , percent string)(int,string){
 	var voices []map[string]string
 	json.Unmarshal([]byte(rc.row["voices"]), &voices)
 	fmt.Println(voices)
+	mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(strconv.Itoa(0))})
 	for i:=0;i<len(voices);i++ {
 		where:=""
 		if voices[i]["segmentid"] !=""{
@@ -486,10 +487,8 @@ func db_robo_call_process(rows *sql.Rows ,maxcall int, percent string, taskid st
 	rc := NewMapStringScan(columnNames)
 	for rows.Next() {
 		item,_ := mc.Get("robo_call");
-		count:=0
-		if(item!=nil) {
-			count, _ = strconv.Atoi(string(item.Value))
-		}
+		count, _ := strconv.Atoi(string(item.Value))
+
 		fmt.Println(count)
 		rc.Update(rows)
 		for count> maxcall{
