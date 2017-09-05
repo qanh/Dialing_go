@@ -1,7 +1,6 @@
 package main
 import(
 	"database/sql"
-	"database/sql/driver"
 	//_ "github.com/go-sql-driver/mysql"
 	//"github.com/ziutek/mymysql/mysql"
 	//_ "github.com/ziutek/mymysql/native"
