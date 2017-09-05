@@ -327,7 +327,7 @@ func ast_originate_response_event(m map[string] string){
 	plog("Originate result: "+callee+", "+m["Uniqueid"]+", "+strconv.Itoa(reason)+", "+status,1)
 	//Use socket to control reatime status of call
 	// /flashdata(campaignid)
-	if(m["Response"]!="Success") {
+	if(m["Response"]!="Success" && m["Context"]!="robo-play") {
 		fail_cnt++
 		fail_cntarr[campaignid]++
 		ast_ratio_up(campaignid)
@@ -996,7 +996,7 @@ func ast_check_numqueue(){
 }
 
 func ast_robo_call(phonenumber string, soundfile string,trunk string ,taskid string,rid string, percent string){
-	trunk="tr"+phonenumber
+	trunk="tr"+trunk
 	a.Action(map[string]string{"Action": "Originate",
 		"Channel": 	"Local/s@robo-callout",
 		"Context":	"robo-play",
