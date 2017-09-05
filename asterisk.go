@@ -1008,6 +1008,11 @@ func ast_robo_call(phonenumber string, soundfile string,trunk string ,taskid str
 		"Priority":	"1",
 	})
 }
+func ast_user_event(m map[string]string){
+	if(m["UserEvent"]=="robocaller_status"){
+		ast_robo_call_event(m)
+	}
+}
 func ast_robo_call_event(m map[string]string){
 	jsonString, _ := json.Marshal(m)
 	plog ("ast_robo_call_event: "+string(jsonString),1);
