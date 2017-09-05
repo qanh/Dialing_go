@@ -474,7 +474,8 @@ func db_robo_call(id string, maxcall string , percent string){
 		select_query="select t.rID,t.Phone1,t.Phone2,t.Phone3,t.Phone4,t.Phone5,t.statusID,t.subID,d.path from tCampRingCards t inner join dialplan_voicefiles d on d.id="+voices[i]["soundid"]+" where t.campaignID="+rc.row["campaign_id"]+" "+where
 		row,err = db.Query(select_query)
 		checkErr(err)
-		go db_robo_call_process(row,maxcall,percent,id,rc.row["campNumber"],rc.row["campaign_id"])
+		max, _ := strconv.Atoi(maxcall)
+		go db_robo_call_process(row,max,percent,id,rc.row["campNumber"],rc.row["campaign_id"])
 	}
 
 }
