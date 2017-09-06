@@ -78,14 +78,14 @@ func (p *program) Start(s service.Service) error {
 }
 func (p *program) run() {
 	// Do work here
-	db, err = sql.Open("mysql", db_string)
+	db, _ = sql.Open("mysql", db_string)
 	//db.SetMaxOpenConns(0)
 	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
-	if err != nil {
+	/*if err != nil {
 		plog("DB error",1)
 	}else{
 		plog("DB connected",1)
-	}
+	}*/
 }
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
