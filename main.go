@@ -78,20 +78,6 @@ func (p *program) Start(s service.Service) error {
 }
 func (p *program) run() {
 	// Do work here
-}
-func (p *program) Stop(s service.Service) error {
-	// Stop should not block. Return with a few seconds.
-	//db.Close()
-	file.Close()
-	return nil
-}
-func plog(str string,level int){
-	debug:=4
-	if(level<=debug) {
-		log.Println("LOG: ", str)
-	}
-}
-func init(){
 	viper.SetConfigName("app")
 	viper.AddConfigPath(".")
 	verr := viper.ReadInConfig()
@@ -159,6 +145,21 @@ func init(){
 	}else{
 		fmt.Println("ListenAndServe on port "+port,1)
 	}
+}
+func (p *program) Stop(s service.Service) error {
+	// Stop should not block. Return with a few seconds.
+	//db.Close()
+	file.Close()
+	return nil
+}
+func plog(str string,level int){
+	debug:=4
+	if(level<=debug) {
+		log.Println("LOG: ", str)
+	}
+}
+func init(){
+
 
 }
 func checkErr(err error) {
