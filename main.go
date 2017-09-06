@@ -7,7 +7,7 @@ import (
 	"database/sql"
 	"path"
 	"github.com/ivahaev/amigo"
-	//"github.com/kardianos/service"
+	"github.com/kardianos/service"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/spf13/viper"
@@ -66,13 +66,10 @@ var tapp_cnt=0
 var fail_cnt=0
 var fail_cntarr=make(map [string]int)
 
-/*func (p *program) Start(s service.Service) error {
+func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
-	if service.Interactive() {
-		fmt.Println("Running in terminal.")
-	} else {
-		fmt.Println("Running under service manager.")
-	}
+	p.exit = make(chan struct{})
+
 	go p.run()
 	return nil
 }
@@ -83,60 +80,17 @@ func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
 	//db.Close()
 	file.Close()
+	close(p.exit)
+	return nil
 	return nil
 }
-
-func init(){
-
-
-
-	/*if err != nil {
-		log.Fatalln("ListenAndServe: ", err)
-		plog("ListenAndServe Error",1)
-	}else{
-		fmt.Println("ListenAndServe on port "+port,1)
-	}*/
-
-//}
 func plog(str string,level int){
 	debug:=4
 	if(level<=debug) {
 		log.Println("LOG: ", str)
 	}
 }
-func checkErr(err error) {
-	if err != nil {
-		plog(err.Error(),1)
-		panic(err)
-	}
-}
-func main() {
-	/*svcConfig := &service.Config{
-		Name:        "DialingService",
-		DisplayName: "Dialing Service",
-		Description: "Dialing Asterisk app.",
-	}
-
-	fmt.Println("Start")
-	//Database mysql
-
-
-	prg := &program{}
-	s, err := service.New(prg, svcConfig)
-	checkErr(err)
-	if len(os.Args) > 1 {
-		fmt.Println(os.Args[1])
-		err = service.Control(s, os.Args[1])
-		if err != nil {
-			log.Fatal(err)
-		}
-		return
-	}
-	//logger, err = s.Logger(nil)
-	//checkErr(err)
-	err = s.Run()
-	checkErr(err)*/
-
+func init(){
 	viper.SetConfigName("app")
 	viper.AddConfigPath(".")
 	verr := viper.ReadInConfig()
@@ -196,4 +150,45 @@ func main() {
 	//listen http request
 	http.HandleFunc("/user_state", state_check) // set router
 	go http.ListenAndServe(":"+port, nil) // set listen port
+
+
+	/*if err != nil {
+		log.Fatalln("ListenAndServe: ", err)
+		plog("ListenAndServe Error",1)
+	}else{
+		fmt.Println("ListenAndServe on port "+port,1)
+	}*/
+
+}
+func checkErr(err error) {
+	if err != nil {
+		plog(err.Error(),1)
+		panic(err)
+	}
+}
+func main() {
+	svcConfig := &service.Config{
+		Name:        "DialingService",
+		DisplayName: "Dialing Service",
+		Description: "Dialing Asterisk app.",
+	}
+
+	fmt.Println("Start")
+	//Database mysql
+
+
+	prg := &program{}
+	s, err := service.New(prg, svcConfig)
+	checkErr(err)
+	if len(os.Args) > 1 {
+		err = service.Control(s, os.Args[1])
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+	//logger, err = s.Logger(nil)
+	//checkErr(err)
+	err = s.Run()
+	checkErr(err)
 }
