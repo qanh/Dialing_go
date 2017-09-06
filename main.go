@@ -74,34 +74,20 @@ func (p *program) Start(s service.Service) error {
 		fmt.Println("Running under service manager.")
 	}
 	go p.run()
+	http.HandleFunc("/user_state", state_check) // set router
+	err := http.ListenAndServe(":"+port, nil) // set listen port
+
+
+	if err != nil {
+		log.Fatalln("ListenAndServe: ", err)
+		plog("ListenAndServe Error",1)
+	}else{
+		fmt.Println("ListenAndServe on port "+port,1)
+	}
 	return nil
 }
 func (p *program) run() {
 	// Do work here
-	settings := &amigo.Settings{Username: viper.GetString("asterisk.user"), Password: viper.GetString("asterisk.pass"), Host: viper.GetString("asterisk.host"),Port:viper.GetString("asterisk.port")}
-	a = amigo.New(settings)
-	//listen asterisk event and request
-	a.Connect()
-	// Listen for connection events
-	a.On("connect", func(message string) {
-		plog("Connected"+ message,1)
-	})
-	a.On("error", func(message string) {
-		plog("Connection error:"+ message,1)
-	})
-	//register asterisk event listener
-	//a.RegisterDefaultHandler(DefaultHandler)
-	a.RegisterHandler("Hangup",ast_hangup_event)
-	a.RegisterHandler("MeetmeJoin",ast_join_event)
-	a.RegisterHandler("MeetmeLeave",ast_leave_event)
-	a.RegisterHandler("OriginateResponse",ast_originate_response_event)
-	//a.RegisterHandler("mdial",ast_mdial_event)
-	a.RegisterHandler("UserEvent",ast_user_event)
-	//delete all status peer cached
-	go ast_delete_peercache()
-	//c := make(chan map[string]string, 100)
-	//a.SetEventChannel(c)
-	go ast_check_numqueue()
 }
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
@@ -148,18 +134,32 @@ func init(){
 	}else{
 		plog("DB connected",1)
 	}
-
+	settings := &amigo.Settings{Username: viper.GetString("asterisk.user"), Password: viper.GetString("asterisk.pass"), Host: viper.GetString("asterisk.host"),Port:viper.GetString("asterisk.port")}
+	a = amigo.New(settings)
+	//listen asterisk event and request
+	a.Connect()
+	// Listen for connection events
+	a.On("connect", func(message string) {
+		plog("Connected"+ message,1)
+	})
+	a.On("error", func(message string) {
+		plog("Connection error:"+ message,1)
+	})
+	//register asterisk event listener
+	//a.RegisterDefaultHandler(DefaultHandler)
+	a.RegisterHandler("Hangup",ast_hangup_event)
+	a.RegisterHandler("MeetmeJoin",ast_join_event)
+	a.RegisterHandler("MeetmeLeave",ast_leave_event)
+	a.RegisterHandler("OriginateResponse",ast_originate_response_event)
+	//a.RegisterHandler("mdial",ast_mdial_event)
+	a.RegisterHandler("UserEvent",ast_user_event)
+	//delete all status peer cached
+	go ast_delete_peercache()
+	//c := make(chan map[string]string, 100)
+	//a.SetEventChannel(c)
+	go ast_check_numqueue()
 	//listen http request
-	http.HandleFunc("/user_state", state_check) // set router
-	err = http.ListenAndServe(":"+port, nil) // set listen port
 
-
-	if err != nil {
-		log.Fatalln("ListenAndServe: ", err)
-		plog("ListenAndServe Error",1)
-	}else{
-		fmt.Println("ListenAndServe on port "+port,1)
-	}
 
 }
 func checkErr(err error) {
