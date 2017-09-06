@@ -77,15 +77,15 @@ func (p *program) Start(s service.Service) error {
 func (p *program) run() {
 	// Do work here
 	http.HandleFunc("/user_state", state_check) // set router
-	err:=http.ListenAndServe(":"+port, nil) // set listen port
+	//err:=http.ListenAndServe(":"+port, nil) // set listen port
 
-
-	if err != nil {
+	go http.ListenAndServe(":"+port, nil)
+	/*if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
 		plog("ListenAndServe Error",1)
 	}else{
 		fmt.Println("ListenAndServe on port "+port,1)
-	}
+	}*/
 }
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
@@ -136,7 +136,7 @@ func init(){
 	settings := &amigo.Settings{Username: viper.GetString("asterisk.user"), Password: viper.GetString("asterisk.pass"), Host: viper.GetString("asterisk.host"),Port:viper.GetString("asterisk.port")}
 	a = amigo.New(settings)
 	//listen asterisk event and request
-	a.Connect()
+	go a.Connect()
 	// Listen for connection events
 	a.On("connect", func(message string) {
 		plog("Connected"+ message,1)
