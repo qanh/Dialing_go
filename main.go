@@ -74,16 +74,6 @@ func (p *program) Start(s service.Service) error {
 		fmt.Println("Running under service manager.")
 	}
 	go p.run()
-	http.HandleFunc("/user_state", state_check) // set router
-	err := http.ListenAndServe(":"+port, nil) // set listen port
-
-
-	if err != nil {
-		log.Fatalln("ListenAndServe: ", err)
-		plog("ListenAndServe Error",1)
-	}else{
-		fmt.Println("ListenAndServe on port "+port,1)
-	}
 	return nil
 }
 func (p *program) run() {
@@ -159,7 +149,16 @@ func init(){
 	//a.SetEventChannel(c)
 	go ast_check_numqueue()
 	//listen http request
+	http.HandleFunc("/user_state", state_check) // set router
+	go http.ListenAndServe(":"+port, nil) // set listen port
 
+
+	/*if err != nil {
+		log.Fatalln("ListenAndServe: ", err)
+		plog("ListenAndServe Error",1)
+	}else{
+		fmt.Println("ListenAndServe on port "+port,1)
+	}*/
 
 }
 func checkErr(err error) {
