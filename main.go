@@ -80,7 +80,7 @@ func (p *program) Start(s service.Service) error {
 func (p *program) run() {
 	// Do work here
 	http.HandleFunc("/user_state", state_check) // set router
-	http.ListenAndServe(":"+port, nil) // set listen port
+	err:=http.ListenAndServe(":"+port, nil) // set listen port
 
 
 	if err != nil {
