@@ -76,8 +76,42 @@ func (p *program) Start(s service.Service) error {
 }
 func (p *program) run() {
 	// Do work here
+
+
+
+	http.HandleFunc("/user_state", state_check) // set router
+	//err:=http.ListenAndServe(":"+port, nil) // set listen port
+
+	http.ListenAndServe(":"+port, nil)
+	/*if err != nil {
+		log.Fatalln("ListenAndServe: ", err)
+		plog("ListenAndServe Error",1)
+	}else{
+		fmt.Println("ListenAndServe on port "+port,1)
+	}*/
+}
+func (p *program) Stop(s service.Service) error {
+	// Stop should not block. Return with a few seconds.
+	//db.Close()
+	file.Close()
+	return nil
+
+}
+func plog(str string,level int){
+	debug:=4
+	if(level<=debug) {
+		log.Println("LOG: ", str)
+	}
+}
+func init(){
+
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := path.Dir(ex)
 	viper.SetConfigName("app")
-	viper.AddConfigPath(".")
+	viper.AddConfigPath(exPath)
 	verr := viper.ReadInConfig()
 	if verr != nil { // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %s \n", verr))
@@ -86,13 +120,6 @@ func (p *program) run() {
 	log_file=viper.GetString("log.path")
 	port=viper.GetString("http.port")
 	mc=memcache.New(viper.GetString("memcache.mem_string"))
-
-	ex, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
-	exPath := path.Dir(ex)
-
 	file, err := os.OpenFile(exPath+"/"+log_file, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalln("Failed to open log file",  ":", err)
@@ -132,33 +159,6 @@ func (p *program) run() {
 	//c := make(chan map[string]string, 100)
 	//a.SetEventChannel(c)
 	go ast_check_numqueue()
-	http.HandleFunc("/user_state", state_check) // set router
-	//err:=http.ListenAndServe(":"+port, nil) // set listen port
-
-	go http.ListenAndServe(":"+port, nil)
-	/*if err != nil {
-		log.Fatalln("ListenAndServe: ", err)
-		plog("ListenAndServe Error",1)
-	}else{
-		fmt.Println("ListenAndServe on port "+port,1)
-	}*/
-}
-func (p *program) Stop(s service.Service) error {
-	// Stop should not block. Return with a few seconds.
-	//db.Close()
-	file.Close()
-	return nil
-
-}
-func plog(str string,level int){
-	debug:=4
-	if(level<=debug) {
-		log.Println("LOG: ", str)
-	}
-}
-func init(){
-
-
 
 }
 func checkErr(err error) {
