@@ -192,6 +192,7 @@ func main() {
 	}
 	//logger, err = s.Logger(nil)
 	//checkErr(err)
-	err = s.Run()
-	checkErr(err)
+	go s.Run()
+	//err = s.Run()
+	//checkErr(err)
 }
