@@ -12,9 +12,7 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/spf13/viper"
 )
-type program struct{
-	exit chan struct{}
-}
+type program struct{}
 //Init variable
 
 
@@ -71,8 +69,7 @@ var fail_cntarr=make(map [string]int)
 func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
 
-	p.exit = make(chan struct{})
-	//listen http request
+
 
 	go p.run()
 	return nil
@@ -94,7 +91,6 @@ func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
 	//db.Close()
 	file.Close()
-	close(p.exit)
 	return nil
 
 }
