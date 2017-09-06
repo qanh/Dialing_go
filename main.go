@@ -185,6 +185,6 @@ func main() {
 	}
 	//logger, err = s.Logger(nil)
 	//checkErr(err)
-	err = s.Run()
-	checkErr(err)
+	//err = s.Run()
+	//checkErr(err)
 }
