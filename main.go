@@ -66,7 +66,7 @@ var tapp_cnt=0
 var fail_cnt=0
 var fail_cntarr=make(map [string]int)
 
-func (p *program) Start(s service.Service) error {
+/*func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
 	if service.Interactive() {
 		fmt.Println("Running in terminal.")
@@ -102,7 +102,7 @@ func init(){
 		fmt.Println("ListenAndServe on port "+port,1)
 	}*/
 
-}
+//}
 func checkErr(err error) {
 	if err != nil {
 		plog(err.Error(),1)
