@@ -7,7 +7,7 @@ import (
 	"database/sql"
 	"path"
 	"github.com/ivahaev/amigo"
-	"github.com/kardianos/service"
+	//"github.com/kardianos/service"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/spf13/viper"
@@ -92,6 +92,50 @@ func plog(str string,level int){
 	}
 }
 func init(){
+
+
+
+	/*if err != nil {
+		log.Fatalln("ListenAndServe: ", err)
+		plog("ListenAndServe Error",1)
+	}else{
+		fmt.Println("ListenAndServe on port "+port,1)
+	}*/
+
+}
+func checkErr(err error) {
+	if err != nil {
+		plog(err.Error(),1)
+		panic(err)
+	}
+}
+func main() {
+	/*svcConfig := &service.Config{
+		Name:        "DialingService",
+		DisplayName: "Dialing Service",
+		Description: "Dialing Asterisk app.",
+	}
+
+	fmt.Println("Start")
+	//Database mysql
+
+
+	prg := &program{}
+	s, err := service.New(prg, svcConfig)
+	checkErr(err)
+	if len(os.Args) > 1 {
+		fmt.Println(os.Args[1])
+		err = service.Control(s, os.Args[1])
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+	//logger, err = s.Logger(nil)
+	//checkErr(err)
+	err = s.Run()
+	checkErr(err)*/
+
 	viper.SetConfigName("app")
 	viper.AddConfigPath(".")
 	verr := viper.ReadInConfig()
@@ -151,46 +195,4 @@ func init(){
 	//listen http request
 	http.HandleFunc("/user_state", state_check) // set router
 	go http.ListenAndServe(":"+port, nil) // set listen port
-
-
-	/*if err != nil {
-		log.Fatalln("ListenAndServe: ", err)
-		plog("ListenAndServe Error",1)
-	}else{
-		fmt.Println("ListenAndServe on port "+port,1)
-	}*/
-
-}
-func checkErr(err error) {
-	if err != nil {
-		plog(err.Error(),1)
-		panic(err)
-	}
-}
-func main() {
-	svcConfig := &service.Config{
-		Name:        "DialingService",
-		DisplayName: "Dialing Service",
-		Description: "Dialing Asterisk app.",
-	}
-
-	fmt.Println("Start")
-	//Database mysql
-
-
-	prg := &program{}
-	s, err := service.New(prg, svcConfig)
-	checkErr(err)
-	if len(os.Args) > 1 {
-		fmt.Println(os.Args[1])
-		err = service.Control(s, os.Args[1])
-		if err != nil {
-			log.Fatal(err)
-		}
-		return
-	}
-	//logger, err = s.Logger(nil)
-	//checkErr(err)
-	err = s.Run()
-	checkErr(err)
 }
