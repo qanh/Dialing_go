@@ -79,7 +79,7 @@ func (p *program) Start(s service.Service) error {
 	//listen http request
 	http.HandleFunc("/user_state", state_check) // set router
 	go http.ListenAndServe(":"+port, nil) // set listen port
-	err = s.Run()
+	err := s.Run()
 	checkErr(err)
 
 	/*if err != nil {
