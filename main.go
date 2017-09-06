@@ -177,6 +177,7 @@ func main() {
 	s, err := service.New(prg, svcConfig)
 	checkErr(err)
 	if len(os.Args) > 1 {
+		fmt.Println(os.Args[1])
 		err = service.Control(s, os.Args[1])
 		if err != nil {
 			log.Fatal(err)
@@ -185,6 +186,6 @@ func main() {
 	}
 	//logger, err = s.Logger(nil)
 	//checkErr(err)
-	//err = s.Run()
-	//checkErr(err)
+	err = s.Run()
+	checkErr(err)
 }

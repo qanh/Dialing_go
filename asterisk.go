@@ -274,8 +274,8 @@ func ast_hangup_event(m map[string]string){
 func ast_originate_response_event(m map[string] string){
 	//var agent string
 	actionID:=strings.Split(m["ActionID"],":")
-	jsonString, _ := json.Marshal(m)
-	plog("event: "+string(jsonString),1)
+	//jsonString, _ := json.Marshal(m)
+	//plog("event: "+string(jsonString),1)
 
 	callee:=actionID[0]
 	ringcardid:=actionID[1]
@@ -369,8 +369,9 @@ func ast_join_event(m map[string]string){
 	context:=m["Context"]
 	var callee,ringcardid,campaignid string
 	//tmpclid:=idarr[uid]
-	jsonString, _ := json.Marshal(m)
-	plog("event: "+string(jsonString),1)
+	//Debug Event
+	//jsonString, _ := json.Marshal(m)
+	//plog("event: "+string(jsonString),1)
 	//event asterisk meetme join maybe happen before originate result use Account Code for information
 	if(m["AccountCode"]!=""){
 		accountCode:=strings.Split(m["AccountCode"],":")
@@ -682,8 +683,8 @@ func ast_mdial(agent string,ext string,dest string,ringcardid string)(int , stri
 
 func ast_leave_event(m map[string]string){
 	//plog("Ast_leave: $channel,$ext,$agent\n", 5);
-	jsonString, _ := json.Marshal(agents)
-	plog("event: "+string(jsonString),1)
+	//jsonString, _ := json.Marshal(agents)
+	//plog("event: "+string(jsonString),1)
 	channel:=m["Channel"]
 	//usernum:=m["Usernum"]
 	ext:=channel[4:7]
