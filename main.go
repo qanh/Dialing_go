@@ -78,6 +78,28 @@ func (p *program) Start(s service.Service) error {
 }
 func (p *program) run() {
 	// Do work here
+	db, err = sql.Open("mysql", db_string)
+	//db.SetMaxOpenConns(0)
+	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
+	if err != nil {
+		plog("DB error",1)
+	}else{
+		plog("DB connected",1)
+	}
+}
+func (p *program) Stop(s service.Service) error {
+	// Stop should not block. Return with a few seconds.
+	//db.Close()
+	file.Close()
+	return nil
+}
+func plog(str string,level int){
+	debug:=4
+	if(level<=debug) {
+		log.Println("LOG: ", str)
+	}
+}
+func init(){
 	viper.SetConfigName("app")
 	viper.AddConfigPath(".")
 	verr := viper.ReadInConfig()
@@ -102,14 +124,7 @@ func (p *program) run() {
 	//defer file.Close()
 	// assign it to the standard logger
 	log.SetOutput(file)
-	db, err = sql.Open("mysql", db_string)
-	db.SetMaxOpenConns(0)
-	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
-	if err != nil {
-		plog("DB error",1)
-	}else{
-		plog("DB connected",1)
-	}
+
 	settings := &amigo.Settings{Username: viper.GetString("asterisk.user"), Password: viper.GetString("asterisk.pass"), Host: viper.GetString("asterisk.host"),Port:viper.GetString("asterisk.port")}
 	a = amigo.New(settings)
 	//listen asterisk event and request
@@ -145,21 +160,6 @@ func (p *program) run() {
 	}else{
 		fmt.Println("ListenAndServe on port "+port,1)
 	}
-}
-func (p *program) Stop(s service.Service) error {
-	// Stop should not block. Return with a few seconds.
-	//db.Close()
-	file.Close()
-	return nil
-}
-func plog(str string,level int){
-	debug:=4
-	if(level<=debug) {
-		log.Println("LOG: ", str)
-	}
-}
-func init(){
-
 
 }
 func checkErr(err error) {
