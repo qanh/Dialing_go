@@ -76,31 +76,6 @@ func (p *program) Start(s service.Service) error {
 }
 func (p *program) run() {
 	// Do work here
-	http.HandleFunc("/user_state", state_check) // set router
-	//err:=http.ListenAndServe(":"+port, nil) // set listen port
-
-	go http.ListenAndServe(":"+port, nil)
-	/*if err != nil {
-		log.Fatalln("ListenAndServe: ", err)
-		plog("ListenAndServe Error",1)
-	}else{
-		fmt.Println("ListenAndServe on port "+port,1)
-	}*/
-}
-func (p *program) Stop(s service.Service) error {
-	// Stop should not block. Return with a few seconds.
-	//db.Close()
-	file.Close()
-	return nil
-
-}
-func plog(str string,level int){
-	debug:=4
-	if(level<=debug) {
-		log.Println("LOG: ", str)
-	}
-}
-func init(){
 	viper.SetConfigName("app")
 	viper.AddConfigPath(".")
 	verr := viper.ReadInConfig()
@@ -157,6 +132,32 @@ func init(){
 	//c := make(chan map[string]string, 100)
 	//a.SetEventChannel(c)
 	go ast_check_numqueue()
+	http.HandleFunc("/user_state", state_check) // set router
+	//err:=http.ListenAndServe(":"+port, nil) // set listen port
+
+	go http.ListenAndServe(":"+port, nil)
+	/*if err != nil {
+		log.Fatalln("ListenAndServe: ", err)
+		plog("ListenAndServe Error",1)
+	}else{
+		fmt.Println("ListenAndServe on port "+port,1)
+	}*/
+}
+func (p *program) Stop(s service.Service) error {
+	// Stop should not block. Return with a few seconds.
+	//db.Close()
+	file.Close()
+	return nil
+
+}
+func plog(str string,level int){
+	debug:=4
+	if(level<=debug) {
+		log.Println("LOG: ", str)
+	}
+}
+func init(){
+
 
 
 }
