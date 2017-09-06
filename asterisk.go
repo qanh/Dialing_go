@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"github.com/codeskyblue/go-sh"
 	"time"
-	"encoding/json"
+	//"encoding/json"
 	"github.com/bradfitz/gomemcache/memcache"
 )
 func DefaultHandler(m map[string]string) {
