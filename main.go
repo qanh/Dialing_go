@@ -85,12 +85,7 @@ func (p *program) Stop(s service.Service) error {
 	file.Close()
 	return nil
 }
-func plog(str string,level int){
-	debug:=4
-	if(level<=debug) {
-		log.Println("LOG: ", str)
-	}
-}
+
 func init(){
 
 
@@ -103,6 +98,12 @@ func init(){
 	}*/
 
 //}
+func plog(str string,level int){
+	debug:=4
+	if(level<=debug) {
+		log.Println("LOG: ", str)
+	}
+}
 func checkErr(err error) {
 	if err != nil {
 		plog(err.Error(),1)
