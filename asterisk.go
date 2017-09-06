@@ -264,7 +264,7 @@ func ast_hangup_event(m map[string]string){
 		count,_:= strconv.Atoi(string(item.Value))
 		count--;
 		mc.Set(&memcache.Item{Key: "robo_call", Value: []byte(strconv.Itoa(count))})
-		fmt.Println("Hangup:"+strconv.Itoa(count))
+		//fmt.Println("Hangup:"+strconv.Itoa(count))
 	}
 
 
@@ -1010,7 +1010,13 @@ func ast_robo_call(phonenumber string, soundfile string,trunk string ,taskid str
 	})
 }
 func ast_user_event(m map[string]string){
-	if(m["UserEvent"]=="robocaller_status"){
-		db_robo_call_status(m)
+	switch action:=m["UserEvent"]; action{
+		case "robocaller_status":
+			db_robo_call_status(m)
+		case "mdial":
+			ast_mdial_event(m)
+		default:
+			plog("",1)
 	}
+
 }
