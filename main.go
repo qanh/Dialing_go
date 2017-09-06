@@ -70,29 +70,25 @@ var fail_cntarr=make(map [string]int)
 
 func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
-	if service.Interactive() {
-		fmt.Println("Running in terminal.")
-	} else {
-		fmt.Println("Running under service manager.")
-	}
+
 	p.exit = make(chan struct{})
 	//listen http request
-	http.HandleFunc("/user_state", state_check) // set router
-	go http.ListenAndServe(":"+port, nil) // set listen port
-	go s.Run()
 
-
-	/*if err != nil {
-		log.Fatalln("ListenAndServe: ", err)
-		plog("ListenAndServe Error",1)
-	}else{
-		fmt.Println("ListenAndServe on port "+port,1)
-	}*/
 	go p.run()
 	return nil
 }
 func (p *program) run() {
 	// Do work here
+	http.HandleFunc("/user_state", state_check) // set router
+	http.ListenAndServe(":"+port, nil) // set listen port
+
+
+	if err != nil {
+		log.Fatalln("ListenAndServe: ", err)
+		plog("ListenAndServe Error",1)
+	}else{
+		fmt.Println("ListenAndServe on port "+port,1)
+	}
 }
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
@@ -100,7 +96,7 @@ func (p *program) Stop(s service.Service) error {
 	file.Close()
 	close(p.exit)
 	return nil
-	return nil
+
 }
 func plog(str string,level int){
 	debug:=4
@@ -176,7 +172,7 @@ func checkErr(err error) {
 }
 func main() {
 	svcConfig := &service.Config{
-		Name:        "DialingService",
+		Name:        "Dialing",
 		DisplayName: "Dialing Service",
 		Description: "Dialing Asterisk app.",
 	}
@@ -193,7 +189,6 @@ func main() {
 	}
 	//logger, err = s.Logger(nil)
 	//checkErr(err)
-	//go s.Run()
 	err = s.Run()
 	checkErr(err)
 }
