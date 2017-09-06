@@ -68,6 +68,11 @@ var fail_cntarr=make(map [string]int)
 
 func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
+	if service.Interactive() {
+		fmt.Println("Running in terminal.")
+	} else {
+		fmt.Println("Running under service manager.")
+	}
 	go p.run()
 	return nil
 }
@@ -176,16 +181,16 @@ func main() {
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
 	checkErr(err)
-	/*if len(os.Args) > 1 {
+	if len(os.Args) > 1 {
 		fmt.Println(os.Args[1])
 		err = service.Control(s, os.Args[1])
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
-	}*/
+	}
 	//logger, err = s.Logger(nil)
 	//checkErr(err)
-	go s.Run()
-	//checkErr(err)
+	err = s.Run()
+	checkErr(err)
 }
