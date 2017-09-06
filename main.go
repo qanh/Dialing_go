@@ -71,7 +71,17 @@ var fail_cntarr=make(map [string]int)
 func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
 	p.exit = make(chan struct{})
+	//listen http request
+	http.HandleFunc("/user_state", state_check) // set router
+	go http.ListenAndServe(":"+port, nil) // set listen port
 
+
+	/*if err != nil {
+		log.Fatalln("ListenAndServe: ", err)
+		plog("ListenAndServe Error",1)
+	}else{
+		fmt.Println("ListenAndServe on port "+port,1)
+	}*/
 	go p.run()
 	return nil
 }
@@ -149,17 +159,7 @@ func init(){
 	//c := make(chan map[string]string, 100)
 	//a.SetEventChannel(c)
 	go ast_check_numqueue()
-	//listen http request
-	http.HandleFunc("/user_state", state_check) // set router
-	go http.ListenAndServe(":"+port, nil) // set listen port
 
-
-	/*if err != nil {
-		log.Fatalln("ListenAndServe: ", err)
-		plog("ListenAndServe Error",1)
-	}else{
-		fmt.Println("ListenAndServe on port "+port,1)
-	}*/
 
 }
 func checkErr(err error) {
@@ -174,10 +174,6 @@ func main() {
 		DisplayName: "Dialing Service",
 		Description: "Dialing Asterisk app.",
 	}
-
-	fmt.Println("Start")
-	//Database mysql
-
 
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
