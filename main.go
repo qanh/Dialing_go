@@ -150,15 +150,15 @@ func init(){
 	go ast_check_numqueue()
 	//listen http request
 	http.HandleFunc("/user_state", state_check) // set router
-	go http.ListenAndServe(":"+port, nil) // set listen port
+	http.ListenAndServe(":"+port, nil) // set listen port
 
 
-	/*if err != nil {
+	if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
 		plog("ListenAndServe Error",1)
 	}else{
 		fmt.Println("ListenAndServe on port "+port,1)
-	}*/
+	}
 
 }
 func checkErr(err error) {
@@ -181,14 +181,14 @@ func main() {
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
 	checkErr(err)
-	/*if len(os.Args) > 1 {
+	if len(os.Args) > 1 {
 		fmt.Println(os.Args[1])
 		err = service.Control(s, os.Args[1])
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
-	}*/
+	}
 	//logger, err = s.Logger(nil)
 	//checkErr(err)
 	err = s.Run()
