@@ -150,15 +150,15 @@ func init(){
 	go ast_check_numqueue()
 	//listen http request
 	http.HandleFunc("/user_state", state_check) // set router
-	http.ListenAndServe(":"+port, nil) // set listen port
+	go http.ListenAndServe(":"+port, nil) // set listen port
 
 
-	if err != nil {
+	/*if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
 		plog("ListenAndServe Error",1)
 	}else{
 		fmt.Println("ListenAndServe on port "+port,1)
-	}
+	}*/
 
 }
 func checkErr(err error) {

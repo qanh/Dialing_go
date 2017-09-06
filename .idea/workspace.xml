@@ -43,8 +43,8 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2387">
-              <caret line="190" column="9" lean-forward="false" selection-start-line="190" selection-start-column="9" selection-end-line="190" selection-end-column="9" />
+            <state relative-caret-position="500">
+              <caret line="160" column="11" lean-forward="false" selection-start-line="160" selection-start-column="11" selection-end-line="160" selection-end-column="11" />
               <folding>
                 <element signature="e#13#244#0" expanded="true" />
               </folding>
@@ -362,14 +362,7 @@
       <workItem from="1503978538979" duration="694000" />
       <workItem from="1503987672494" duration="23101000" />
       <workItem from="1504166449283" duration="7077000" />
-      <workItem from="1504593576999" duration="13591000" />
-    </task>
-    <task id="LOCAL-00245" summary="fix bug">
-      <created>1503998177499</created>
-      <option name="number" value="00245" />
-      <option name="presentableId" value="LOCAL-00245" />
-      <option name="project" value="LOCAL" />
-      <updated>1503998177499</updated>
+      <workItem from="1504593576999" duration="13685000" />
     </task>
     <task id="LOCAL-00246" summary="fix bug">
       <created>1503999318777</created>
@@ -707,11 +700,18 @@
       <option name="project" value="LOCAL" />
       <updated>1504671790119</updated>
     </task>
-    <option name="localTasksCounter" value="294" />
+    <task id="LOCAL-00294" summary="fix bug">
+      <created>1504672318350</created>
+      <option name="number" value="00294" />
+      <option name="presentableId" value="LOCAL-00294" />
+      <option name="project" value="LOCAL" />
+      <updated>1504672318350</updated>
+    </task>
+    <option name="localTasksCounter" value="295" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="346420000" />
+    <option name="totallyTimeSpent" value="346514000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-16" width="1936" height="1056" extended-state="0" />
@@ -1283,8 +1283,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2387">
-          <caret line="190" column="9" lean-forward="false" selection-start-line="190" selection-start-column="9" selection-end-line="190" selection-end-column="9" />
+        <state relative-caret-position="500">
+          <caret line="160" column="11" lean-forward="false" selection-start-line="160" selection-start-column="11" selection-end-line="160" selection-end-column="11" />
           <folding>
             <element signature="e#13#244#0" expanded="true" />
           </folding>
