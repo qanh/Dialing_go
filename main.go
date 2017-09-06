@@ -70,6 +70,11 @@ var fail_cntarr=make(map [string]int)
 
 func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
+	if service.Interactive() {
+		logger.Info("Running in terminal.")
+	} else {
+		logger.Info("Running under service manager.")
+	}
 	p.exit = make(chan struct{})
 	//listen http request
 	http.HandleFunc("/user_state", state_check) // set router
