@@ -104,7 +104,6 @@ func plog(str string,level int){
 	}
 }
 func init(){
-
 	ex, err := os.Executable()
 	if err != nil {
 		panic(err)
