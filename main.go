@@ -12,7 +12,9 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/spf13/viper"
 )
-type program struct{}
+type program struct{
+	exit chan struct{}
+}
 //Init variable
 
 
