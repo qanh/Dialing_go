@@ -135,8 +135,10 @@ func init(){
 	//register asterisk event listener
 	//a.RegisterDefaultHandler(DefaultHandler)
 	a.RegisterHandler("Hangup",ast_hangup_event)
-	a.RegisterHandler("MeetmeJoin",ast_join_event)
-	a.RegisterHandler("MeetmeLeave",ast_leave_event)
+	//a.RegisterHandler("MeetmeJoin",ast_join_event)
+	//a.RegisterHandler("MeetmeLeave",ast_leave_event)
+	a.RegisterHandler("ConfbridgeJoin",ast_join_event)
+	a.RegisterHandler("ConfbridgeLeave",ast_leave_event)
 	a.RegisterHandler("OriginateResponse",ast_originate_response_event)
 	//a.RegisterHandler("mdial",ast_mdial_event)
 	a.RegisterHandler("UserEvent",ast_user_event)
