@@ -842,7 +842,7 @@ func ast_transfer(agent string,toagent string, phonenum string)(int , string){
 	ringcardid:=agents[agent]["ringcardid"]
 	channel:=agents[agent]["channel"]
 	campaignid:=agents[agent]["campaignid"]
-	usernum:=agents[agent]["usernum"]
+
 	agents[agent]["logging"]="off"
 	go db_log("recoff",agent,agents[agent]["ext"],campaignid)
 	a.Action(map[string]string{"Action": "COMMAND",
