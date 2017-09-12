@@ -382,7 +382,7 @@ func ast_join_event(m map[string]string){
 
 	//none:=1
 	conf:=""
-	plog("ConfbridgeJoin!, "+callee+","+channel+" "+uid+" "+m["Conference"]+" "+usernum+" "+context,1)
+	plog("ConfbridgeJoin!, "+callee+","+channel+" "+uid+" "+m["Conference"]+" "+context,1)
 	if context=="default"{
 		if(m["Conference"]=="8000000") {
 			ans_cnt++
