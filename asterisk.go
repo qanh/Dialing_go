@@ -930,7 +930,9 @@ func ast_delete_peercache()(int,string){
 }
 
 func ast_check_meetme(peer string)(bool){
-	rs, _:=sh.Command("asterisk","-rx","confbridge list 8800"+peer).Command("grep","agent").Output()
+	rs, err:=sh.Command("asterisk","-rx","confbridge list 8800"+peer).Command("grep","agent").Output()
+	fmt.Println(rs)
+	fmt.Println(err)
 	result:=string(rs)
 	plog(result,1)
 	if result!="" && !strings.Contains(result,"SIP/MAN"){
