@@ -92,7 +92,7 @@ func ast_logout(agent string)(int , string){
 	//plog( "Logout agent: "+agent,1)
 	if val, ok := agents[agent]; ok {
 		plog( "At logout, hangup: "+agent+", "+val["ext"]+", "+val["conf_num"]+", "+val["channel"]+", "+val["ownchannel"]+", "+val["campaignid"]+"",1)
-		result, _ := a.Action(map[string]string{"Action":"Command","Command":"meetme kick "+val["conf_num"]+" all"})
+		result, _ := a.Action(map[string]string{"Action":"Command","Command":"confbridge kick "+val["conf_num"]+" all"})
 		if(result["Response"]=="Error"){
 			return 406,result["Message"]
 		}
@@ -930,9 +930,7 @@ func ast_delete_peercache()(int,string){
 }
 
 func ast_check_meetme(peer string)(bool){
-	rs, err:=sh.Command("asterisk","-rx","confbridge list 8800"+peer).Command("grep","agent").Output()
-	fmt.Println(rs)
-	fmt.Println(err)
+	rs, _:=sh.Command("asterisk","-rx","confbridge list 8800"+peer).Command("grep","agent").Output()
 	result:=string(rs)
 	plog(result,1)
 	if result!="" && !strings.Contains(result,"SIP/MAN"){
