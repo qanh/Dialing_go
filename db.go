@@ -18,7 +18,9 @@ import(
 )
 func db_getstate(campaignid string){
 
-	var t_ratio,t_ratio_up,t_ratio_down,t_wait_time,t_campNumber string
+	var t_ratio,t_ratio_up,t_ratio_down,t_wait_time,t_campNumber NullString
+	var ratioup,ratiodown,ratio float64
+	var wait_time int
 	err := db.QueryRow("select d.dmaxratio as ratio,d.dtry_time as wait_time ,d.dratio_up as ratio_up,d.dratio_down as ratio_down,t.campNumber from tCampaign t left join DialerSetting d on t.Dialer_Setting=d.dID where t.campaignID= ?",campaignid).Scan(&t_ratio,&t_wait_time,&t_ratio_up,&t_ratio_down,&t_campNumber)
 	//if no row -> err !=nil
 	checkErr(err)
@@ -29,30 +31,38 @@ func db_getstate(campaignid string){
 		//if(t_ratio==nil){
 		//	set_default_ratio(campaignid)
 		//}else{
-		ratioup, _ := strconv.ParseFloat(t_ratio_up, 64)
-		ratiodown, _ := strconv.ParseFloat(t_ratio_down, 64)
-		ratio, _ := strconv.ParseFloat(t_ratio, 64)
-		wait_time, _ := strconv.Atoi(t_wait_time)
-		plog("t_ratio:"+t_ratio,1)
+		if(t_ratio_up.Valid ) {
+			ratioup, _ = strconv.ParseFloat(t_ratio_up.String, 64)
+		}
+		if(ratiodown.Valid ) {
+			ratiodown, _ = strconv.ParseFloat(t_ratio_down.String, 64)
+		}
+		if(t_ratio.Valid ) {
+			ratio, _ = strconv.ParseFloat(t_ratio.String, 64)
+		}
+		if(t_wait_time.Valid ) {
+			wait_time, _ = strconv.Atoi(t_wait_time.String)
+		}
+		plog("t_ratio:"+t_ratio.String,1)
 		if (ratioup > -2 && ratioup < 2) {
 			ratio_up[campaignid] = ratioup
-			plog("Set ration up =" + t_ratio_up + " for campaign " + campaignid,1)
+			plog("Set ration up =" + t_ratio_up.String + " for campaign " + campaignid,1)
 		}
 		if (ratiodown > -2 && ratiodown < 2) {
 			ratio_down[campaignid] = ratiodown
-			plog("Set ration down = " + t_ratio_down + " for campaign " + campaignid,1)
+			plog("Set ration down = " + t_ratio_down.String + " for campaign " + campaignid,1)
 		}
 		if (wait_time > 10000 && wait_time < 90000) {
 			dial_timeout = wait_time
-			plog("Set dial timeout = " + t_wait_time + " for campaign " + campaignid,1)
+			plog("Set dial timeout = " + t_wait_time.String + " for campaign " + campaignid,1)
 		}
 		if (ratio > 1 && ratio < 10) {
 			db_ratio[campaignid] = ratio
-			plog("Set ratio = " + t_ratio + " for campaign " + campaignid,1)
+			plog("Set ratio = " + t_ratio.String + " for campaign " + campaignid,1)
 		}
 
-		trunk_list[campaignid] = t_campNumber
-		plog("Set trunk = " + t_campNumber + " for campaign " + campaignid,1)
+		trunk_list[campaignid] = t_campNumber.String
+		plog("Set trunk = " + t_campNumber.String + " for campaign " + campaignid,1)
 		//}
 	}else{
 		ast_set_default_ratio(campaignid)
