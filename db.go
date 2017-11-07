@@ -529,6 +529,11 @@ func db_robo_call_status(m map[string]string){
 	_,err:=db.Exec(query)
 	checkErr(err)
 }
+
+func db_voicedrop_callnote(campaignid string,ringcardid string, agent string, callnote string){
+	_,err:=db.Exec("INSERT INTO tCampRingCards_callnote set campaignid ="+campaignid+", cardid = "+ringcardid+", userid = "+agent+", time=NOW(), callnote = '"+callnote+"', operator = 'perlapp'")
+	checkErr(err)
+}
 /**
   using a map
 */

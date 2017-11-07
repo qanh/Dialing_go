@@ -296,6 +296,10 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			code,message:=ast_delete_peercache()
 			w.WriteHeader(code)
 			fmt.Fprintf(w, message)
+		case "voicedrop":
+			code,message:=ast_voice_drop(r.FormValue("agent"),r.FormValue("file"))
+			w.WriteHeader(code)
+			fmt.Fprintf(w, message)
 		default:
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, r.FormValue("action")+ " is not an allowed action" )
