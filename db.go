@@ -34,7 +34,7 @@ func db_getstate(campaignid string){
 		if(t_ratio_up.Valid ) {
 			ratioup, _ = strconv.ParseFloat(t_ratio_up.String, 64)
 		}
-		if(ratiodown.Valid ) {
+		if(t_ratio_down.Valid ) {
 			ratiodown, _ = strconv.ParseFloat(t_ratio_down.String, 64)
 		}
 		if(t_ratio.Valid ) {
