@@ -41,7 +41,9 @@ func ast_login(agent string, ext string , campaignid string,clientid string,inbo
 			return 406, result["Message"]
 		}
 		go db_log("standby", agent, ext,campaignid)
-		go db_getstate(campaignid)
+		if(inbound!="2") {
+			go db_getstate(campaignid)
+		}
 		_, check := cur_ratio[campaignid]
 		if (!check){
 			cur_ratio[campaignid] = 1.0
@@ -145,7 +147,11 @@ func ast_chcamp(agent string,  campaignid string,inbound string)(int , string){
 		agents[agent]["inbound"] = inbound
 		plog( "ast_chcamp changing campaign for ["+agent+"] to campaign ["+campaignid+"]",1)
 		go db_log(status,agent,agents[agent]["ext"],campaignid)
-		go db_getstate(campaignid)
+		ast_standby(agent)
+		if(inbound!="2") {
+			go db_getstate(campaignid)
+		}
+
 	}else{
 		plog("ast_chcamp "+agent+" is not logged in",1)
 		return 400,"Agent is not logged in"
