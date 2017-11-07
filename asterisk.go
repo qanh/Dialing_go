@@ -122,16 +122,18 @@ func ast_hangup(agent string)(int , string){
 			go db_log("standby",agent,ext,campaignid)
 			agents[agent]["channel"]=""
 			agents[agent]["callee"]=""
-			result, _ := a.Action(map[string]string{"Action": "Hangup",
-				"Channel":	channel,
-				//"Context":	"default",
-				//"Exten":	conf,
-				//"Priority":	"1",
-			})
-			if(result["Response"]=="Error"){
-				return 406,result["Message"]
+			if(agents[agent]["drop"]==""){
+				result, _ := a.Action(map[string]string{"Action": "Hangup",
+					"Channel":	channel,
+					//"Context":	"default",
+					//"Exten":	conf,
+					//"Priority":	"1",
+				})
+				if(result["Response"]=="Error"){
+					return 406,result["Message"]
+				}
 			}
-
+			agents[agent]["drop"]=""
 		}
 	}
 	return 200,"OK"
@@ -1037,7 +1039,7 @@ func ast_voice_drop(agent string, voice string)(int,string){
 				"Variable": "Var",
 				"Value"   : agent+":"+agents[agent]["campaignid"]+":"+agents[agent]["ringcardid"]+":"+agents[agent]["callee"],
 	})
-	agents[agent]["drop"]=1;
+	agents[agent]["drop"]="1";
 	a.Action(map[string]string{ "Action" : "Redirect",
 				"Channel" : channel,
 				"Context" : "drop-voice",
