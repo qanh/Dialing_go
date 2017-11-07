@@ -18,7 +18,7 @@ import(
 )
 func db_getstate(campaignid string){
 
-	var t_ratio,t_ratio_up,t_ratio_down,t_wait_time,t_campNumber NullString
+	var t_ratio,t_ratio_up,t_ratio_down,t_wait_time,t_campNumber sql.NullString
 	var ratioup,ratiodown,ratio float64
 	var wait_time int
 	err := db.QueryRow("select d.dmaxratio as ratio,d.dtry_time as wait_time ,d.dratio_up as ratio_up,d.dratio_down as ratio_down,t.campNumber from tCampaign t left join DialerSetting d on t.Dialer_Setting=d.dID where t.campaignID= ?",campaignid).Scan(&t_ratio,&t_wait_time,&t_ratio_up,&t_ratio_down,&t_campNumber)
