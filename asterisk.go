@@ -1021,14 +1021,17 @@ func ast_user_event(m map[string]string){
 			ast_mdial_event(m)
 		case "voicedrop":
 			ast_voice_drop_event(m)
+		case "voicedrop_control":
+			ast_voice_drop_control_event(m)
 		default:
 			plog(m["UserEvent"],1)
 	}
 
 }
 func ast_voice_drop(agent string, voice string)(int,string){
-	plog("ast_voice_drop: $callee,$channel",1)
+
 	channel:=agents[agent]["channel"]
+	plog("ast_voice_drop: "+agents[agent]["callee"]+" , " +channel,1)
 	a.Action(map[string]string{ 	"Action" : "Setvar",
 					"Channel": channel,
 					"Variable": "filename",
@@ -1055,4 +1058,31 @@ func ast_voice_drop_event(m map[string]string){
 		callnote := "Voice droped to number "+value[3]
 		db_voicedrop_callnote(value[1],value[2],value[0],callnote)
 	}
+}
+
+func ast_voice_drop_control_play(agent string, voice string)(int,string){
+	plog("ast_voice_drop-control play: "+agents[agent]["callee"]+" , " +agent,1)
+	a.Action(map[string]string{ "Action" : "Originate",
+		"Channel" : "LOCAL/"+agents[agent]["conf_num"]+"@drop-voice-control/n",
+		"Context" : "drop-voice-control",
+		"Exten": "s",
+		"Priority" : "1",
+		"Variable":"__filename="+voice+",__agent="+agent,
+	})
+	return 200,"OK"
+}
+func ast_voice_drop_control(agent string, control string)(int,string){
+	plog("ast_voice_drop-control "+control+": "+agents[agent]["callee"]+" , " +agent,1)
+	if(control=="resume"){
+		control="pause"
+	}
+
+	a.Action(map[string]string{ "Action" : "ControlPlayback",
+		"Channel" : agents[agent]["drop_channel"],
+		"Control" : control,
+	})
+	return 200,"OK"
+}
+func ast_voice_drop_control_event(m map[string]string){
+	agents[m["Agent"]]["drop_channel"]=m["Channel"]
 }

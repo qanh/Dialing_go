@@ -301,6 +301,17 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			code,message:=ast_voice_drop(r.FormValue("agent"),r.FormValue("file"))
 			w.WriteHeader(code)
 			fmt.Fprintf(w, message)
+		case "voicectrl":
+			var code int
+			var message string
+			if(r.FormValue("ctrl")=="play"){
+				code,message=ast_voice_drop_control_play(r.FormValue("agent"),r.FormValue("file"))
+			}else{
+				code,message=ast_voice_drop_control(r.FormValue("agent"),r.FormValue("ctrl"))
+			}
+
+			w.WriteHeader(code)
+			fmt.Fprintf(w, message)
 		case "getagent":
 			//code,message:=ast_agent_info(r.FormValue("agent"))
 			var jsonString []byte
