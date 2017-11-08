@@ -305,7 +305,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			//code,message:=ast_agent_info(r.FormValue("agent"))
 			jsonString, _ := json.Marshal(agents)
 			w.WriteHeader(200)
-			fmt.Fprintf(w, jsonString)
+			fmt.Fprintf(w, string(jsonString))
 		default:
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, r.FormValue("action")+ " is not an allowed action" )
