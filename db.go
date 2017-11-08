@@ -382,7 +382,11 @@ func db_log_soundfile(ringcardid string ,campaignid string ,agent string,clienti
 		recname := "LOGG_"+datestring+"_u"+agent+"_c"+campaignid+"_"+ringcardid+"_"+clientid+".wav"
 
 		go ast_rec_start(agent,recname,clientid)
-		db.Exec("INSERT INTO soundfile set rid = "+ringcardid+", userid = "+agent+", campaignid = "+campaignid+", clientid = "+clientid+", originfilename = "+recname+", filename = "+recname+", closed = 0, converted = 0, cut = 0, start = NOW(),asterisk_ip="+host)
+		//db.Exec("INSERT INTO soundfile set rid = "+ringcardid+", userid = "+agent+", campaignid = "+campaignid+", clientid = "+clientid+", originfilename = "+recname+", filename = "+recname+", closed = 0, converted = 0, cut = 0, start = NOW(),asterisk_ip="+host)
+		stmtIns, err := db.Prepare("INSERT INTO soundfile set rid = ?, userid = ?, campaignid = ?, clientid = ?, originfilename = ?, filename = ?, closed = 0, converted = 0, cut = 0, start = NOW(),asterisk_ip=?")
+		checkErr(err)
+		defer stmtIns.Close()
+		_, err=stmtIns.Exec(ringcardid,agent,campaignid,clientid,recname,recname,host)
 		plog("poe_kernel->post( monitor,ast_rec_start_mix, "+agent+", "+recname+","+clientid+")", 1 )
 	//}
 }
@@ -403,8 +407,12 @@ func db_user_connected(userid string ,connected int){
 }
 func db_log_rec(campaignid string ,clientid string,logfile string,va int){
 	addr := "192.168.185.99"
-	_,err:=db.Exec("INSERT INTO tSoundFiles set campaignID = "+campaignid+", clientID = "+clientid+", filename = "+logfile+", createtime=NOW(), va = "+strconv.Itoa(va)+",addr = "+addr+", filesize = 0, status=0")
+	//_,err:=db.Exec("INSERT INTO tSoundFiles set campaignID = "+campaignid+", clientID = "+clientid+", filename = "+logfile+", createtime=NOW(), va = "+strconv.Itoa(va)+",addr = "+addr+", filesize = 0, status=0")
+	//checkErr(err)
+	stmtIns, err := db.Prepare("INSERT INTO tSoundFiles set campaignID = ?, clientID = ?, filename = ?, createtime=NOW(), va = ?,addr = ?, filesize = 0, status=0")
 	checkErr(err)
+	defer stmtIns.Close()
+	_, err=stmtIns.Exec(campaignid,clientid,logfile,strconv.Itoa(va),addr)
 }
 func tidsperiod() int {
 	now := time.Now()
@@ -453,8 +461,14 @@ func db_callnote_fail(campaignid string, ringcardid string, number string,status
 		userid="0"
 	}
 	callnote:="{\"status\":\""+status+"\",\"phone\":\""+number+"\"}"
-	_,err:=db.Exec("INSERT INTO tCampRingCards_callnote set campaignid ="+campaignid+", cardid = "+ringcardid+", userid = "+userid+", time=NOW(), callnote = '"+callnote+"',action = 'perlapp', operator = 'perlapp'")
+	//_,err:=db.Exec("INSERT INTO tCampRingCards_callnote set campaignid ="+campaignid+", cardid = "+ringcardid+", userid = "+userid+", time=NOW(), callnote = '"+callnote+"',action = 'perlapp', operator = 'perlapp'")
+	//checkErr(err)
+	stmtIns, err := db.Prepare("INSERT INTO tCampRingCards_callnote set campaignid =? ,cardid =? , userid =?, time=NOW(), callnote =? ,action = 'perlapp', operator = 'perlapp'")
 	checkErr(err)
+	defer stmtIns.Close()
+	_, err=stmtIns.Exec(campaignid,ringcardid,userid,callnote)
+	checkErr(err)
+
 }
 //chua lam robocaller
 
@@ -519,8 +533,12 @@ func db_robo_call_process(rows *sql.Rows ,maxcall int, percent string, taskid st
 
 func db_robo_callnote(campaignid string, ringcardid string){
 	callnote:="Robocaller has called this card"
-	_,err:=db.Exec("INSERT INTO tCampRingCards_callnote set campaignid ="+campaignid+", cardid = "+ringcardid+", userid = 0, time=NOW(), callnote = '"+callnote+"',type = 0, operator = 'perlapp'")
+	//_,err:=db.Exec("INSERT INTO tCampRingCards_callnote set campaignid ="+campaignid+", cardid = "+ringcardid+", userid = 0, time=NOW(), callnote = '"+callnote+"',type = 0, operator = 'perlapp'")
+	//checkErr(err)
+	stmtIns, err := db.Prepare("INSERT INTO tCampRingCards_callnote set campaignid =? ,cardid =? , userid =0, time=NOW(), callnote =? ,type = 0, operator = 'perlapp'")
 	checkErr(err)
+	defer stmtIns.Close()
+	_, err=stmtIns.Exec(campaignid,ringcardid,callnote)
 }
 
 func db_robo_call_status(m map[string]string){
