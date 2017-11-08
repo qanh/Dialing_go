@@ -559,11 +559,11 @@ func db_robo_call_status(m map[string]string){
 }
 
 func db_voicedrop_callnote(campaignid string,ringcardid string, agent string, callnote string){
-	//stmtIns, err := db.Prepare("INSERT INTO tCampRingCards_callnote set campaignid =? ,cardid =? , userid =?, time=NOW(), callnote =? , operator = 'perlapp'")
-	//checkErr(err)
-	//defer stmtIns.Close()
-	//_, err=stmtIns.Exec(campaignid,ringcardid,agent,callnote)
-	_,err:=db.Exec("INSERT INTO tCampRingCards_callnote set campaignid ="+campaignid+", cardid = "+ringcardid+", userid = "+agent+", time=NOW(), callnote = '"+callnote+"', operator = 'perlapp'")
+	stmtIns, err := db.Prepare("INSERT INTO tCampRingCards_callnote set campaignid =? ,cardid =? , userid =?, time=NOW(), callnote =? , operator = 'perlapp'")
+	checkErr(err)
+	defer stmtIns.Close()
+	_, err=stmtIns.Exec(campaignid,ringcardid,agent,callnote)
+	//_,err:=db.Exec("INSERT INTO tCampRingCards_callnote set campaignid ="+campaignid+", cardid = "+ringcardid+", userid = "+agent+", time=NOW(), callnote = '"+callnote+"', operator = 'perlapp'")
 	checkErr(err)
 }
 /**
