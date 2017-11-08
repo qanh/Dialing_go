@@ -159,7 +159,7 @@ func init(){
 func checkErr(err error) {
 	if err != nil {
 		plog(err.Error(),1)
-		panic(err)
+		//panic(err)
 	}
 }
 func main() {
