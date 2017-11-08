@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"io/ioutil"
 	"bytes"
+	"encoding/json"
 )
 
 var listfile map[string]string
@@ -300,6 +301,11 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			code,message:=ast_voice_drop(r.FormValue("agent"),r.FormValue("file"))
 			w.WriteHeader(code)
 			fmt.Fprintf(w, message)
+		case "getagent":
+			//code,message:=ast_agent_info(r.FormValue("agent"))
+			//json.Marshal(agents)
+			w.WriteHeader(200)
+			fmt.Fprintf(w, json.Marshal(agents))
 		default:
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, r.FormValue("action")+ " is not an allowed action" )
