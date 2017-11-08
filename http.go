@@ -303,7 +303,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			fmt.Fprintf(w, message)
 		case "getagent":
 			//code,message:=ast_agent_info(r.FormValue("agent"))
-			jsonString, _ := json.Marshal(agents)
+			jsonString, _ := json.Marshal(agents[r.FormValue("agent")])
 			w.WriteHeader(200)
 			fmt.Fprintf(w, string(jsonString))
 		default:
