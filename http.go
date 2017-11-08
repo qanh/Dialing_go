@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"bytes"
 	"encoding/json"
+	"bytes"
 )
 
 var listfile map[string]string
