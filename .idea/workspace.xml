@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f7c1f2cd-2bdd-4862-9012-3140ec844fde" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.go" afterPath="$PROJECT_DIR$/db.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http.go" afterPath="$PROJECT_DIR$/http.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -53,8 +53,8 @@
       <file leaf-file-name="http.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/http.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="592">
-              <caret line="304" column="76" lean-forward="true" selection-start-line="304" selection-start-column="76" selection-end-line="304" selection-end-column="76" />
+            <state relative-caret-position="677">
+              <caret line="309" column="67" lean-forward="false" selection-start-line="309" selection-start-column="67" selection-end-line="309" selection-end-column="67" />
               <folding>
                 <element signature="e#13#92#0" expanded="true" />
               </folding>
@@ -133,8 +133,8 @@
         <option value="$PROJECT_DIR$/app.toml" />
         <option value="$PROJECT_DIR$/main.go" />
         <option value="$PROJECT_DIR$/asterisk.go" />
-        <option value="$PROJECT_DIR$/http.go" />
         <option value="$PROJECT_DIR$/db.go" />
+        <option value="$PROJECT_DIR$/http.go" />
       </list>
     </option>
   </component>
@@ -347,14 +347,7 @@
       <workItem from="1504166449283" duration="7077000" />
       <workItem from="1504593576999" duration="23500000" />
       <workItem from="1506930212747" duration="4498000" />
-      <workItem from="1509935101593" duration="16482000" />
-    </task>
-    <task id="LOCAL-00278" summary="fix bug">
-      <created>1504668582708</created>
-      <option name="number" value="00278" />
-      <option name="presentableId" value="LOCAL-00278" />
-      <option name="project" value="LOCAL" />
-      <updated>1504668582708</updated>
+      <workItem from="1509935101593" duration="16776000" />
     </task>
     <task id="LOCAL-00279" summary="fix bug">
       <created>1504668947535</created>
@@ -692,11 +685,18 @@
       <option name="project" value="LOCAL" />
       <updated>1510113610908</updated>
     </task>
-    <option name="localTasksCounter" value="327" />
+    <task id="LOCAL-00327" summary="fixbug">
+      <created>1510124901675</created>
+      <option name="number" value="00327" />
+      <option name="presentableId" value="LOCAL-00327" />
+      <option name="project" value="LOCAL" />
+      <updated>1510124901675</updated>
+    </task>
+    <option name="localTasksCounter" value="328" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="377309000" />
+    <option name="totallyTimeSpent" value="377603000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-16" width="1936" height="1056" extended-state="6" />
@@ -1241,8 +1241,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/http.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="592">
-          <caret line="304" column="76" lean-forward="true" selection-start-line="304" selection-start-column="76" selection-end-line="304" selection-end-column="76" />
+        <state relative-caret-position="677">
+          <caret line="309" column="67" lean-forward="false" selection-start-line="309" selection-start-column="67" selection-end-line="309" selection-end-column="67" />
           <folding>
             <element signature="e#13#92#0" expanded="true" />
           </folding>
