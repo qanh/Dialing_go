@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"bytes"
 	"encoding/json"
-	"bytes"
 )
 
 var listfile map[string]string
@@ -304,7 +303,7 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			fmt.Fprintf(w, message)
 		case "getagent":
 			//code,message:=ast_agent_info(r.FormValue("agent"))
-			var jsonString []bytes
+			var jsonString []byte
 			if(r.FormValue("agent")!="") {
 				jsonString, _ = json.Marshal(agents[r.FormValue("agent")])
 			}else{
