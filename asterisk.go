@@ -293,13 +293,15 @@ func ast_hangup_event(m map[string]string){
 //
 func ast_originate_response_event(m map[string] string){
 	var callee,ringcardid,campaignid string
-	actionID:=strings.Split(m["ActionID"],":")
-	//jsonString, _ := json.Marshal(m)
-	//plog("event: "+string(jsonString),1)
-	if(len(actionID)>2) {
-		callee = actionID[0]
-		ringcardid = actionID[1]
-		campaignid = actionID[2]
+	if(m["AccountCode"]!="") {
+		actionID := strings.Split(m["ActionID"], ":")
+		//jsonString, _ := json.Marshal(m)
+		//plog("event: "+string(jsonString),1)
+		if (len(actionID) > 2) {
+			callee = actionID[0]
+			ringcardid = actionID[1]
+			campaignid = actionID[2]
+		}
 	}
 	//if(len(actionID)>3) {
 	//	agent = actionID[3]
@@ -718,12 +720,17 @@ func ast_leave_event(m map[string]string){
 
 }
 func ast_mdial_event(m map[string]string){
-	accountCode:=strings.Split(m["AccountCode"],":")
-	//fmt.Println()
-	callee:=accountCode[0]
-	ringcardid:=accountCode[1]
-	campaignid:=accountCode[2]
-	agent:=accountCode[3]
+	var callee,ringcardid,campaignid,agent string
+	if(m["AccountCode"]!=0) {
+		accountCode := strings.Split(m["AccountCode"], ":")
+		//fmt.Println()
+		if(len(accountCode)>3) {
+			callee = accountCode[0]
+			ringcardid = accountCode[1]
+			campaignid = accountCode[2]
+			agent = accountCode[3]
+		}
+	}
 	call_status:=m["Dialstatus"]
 	if call_status!="ANSWER"{
 		if(call_status !="NOANSWER") {
@@ -1063,8 +1070,10 @@ func ast_voice_drop_event(m map[string]string){
 	plog("ast_voice_drop_event: "+m["Var"],1);
 	if(m["Var"]!=""){
 		value:=strings.Split(m["Var"], ":")
-		callnote := "Voice droped to number "+value[3]
-		db_voicedrop_callnote(value[1],value[2],value[0],callnote)
+		if(len(value)>3) {
+			callnote := "Voice droped to number " + value[3]
+			db_voicedrop_callnote(value[1], value[2], value[0], callnote)
+		}
 	}
 }
 
