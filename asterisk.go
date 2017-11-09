@@ -292,13 +292,15 @@ func ast_hangup_event(m map[string]string){
 //check lai trang thai cua reason code
 //
 func ast_originate_response_event(m map[string] string){
-	//var agent string
+	var callee,ringcardid,campaignid string
 	actionID:=strings.Split(m["ActionID"],":")
 	//jsonString, _ := json.Marshal(m)
 	//plog("event: "+string(jsonString),1)
-	callee:=actionID[0]
-	ringcardid:=actionID[1]
-	campaignid:=actionID[2]
+	if(len(actionID)>2) {
+		callee = actionID[0]
+		ringcardid = actionID[1]
+		campaignid = actionID[2]
+	}
 	//if(len(actionID)>3) {
 	//	agent = actionID[3]
 	//}
@@ -1025,8 +1027,8 @@ func ast_user_event(m map[string]string){
 			ast_mdial_event(m)
 		case "voicedrop":
 			ast_voice_drop_event(m)
-		//case "voicedrop_control":
-		//	ast_voice_drop_control_event(m)
+		case "voicedrop_control":
+			ast_voice_drop_control_event(m)
 		default:
 			plog(m["UserEvent"],1)
 	}
