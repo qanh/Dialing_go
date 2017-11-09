@@ -489,6 +489,7 @@ func ast_join_event(m map[string]string){
 				agents[key]["channel"]=channel
 				agents[key]["status"]="incall"
 				agents[key]["ringcardid"]=ringcardid
+				agents[key]["callee"]=callee
 				ext:=agents[key]["ext"]
 				go db_log("incall",key,ext,campaignid)
 				go db_log_soundfile(ringcardid,campaignid,key,agents[key]["clientid"])
