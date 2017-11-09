@@ -284,6 +284,9 @@ func ast_hangup_event(m map[string]string){
 		 */
 		go db_set_num_status(accountCode[2], accountCode[1], failtext, accountCode[0])
 	}
+	if(m["Context"] == "drop-voice-control" && channel[len(channel)-2:]==";1"){
+		mc.Set(&memcache.Item{Key: "voicectrl_agent_"+m["AccountCode"], Value: []byte("end")})
+	}
 
 }
 //check lai trang thai cua reason code
@@ -1068,6 +1071,7 @@ func ast_voice_drop_control_play(agent string, voice string)(int,string){
 		"Exten": "s",
 		"Priority" : "1",
 		"Variable":"__filename="+voice+",__agent="+agent,
+		"Account":agent,
 	})
 	return 200,"OK"
 }
