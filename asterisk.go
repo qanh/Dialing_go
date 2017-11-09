@@ -384,9 +384,11 @@ func ast_join_event(m map[string]string){
 	if(m["AccountCode"]!=""){
 		accountCode:=strings.Split(m["AccountCode"],":")
 		//fmt.Println()
-		callee=accountCode[0]
-		ringcardid=accountCode[1]
-		campaignid=accountCode[2]
+		if(len(accountCode)>2){
+			callee=accountCode[0]
+			ringcardid=accountCode[1]
+			campaignid=accountCode[2]
+		}
 	}
 
 
