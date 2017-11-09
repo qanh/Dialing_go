@@ -1084,7 +1084,7 @@ func ast_voice_drop_control_play(agent string, voice string)(int,string){
 		"Context" : "drop-voice-control",
 		"Exten": "s",
 		"Priority" : "1",
-		"Variable":"__filename="+voice+",__agent="+agent,
+		"Variable":"filename="+voice+",agent="+agent,
 		"Account":agent,
 	})
 	return 200,"OK"
