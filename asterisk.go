@@ -721,7 +721,7 @@ func ast_leave_event(m map[string]string){
 }
 func ast_mdial_event(m map[string]string){
 	var callee,ringcardid,campaignid,agent string
-	if(m["AccountCode"]!=0) {
+	if(m["AccountCode"]!="") {
 		accountCode := strings.Split(m["AccountCode"], ":")
 		//fmt.Println()
 		if(len(accountCode)>3) {
