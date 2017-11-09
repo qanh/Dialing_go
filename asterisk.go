@@ -1025,8 +1025,8 @@ func ast_user_event(m map[string]string){
 			ast_mdial_event(m)
 		case "voicedrop":
 			ast_voice_drop_event(m)
-		case "voicedrop_control":
-			ast_voice_drop_control_event(m)
+		//case "voicedrop_control":
+		//	ast_voice_drop_control_event(m)
 		default:
 			plog(m["UserEvent"],1)
 	}
