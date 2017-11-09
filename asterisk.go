@@ -1089,6 +1089,7 @@ func ast_voice_drop_control(agent string, control string)(int,string){
 	return 200,"OK"
 }
 func ast_voice_drop_control_event(m map[string]string){
-	plog(m["UserEvent"],1)
-	agents[m["Agent"]]["drop_channel"]=m["Channel"]
+	plog(m["UserEvent"]+","+m["Agent"]+","+m["Channel"],1)
+	agent:=m["Agent"]
+	agents[agent]["drop_channel"]=m["Channel"]
 }
