@@ -1047,23 +1047,25 @@ func ast_voice_drop(agent string, voice string)(int,string){
 
 	channel:=agents[agent]["channel"]
 	plog("ast_voice_drop: "+agents[agent]["callee"]+" , " +channel,1)
-	a.Action(map[string]string{ 	"Action" : "Setvar",
-					"Channel": channel,
-					"Variable": "filename",
-					"Value"   : voice,
-	})
-	a.Action(map[string]string{ "Action" : "Setvar",
-				"Channel": channel,
-				"Variable": "Var",
-				"Value"   : agent+":"+agents[agent]["campaignid"]+":"+agents[agent]["ringcardid"]+":"+agents[agent]["callee"],
-	})
-	agents[agent]["drop"]="1";
-	a.Action(map[string]string{ "Action" : "Redirect",
-				"Channel" : channel,
-				"Context" : "drop-voice",
-				"Exten": "s",
-				"Priority" : "1",
-	})
+	if(channel!="") {
+		a.Action(map[string]string{"Action" : "Setvar",
+			"Channel": channel,
+			"Variable": "filename",
+			"Value"   : voice,
+		})
+		a.Action(map[string]string{"Action" : "Setvar",
+			"Channel": channel,
+			"Variable": "Var",
+			"Value"   : agent + ":" + agents[agent]["campaignid"] + ":" + agents[agent]["ringcardid"] + ":" + agents[agent]["callee"],
+		})
+		agents[agent]["drop"] = "1";
+		a.Action(map[string]string{"Action" : "Redirect",
+			"Channel" : channel,
+			"Context" : "drop-voice",
+			"Exten": "s",
+			"Priority" : "1",
+		})
+	}
 	return 200,"OK"
 }
 func ast_voice_drop_event(m map[string]string){

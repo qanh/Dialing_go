@@ -298,12 +298,14 @@ func state_check(w http.ResponseWriter, r *http.Request){
 			w.WriteHeader(code)
 			fmt.Fprintf(w, message)
 		case "voicedrop":
+			plog ("HTTP voicedrop Agent:"+ r.FormValue("agent")+" File:"+r.FormValue("file"),1)
 			code,message:=ast_voice_drop(r.FormValue("agent"),r.FormValue("file"))
 			w.WriteHeader(code)
 			fmt.Fprintf(w, message)
 		case "voicectrl":
 			var code int
 			var message string
+			plog ("HTTP voicectrl Agent:"+ r.FormValue("agent")+" File:"+r.FormValue("file"),1)
 			if(r.FormValue("ctrl")=="play"){
 				code,message=ast_voice_drop_control_play(r.FormValue("agent"),r.FormValue("file"))
 			}else{

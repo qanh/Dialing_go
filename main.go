@@ -68,9 +68,6 @@ var fail_cntarr=make(map [string]int)
 
 func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
-
-
-
 	go p.run()
 	return nil
 }
@@ -114,8 +111,6 @@ func init(){
 	// assign it to the standard logger
 	log.SetOutput(file)
 	db, err = sql.Open("mysql", db_string)
-	//db.SetMaxOpenConns(0)
-	//db=mysql.New("tcp", "", db_host, db_user, db_pass, db_name)
 	if err != nil {
 		plog("DB error",1)
 	}else{
@@ -133,7 +128,7 @@ func init(){
 		plog("Connection error:"+ message,1)
 	})
 	//register asterisk event listener
-	//a.RegisterDefaultHandler(DefaultHandler)
+
 	a.RegisterHandler("Hangup",ast_hangup_event)
 	a.RegisterHandler("MeetmeJoin",ast_join_event)
 	a.RegisterHandler("MeetmeLeave",ast_leave_event)
@@ -146,9 +141,7 @@ func init(){
 	//a.SetEventChannel(c)
 	go ast_check_numqueue()
 	http.HandleFunc("/user_state", state_check) // set router
-	//err:=http.ListenAndServe(":"+port, nil) // set listen port
-
-	err=http.ListenAndServe(":"+port, nil)
+	err=http.ListenAndServe(":"+port, nil) // set listen port
 	if err != nil {
 		log.Fatalln("ListenAndServe: ", err)
 		plog("ListenAndServe Error",1)
@@ -179,8 +172,6 @@ func main() {
 		}
 		return
 	}
-	//logger, err = s.Logger(nil)
-	//checkErr(err)
 	err = s.Run()
 	checkErr(err)
 }
