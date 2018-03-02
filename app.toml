@@ -1,11 +1,11 @@
 [asterisk]
-host="dev.dialingozone.com"
-port="1234"
-user="trumpen"
-pass="foobar"
+host="localhost"
+port="5038"
+user="admin"
+pass="123456"
 
 [mysql]
-db_string="dialing:Dl@fj1ra@/dialingdb"
+db_string="user:password@/db"
 #user:password@tcp(localhost:5555)/dbname
 
 [memcache]
